@@ -36,7 +36,9 @@ def read_file(input_files, spectrum_col, score_col, target_col, delimiter=","):
     data = pd.DataFrame()
     # Loop through all given files
     for file in input_files:
-        data = data.append(pd.read_csv(file, sep=delimiter, usecols=fields), ignore_index=True)
+        data = data.append(
+            pd.read_csv(file, sep=delimiter, usecols=fields), ignore_index=True
+        )
     return PsmDataset(data, spectrum_col, score_col, target_col)
 
 
