@@ -33,22 +33,22 @@ def calculate_tdc(psm):
     data = data.sort_values(by=[spectrum_col, score_col, target_col])
 
     # look through and delete all duplicate psms with higher p-values
-    data = __delete_duplicates(data, spectrum_col, score_col, target_col)
+    data = _delete_duplicates(data, spectrum_col, score_col, target_col)
 
     # sort dataframe by spectrum and p-value ascending
     data = data.sort_values(by=[score_col])
 
     # calculate fdr at each psm
-    __calculate_fdr(data, target_col)
+    _calculate_fdr(data, target_col)
 
     # calculate q value at each psm
-    __calculate_q_value(data, "FDR")
+    _calculate_q_value(data, "FDR")
 
     # return a result object containing the manipulated data and respective calculations
     return Result(data, spectrum_col, score_col, target_col)
 
 
-def __delete_duplicates(data, spectrum_col, score_col, target_col):
+def _delete_duplicates(data, spectrum_col, score_col, target_col):
     """
     Deletes duplicate PSMs based on unique spectrum identifier
 
@@ -98,7 +98,7 @@ def __delete_duplicates(data, spectrum_col, score_col, target_col):
     return data
 
 
-def __delete_duplicates2(data, spectrum_col, score_col, target_col):
+def _delete_duplicates2(data, spectrum_col, score_col, target_col):
     """
     Deletes duplicate PSMs based on unique spectrum identifier
 
@@ -145,7 +145,7 @@ def __delete_duplicates2(data, spectrum_col, score_col, target_col):
     return data
 
 
-def __calculate_fdr(data, target_col):
+def _calculate_fdr(data, target_col):
     """
     Calculates FDR at each PSM
 
@@ -167,10 +167,10 @@ def __calculate_fdr(data, target_col):
         else:
             decoy += 1
         fdr.append(min((decoy + 1) / target, 1))
-    data['FDR'] = fdr
+    data["FDR"] = fdr
 
 
-def __calculate_q_value(data, fdr_col):
+def _calculate_q_value(data, fdr_col):
     """
     Calculates Q_Value at each PSM
 
@@ -190,4 +190,4 @@ def __calculate_q_value(data, fdr_col):
             lowest_q_value = curr_q_value
         q_val.append(lowest_q_value)
     q_val.reverse()
-    data['Q_Value'] = q_val
+    data["Q_Value"] = q_val

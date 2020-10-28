@@ -58,10 +58,12 @@ def read_crux(input_files):
         containing the PSM data from the given tab-delimited file.
     """
     # Call generic read_file method with pre-determined column field names from crux format
-    dataset = read_file(input_files, "scan", "combined p-value", "target/decoy", "\t")
+    dataset = read_file(
+        input_files, "scan", "combined p-value", "target/decoy", "\t"
+    )
     # Convert values in target_col to boolean True/False instead of String target/decoy
-    targets = {'target': True, 'decoy': False}
-    dataset.data['target/decoy'] = dataset.data['target/decoy'].map(targets)
+    targets = {"target": True, "decoy": False}
+    dataset.data["target/decoy"] = dataset.data["target/decoy"].map(targets)
     # Return the PsmDataset
     return dataset
 

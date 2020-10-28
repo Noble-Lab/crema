@@ -18,7 +18,18 @@ testframe_single = pd.DataFrame(
     {
         "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
         "p-value": [0.7, 0.4, 0.1, 0.55, 0.3, 0.6, 0.2, 0.7, 0.56, 0.3],
-        "target": [True, False, True, True, True, True, False, False, True, False]
+        "target": [
+            True,
+            False,
+            True,
+            True,
+            True,
+            True,
+            False,
+            False,
+            True,
+            False
+        ],
     }
 )
 
@@ -28,8 +39,8 @@ testframe_single_tdc = pd.DataFrame(
         "scan": [3, 2, 5, 4, 1],
         "p-value": [0.1, 0.2, 0.3, 0.55, 0.6],
         "target": [True, False, True, True, True],
-        "FDR": [1, 1, 1, 2/3, 1/2],
-        "Q_Value": [0.5, 0.5, 0.5, 0.5, 0.5]
+        "FDR": [1, 1, 1, 2 / 3, 1 / 2],
+        "Q_Value": [0.5, 0.5, 0.5, 0.5, 0.5],
     }
 )
 
@@ -38,10 +49,50 @@ testframe_multi = pd.DataFrame(
     {
         "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5,
                  1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-        "p-value": [0.7, 0.4, 0.1, 0.55, 0.3, 0.6, 0.2, 0.7, 0.56, 0.3,
-                    0.4, 0.7, 0.59, 0.55, 0.9, 0.44, 0.75, 0.6, 0.5, 0.89],
-        "target": [True, True, True, True, True, True, True, True, True, True,
-                   False, False, False, False, False, False, False, False, False, False]
+        "p-value": [
+            0.7,
+            0.4,
+            0.1,
+            0.55,
+            0.3,
+            0.6,
+            0.2,
+            0.7,
+            0.56,
+            0.3,
+            0.4,
+            0.7,
+            0.59,
+            0.55,
+            0.9,
+            0.44,
+            0.75,
+            0.6,
+            0.5,
+            0.89
+        ],
+        "target": [
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False
+        ],
     }
 )
 
@@ -51,8 +102,8 @@ testframe_multi_tdc = pd.DataFrame(
         "scan": [3, 2, 5, 1, 4],
         "p-value": [0.1, 0.2, 0.3, 0.4, 0.5],
         "target": [True, True, True, False, False],
-        "FDR": [1, 1/2, 1/3, 2/3, 1],
-        "Q_Value": [1/3, 1/3, 1/3, 2/3, 1]
+        "FDR": [1, 1 / 2, 1 / 3, 2 / 3, 1],
+        "Q_Value": [1/3, 1/3, 1/3, 2/3, 1],
     }
 )
 
@@ -70,7 +121,7 @@ def test_single_dataset_class():
         A :py:class:`~crema.dataset.PsmDataset` object
         containing the PSM data from the given tab-delimited file.
     """
-    psm = read_file(["single.csv"], "scan", "p-value", "target")
+    psm = read_file(["data/single.csv"], "scan", "p-value", "target")
     return psm
 
 
@@ -87,7 +138,7 @@ def test_multi_dataset_class():
         A :py:class:`~crema.dataset.PsmDataset` object
         containing the PSM data from the given tab-delimited files.
     """
-    files = ["multi_target.csv", "multi_decoy.csv"]
+    files = ["data/multi_target.csv", "data/multi_decoy.csv"]
     psm = read_file(files, "scan", "p-value", "target")
     return psm
 
