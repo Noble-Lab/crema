@@ -66,4 +66,3 @@ def read_crux(input_files):
     dataset.data["target/decoy"] = dataset.data["target/decoy"].map(targets)
     # Return the PsmDataset
     return dataset
-

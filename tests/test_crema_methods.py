@@ -28,7 +28,7 @@ testframe_single = pd.DataFrame(
             False,
             False,
             True,
-            False
+            False,
         ],
     }
 )
@@ -47,8 +47,7 @@ testframe_single_tdc = pd.DataFrame(
 # Used in test_multi_data
 testframe_multi = pd.DataFrame(
     {
-        "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5,
-                 1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
+        "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
         "p-value": [
             0.7,
             0.4,
@@ -69,7 +68,7 @@ testframe_multi = pd.DataFrame(
             0.75,
             0.6,
             0.5,
-            0.89
+            0.89,
         ],
         "target": [
             True,
@@ -91,7 +90,7 @@ testframe_multi = pd.DataFrame(
             False,
             False,
             False,
-            False
+            False,
         ],
     }
 )
@@ -103,7 +102,7 @@ testframe_multi_tdc = pd.DataFrame(
         "p-value": [0.1, 0.2, 0.3, 0.4, 0.5],
         "target": [True, True, True, False, False],
         "FDR": [1, 1 / 2, 1 / 3, 2 / 3, 1],
-        "Q_Value": [1/3, 1/3, 1/3, 2/3, 1],
+        "Q_Value": [1 / 3, 1 / 3, 1 / 3, 2 / 3, 1],
     }
 )
 
