@@ -34,13 +34,26 @@ testframe_single = pd.DataFrame(
 )
 
 # Used in test_single_tdc
-testframe_single_tdc = pd.DataFrame(
+# Result if TDC arbitrarily chooses True
+testframe_single_tdc_true = pd.DataFrame(
     {
         "scan": [3, 2, 5, 4, 1],
         "p-value": [0.1, 0.2, 0.3, 0.55, 0.6],
         "target": [True, False, True, True, True],
         "FDR": [1, 1, 1, 2 / 3, 1 / 2],
         "Q_Value": [0.5, 0.5, 0.5, 0.5, 0.5],
+    }
+)
+
+# Used in test_single_tdc
+# Result if TDC arbitrarily chooses False
+testframe_single_tdc_false = pd.DataFrame(
+    {
+        "scan": [3, 2, 5, 4, 1],
+        "p-value": [0.1, 0.2, 0.3, 0.55, 0.6],
+        "target": [True, False, False, True, True],
+        "FDR": [1.0, 1.0, 1.0, 1.0, 1.0],
+        "Q_Value": [1.0, 1.0, 1.0, 1.0, 1.0],
     }
 )
 
@@ -120,6 +133,7 @@ def test_single_dataset_class():
         A :py:class:`~crema.dataset.PsmDataset` object
         containing the PSM data from the given tab-delimited file.
     """
+    # psm = read_file(["data/single.csv"], "scan", "p-value", "target")
     psm = read_file(["data/single.csv"], "scan", "p-value", "target")
     return psm
 
@@ -208,10 +222,18 @@ def test_single_tdc(test_single_dataset_class):
         Asserts whether or not the data in Result object
         is equal to the dataframe named "testframe_single_tdc"
     """
-    actual = testframe_single_tdc.copy()
+    # Note that this tests a file where there are duplicate target/decoy PSMs with equal P-Value
+    # The algorithm arbitrarily chooses, in which case there are two possible end states
+    actual_true = testframe_single_tdc_true.copy()
+    actual_false = testframe_single_tdc_false.copy()
     output = calculate_tdc(test_single_dataset_class)
     compare = output.data
-    pd.testing.assert_frame_equal(actual, compare)
+    if compare.iloc[2, 2]:
+        # If arbitrarily chooses True
+        pd.testing.assert_frame_equal(actual_true, compare)
+    else:
+        # If arbitrarily chooses False
+        pd.testing.assert_frame_equal(actual_false, compare)
 
 
 def test_single_data(test_single_dataset_class):
