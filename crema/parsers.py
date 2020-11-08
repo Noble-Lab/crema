@@ -3,7 +3,7 @@ This module contains the parsers for reading in PSMs
 """
 
 import pandas as pd
-from dataset import PsmDataset
+from .dataset import PsmDataset
 
 
 def read_file(input_files, spectrum_col, score_col, target_col, delimiter=","):

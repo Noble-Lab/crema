@@ -3,7 +3,7 @@ This module contains the various methods for calculating FDRs and q-values
 """
 
 import random
-from result import Result
+from .result import Result
 
 
 def calculate_tdc(psm):
