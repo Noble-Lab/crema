@@ -133,8 +133,7 @@ def test_single_dataset_class():
         A :py:class:`~crema.dataset.PsmDataset` object
         containing the PSM data from the given tab-delimited file.
     """
-    # psm = read_file(["data/single.csv"], "scan", "p-value", "target")
-    psm = read_file(["data/single.csv"], "scan", "p-value", "target")
+    psm = read_file(["../data/single.csv"], "scan", "p-value", "target")
     return psm
 
 
@@ -151,7 +150,7 @@ def test_multi_dataset_class():
         A :py:class:`~crema.dataset.PsmDataset` object
         containing the PSM data from the given tab-delimited files.
     """
-    files = ["data/multi_target.csv", "data/multi_decoy.csv"]
+    files = ["../data/multi_target.csv", "../data/multi_decoy.csv"]
     psm = read_file(files, "scan", "p-value", "target")
     return psm
 

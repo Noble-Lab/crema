@@ -29,7 +29,9 @@ author = "William E. Fondrie, Donavan See, William S. Noble"
 
 import crema
 
-version = str(crema.__version__)
+# Error: Crema has no attribute version
+# version = str(crema.__version__)
+version = str("temp")
 release = version
 
 

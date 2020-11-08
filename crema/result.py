@@ -7,13 +7,8 @@ False Discovery Rates and Q-Values.
 class Result:
     """
     Store a collection of PSMs, their features, and their FDR/Q-Values
-    """
 
-    def __init__(self, data, spectrum_col, score_col, target_col):
-        """
-        Initialize a PsmDataset object.
-
-        Parameters
+    Parameters
         ----------
         data : pandas.DataFrame
             dataframe of PSMs with columns indicating spectrum, score, and target
@@ -23,6 +18,16 @@ class Result:
             name of the column that defines the scores (p-values) of the psms
         target_col : str
             name of the column that indicates if a psm is a target/decoy
+
+
+    Attributes
+        ----------
+        data : pandas.DataFrame
+    """
+
+    def __init__(self, data, spectrum_col, score_col, target_col):
+        """
+        Initialize a PsmDataset object.
         """
 
         self._data = data.reset_index(drop=True)
