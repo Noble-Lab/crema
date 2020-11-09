@@ -6,9 +6,9 @@ import sys
 import time
 import logging
 
-from parsers import *
-from params import Params
-from methods import calculate_tdc
+from .parsers import *
+from .params import Params
+from .methods import calculate_tdc
 
 
 def main():
