@@ -55,6 +55,8 @@ def main():
     out_file = "crema.psm_results.txt"
     if args.file_root is not None:
         out_file = args.file_root + out_file
+    if args.output_dir is None:
+        args.output_dir = os.getcwd()
     result.write_csv(os.path.join(args.output_dir, out_file))
 
     # Calculate how long the confidence estimation took

@@ -13,3 +13,4 @@ from crema.dataset import PsmDataset
 from crema.methods import calculate_tdc
 from crema.parsers import *
 from crema.result import Result
+from crema.params import Params

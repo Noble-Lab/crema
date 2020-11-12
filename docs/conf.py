@@ -13,6 +13,7 @@
 import os
 import sys
 import subprocess
+import crema
 
 sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
@@ -24,14 +25,9 @@ except ModuleNotFoundError:
 
 # -- Project information -----------------------------------------------------
 project = "crema"
-copyright = "2020, William E. Fondrie"
+copyright = "2020, Donavan See"
 author = "William E. Fondrie, Donavan See, William S. Noble"
-
-import crema
-
-# Error: Crema has no attribute version
-# version = str(crema.__version__)
-version = str("temp")
+version = str(crema.__version__)
 release = version
 
 

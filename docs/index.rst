@@ -3,21 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to crema's documentation!
-=================================
-
 .. toctree::
+   :hidden:
    :maxdepth: 2
-   :caption: Contents:
+   :titlesonly:
+   :caption: crema
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   self
+   cli.rst
+   api/index.rst
 
 
 Getting Started
@@ -70,6 +64,19 @@ be installed automatically:
 
 Basic Usage
 -----------
+Use **crema** from the Command Line
+###################################
+
+Simple crema analyses can be performed from the command line:
+
+.. code-block:: bash
+
+   $ crema data/single.csv
+
+That's it. Your results will be saved in your working directory as a
+csv file named `crema.psm_results.txt`. For a full
+list of parameters, see the :doc:`Command Line Interface <cli>`.
+
 Use **crema** as a Python package
 ###################################
 
@@ -85,5 +92,5 @@ Then calculate confidence estimate using crema:
 
    >>> import crema
    >>> psms = cream.read_file(["data/single.csv"], "scan", "p-value", "target")
-   >>> result = crema.calculate_tdc(psms)
+   >>> results = crema.calculate_tdc(psms)
    >>> results.write_csv("save_to_here.csv")
