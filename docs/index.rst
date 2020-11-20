@@ -73,12 +73,32 @@ Simple crema analyses can be performed from the command line:
 
    $ crema data/single.csv
 
-That's it. Your results will be saved in your working directory as a
-csv file named `crema.psm_results.txt`. For a full
-list of parameters, see the :doc:`Command Line Interface <cli>`.
+That's it. Giving crema nothing but the input file will force it to search for
+three specific column names: p-value, scan, target. It will then run the
+Target-Decoy Competition FDR method using the information from these columns
+to calculate confidence estimates for the given data.
+
+Your results will be saved in your working directory as a
+csv file named `crema.psm_results.txt`. This file will contain two additional columns
+(False Discovery Rate and Q-Value) that are
+appended to the initial few columns specified from the input file.
+
+For a full list of parameters, see the :doc:`Command Line Interface <cli>`.
 
 Use **crema** as a Python package
 ###################################
+
+Here's a simple demonstration of how to use crema as an API:
+
+.. code-block:: Python
+
+   >>> import crema
+   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"], "scan", "p-value", "target")
+   >>> results = crema.calculate_tdc(psms)
+   >>> results.write_csv("save_to_here.txt")
+
+Let's break this down and see what's really happening!
+
 
 First, start up the Python interpreter:
 
@@ -86,11 +106,38 @@ First, start up the Python interpreter:
 
    $ python3
 
-Then calculate confidence estimate using crema:
+Next, import crema as a package:
 
 .. code-block:: Python
 
    >>> import crema
-   >>> psms = cream.read_file(["data/single.csv"], "scan", "p-value", "target")
+
+Call the read_file method and pass in the desired input files, along with the names of the columns
+that identify to the psm spectrum, the psm p-value, and the psm target/decoy. This will return a
+dataset object that we will save as "psms" in this example:
+
+.. code-block:: Python
+
+   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"], "scan", "p-value", "target")
+
+Execute the desired FDR estimation method by calling the "calculate_[algorithm]" method and
+passing in the dataset object that we created above. This will return a result object that
+we will save as "results" in this example:
+
+.. code-block:: Python
+
    >>> results = crema.calculate_tdc(psms)
-   >>> results.write_csv("save_to_here.csv")
+
+Result objects contain a "write_csv" method that allows you to write your result to a csv file.
+Your results will be saved in your working directory (unless otherwise specified) as a
+csv file named by the parameter you pass when calling the method.
+This file will contain two additional columns
+(False Discovery Rate and Q-Value) that are
+appended to the initial few columns specified from the input file.
+
+.. code-block:: Python
+
+   >>> results.write_csv("save_to_here.txt")
+
+That's all there is to it! You've successfully used crema as an API to
+calculate confidence estimates for your data!
