@@ -32,9 +32,7 @@ def _configure_parser():
         "More documentation and examples: <link tbd>"
     )
 
-    parser = argparse.ArgumentParser(
-        description=desc,
-    )
+    parser = argparse.ArgumentParser(description=desc,)
 
     parser.add_argument(
         "input_files",
@@ -46,28 +44,26 @@ def _configure_parser():
     parser.add_argument(
         "--score",
         type=str,
-        default="p-value",
-        help="name of the column that defines the scores (p-values) of the psms. Defaults to 'p-value'",
+        default="combined p-value",
+        help="name of the column that defines the scores (p-values) of the psms."
+        "\n Expects column values containing decimal or float values",
     )
 
     parser.add_argument(
         "--spectrum",
         type=str,
         default="scan",
-        help="name of the column that identifies the psm. Defaults to 'scan'",
+        help="name of the column that identifies the psm."
+        "\n Expects column values containing numeric or string identifier",
     )
 
     parser.add_argument(
         "--target",
         type=str,
-        default="target",
-        help="name of the column that indicates if a psm is a target/decoy. Defaults to 'target'",
-    )
-
-    parser.add_argument(
-        "--crux",
-        action="store_true",
-        help="Specifies that the input files are given in crux format",
+        default="target/decoy",
+        help="name of the column that indicates if a psm is a target/decoy."
+        "\n Expects column values containing any of the following combinations: (True/False), (target/decoy),"
+        "(t/d), (t/f), (1/0), (1/-1)",
     )
 
     parser.add_argument(
@@ -80,14 +76,6 @@ def _configure_parser():
         "--output_dir",
         type=str,
         help="The directory where output files will be created. Defaults to current working directory.",
-    )
-
-    parser.add_argument(
-        "--logging",
-        type=str,
-        nargs="?",
-        const=os.getcwd(),
-        help="Specifies whether a logging file should be created. Defaults to current working directory if True.",
     )
 
     return parser

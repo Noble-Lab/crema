@@ -33,6 +33,37 @@ testframe_single = pd.DataFrame(
     }
 )
 
+# Used in test_single_text_scan_data
+testframe_single_text_scan = pd.DataFrame(
+    {
+        "scan": [
+            "C:/test/string/fake/file/path/1",
+            "C:/test/string/fake/file/path/2",
+            "C:/test/string/fake/file/path/3",
+            "C:/test/string/fake/file/path/4",
+            "C:/test/string/fake/file/path/5",
+            "C:/test/string/fake/file/path/1",
+            "C:/test/string/fake/file/path/2",
+            "C:/test/string/fake/file/path/3",
+            "C:/test/string/fake/file/path/4",
+            "C:/test/string/fake/file/path/5",
+        ],
+        "p-value": [0.7, 0.4, 0.1, 0.55, 0.3, 0.6, 0.2, 0.7, 0.56, 0.3],
+        "target": [
+            True,
+            False,
+            True,
+            True,
+            True,
+            True,
+            False,
+            False,
+            True,
+            False,
+        ],
+    }
+)
+
 # Used in test_single_tdc
 # Result if TDC arbitrarily chooses True
 testframe_single_tdc_true = pd.DataFrame(
@@ -50,6 +81,42 @@ testframe_single_tdc_true = pd.DataFrame(
 testframe_single_tdc_false = pd.DataFrame(
     {
         "scan": [3, 2, 5, 4, 1],
+        "p-value": [0.1, 0.2, 0.3, 0.55, 0.6],
+        "target": [True, False, False, True, True],
+        "FDR": [1.0, 1.0, 1.0, 1.0, 1.0],
+        "Q_Value": [1.0, 1.0, 1.0, 1.0, 1.0],
+    }
+)
+
+# Used in test_single_text_scan_tdc
+# Result if TDC arbitrarily chooses True
+testframe_single_text_scan_tdc_true = pd.DataFrame(
+    {
+        "scan": [
+            "C:/test/string/fake/file/path/3",
+            "C:/test/string/fake/file/path/2",
+            "C:/test/string/fake/file/path/5",
+            "C:/test/string/fake/file/path/4",
+            "C:/test/string/fake/file/path/1",
+        ],
+        "p-value": [0.1, 0.2, 0.3, 0.55, 0.6],
+        "target": [True, False, True, True, True],
+        "FDR": [1, 1, 1, 2 / 3, 1 / 2],
+        "Q_Value": [0.5, 0.5, 0.5, 0.5, 0.5],
+    }
+)
+
+# Used in test_single_text_scan_tdc
+# Result if TDC arbitrarily chooses False
+testframe_single_text_scan_tdc_false = pd.DataFrame(
+    {
+        "scan": [
+            "C:/test/string/fake/file/path/3",
+            "C:/test/string/fake/file/path/2",
+            "C:/test/string/fake/file/path/5",
+            "C:/test/string/fake/file/path/4",
+            "C:/test/string/fake/file/path/1",
+        ],
         "p-value": [0.1, 0.2, 0.3, 0.55, 0.6],
         "target": [True, False, False, True, True],
         "FDR": [1.0, 1.0, 1.0, 1.0, 1.0],
@@ -134,6 +201,46 @@ def test_single_dataset_class():
         containing the PSM data from the given tab-delimited file.
     """
     psm = read_file(["data/single.csv"], "scan", "p-value", "target")
+    return psm
+
+
+@pytest.fixture
+def test_single_int_targets_dataset_class():
+    """
+    Creates a pytest fixture of a PsmDataset object
+    by reading in "single.csv" to use in
+    subsequent test cases. Note that target column
+    contain integer values (0 and 1), but also
+    works with (-1 and 1).
+
+    Returns
+    -------
+    PsmDataset
+        A :py:class:`~crema.dataset.PsmDataset` object
+        containing the PSM data from the given tab-delimited file.
+    """
+    psm = read_file(
+        ["data/single_int_targets.csv"], "scan", "p-value", "target"
+    )
+    return psm
+
+
+@pytest.fixture
+def test_single_text_scan_dataset_class():
+    """
+    Creates a pytest fixture of a PsmDataset object
+    by reading in "single.csv" to use in
+    subsequent test cases. Note that target column
+    contain integer values (0 and 1), but also
+    works with (-1 and 1).
+
+    Returns
+    -------
+    PsmDataset
+        A :py:class:`~crema.dataset.PsmDataset` object
+        containing the PSM data from the given tab-delimited file.
+    """
+    psm = read_file(["data/single_text_scan.csv"], "scan", "p-value", "target")
     return psm
 
 
@@ -254,3 +361,78 @@ def test_single_data(test_single_dataset_class):
     actual = testframe_single.copy()
     compare = test_single_dataset_class.data
     pd.testing.assert_frame_equal(actual, compare)
+
+
+def test_single_int_targets_data(test_single_int_targets_dataset_class):
+    """
+    Checks whether or not a PsmDataset object is created properly
+    after reading in a single tab delimited file.
+
+    Parameters
+    ----------
+    test_single_int_targets_dataset_class : pytest fixture of a PsmDataset object
+        A psm object created by reading in the "single_int_targets.csv" file
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the data in PsmDataset object
+        is equal to the dataframe named "testframe_single"
+    """
+    actual = testframe_single.copy()
+    compare = test_single_int_targets_dataset_class.data
+    pd.testing.assert_frame_equal(actual, compare)
+
+
+def test_single_text_scan_data(test_single_text_scan_dataset_class):
+    """
+    Checks whether or not a PsmDataset object is created properly
+    after reading in a single tab delimited file.
+
+    Parameters
+    ----------
+    test_single_text_scan_dataset_class : pytest fixture of a PsmDataset object
+        A psm object created by reading in the "single_text_scan.csv" file
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the data in PsmDataset object
+        is equal to the dataframe named "testframe_single_text_scan"
+    """
+    actual = testframe_single_text_scan.copy()
+    compare = test_single_text_scan_dataset_class.data
+    pd.testing.assert_frame_equal(actual, compare)
+
+
+def test_single_text_scan_tdc(test_single_text_scan_dataset_class):
+    """
+    Checks whether or not a Result object is created properly
+    after executing the calculate_tdc method on a PsmDataset object
+    created with a single file.
+
+    Parameters
+    ----------
+    test_single_text_scan_dataset_class : pytest fixture of a PsmDataset object
+        A psm object created by reading in the "single_text_scan.csv" file
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the data in Result object
+        is equal to the dataframe named "testframe_single_text_scan_tdc"
+    """
+    # Note that this tests a file where there are duplicate target/decoy PSMs with equal P-Value
+    # The algorithm arbitrarily chooses, in which case there are two possible end states
+    # Furthermore, this tests data that has a scan column of strings instead of int
+    # It also tests a target column of numeric value instead of boolean
+    actual_true = testframe_single_text_scan_tdc_true.copy()
+    actual_false = testframe_single_text_scan_tdc_false.copy()
+    output = calculate_tdc(test_single_text_scan_dataset_class)
+    compare = output.data
+    if compare.iloc[2, 2]:
+        # If arbitrarily chooses True
+        pd.testing.assert_frame_equal(actual_true, compare)
+    else:
+        # If arbitrarily chooses False
+        pd.testing.assert_frame_equal(actual_false, compare)

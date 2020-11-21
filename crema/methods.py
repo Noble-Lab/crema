@@ -12,7 +12,7 @@ def calculate_tdc(psm):
 
     Parameters
     ----------
-    psm : A :py:class:`~creme.dataset.PsmDataset` object
+    psm : A :py:class:`~crema.dataset.PsmDataset` object
         dataset to apply FDR calculation upon
 
     Returns
@@ -87,59 +87,10 @@ def _delete_duplicates(data, spectrum_col, score_col, target_col):
                     curr_target = not curr_target
                     decision = random.randint(1, 2)
                     if decision == 1:
-                        # data = data.drop(first)
                         data.loc[first, target_col] = True
                     else:
-                        # data = data.drop(index)
                         data.loc[index, target_col] = False
                     data = data.drop(index)
-            else:
-                data = data.drop(index)
-    return data
-
-
-def _delete_duplicates2(data, spectrum_col, score_col, target_col):
-    """
-    Deletes duplicate PSMs based on unique spectrum identifier
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        dataframe of PSMs of data from original dataset object (MUST BE SORTED BY SPECTRUM, SCORE, TARGET)
-    spectrum_col : str
-        name of the column that identifies the psm
-    score_col : str
-        name of the column that defines the scores (p-values) of the psms
-    target_col : str
-        name of the column that indicates if a psm is a target/decoy
-
-    Returns
-    -------
-    data : pandas.DataFrame
-        A pandas.DataFrame of the data from the original dataset with additional FDR and Q-Value columns
-    """
-    # look through and delete all duplicate psms with higher p-values
-    curr_scan = 0
-    curr_val = 1
-    curr_target = True
-    first = 0
-    for index, row in data.iterrows():
-        if row[spectrum_col] != curr_scan:
-            curr_scan = row[spectrum_col]
-            curr_val = row[score_col]
-            curr_target = row[target_col]
-            first = index
-        else:
-            if row[score_col] == curr_val:
-                if row[target_col] == curr_target:
-                    data = data.drop(index)
-                else:
-                    curr_target = not curr_target
-                    decision = random.randint(1, 2)
-                    if decision == 1:
-                        data = data.drop(first)
-                    else:
-                        data = data.drop(index)
             else:
                 data = data.drop(index)
     return data

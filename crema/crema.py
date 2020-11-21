@@ -16,15 +16,24 @@ def main():
     start_time = time.time()
 
     # Creates the parser for parse args and reads in command line arguments
-    params = Params().parser
+    params = Params().parsercrema.logfile.log
     args = params.parse_args()
 
-    if args.logging is not None:
-        logging.basicConfig(
-            filename=os.path.join(args.logging, "crema.logfile.log"),
-            level=logging.INFO,
-            format="%(asctime)s %(message)s",
-        )
+    # Set up output and logging files
+    out_file = "crema.psm_results.txt"
+    log_file = ""
+    if args.file_root is not None:
+        out_file = args.file_root + out_file
+        log_file = args.file_root + log_file
+    if args.output_dir is None:
+        args.output_dir = os.getcwd()
+
+    # Configure logging
+    logging.basicConfig(
+        filename=os.path.join(args.output_dir, log_file),
+        level=logging.INFO,
+        format="%(asctime)s %(message)s",
+    )
 
     logging.info("crema")
     logging.info("Written by Donavan See (seed99@cs.washington.edu) in the")
@@ -39,12 +48,7 @@ def main():
 
     # Create dataset object
     logging.info("Creating dataset object...")
-    if args.crux:
-        psms = read_crux(args.input_files)
-    else:
-        psms = read_file(
-            args.input_files, args.spectrum, args.score, args.target
-        )
+    psms = read_file(args.input_files, args.spectrum, args.score, args.target)
 
     # Run confidence estimate method
     logging.info("Calculating confidence estimate...")
@@ -52,11 +56,6 @@ def main():
 
     # Write result to file
     logging.info("Writing to file...")
-    out_file = "crema.psm_results.txt"
-    if args.file_root is not None:
-        out_file = args.file_root + out_file
-    if args.output_dir is None:
-        args.output_dir = os.getcwd()
     result.write_csv(os.path.join(args.output_dir, out_file))
 
     # Calculate how long the confidence estimation took

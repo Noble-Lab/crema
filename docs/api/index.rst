@@ -20,7 +20,6 @@ Functions
     :nosignatures:
 
     read_file
-    read_crux
     calculate_tdc
 
 Dataset
