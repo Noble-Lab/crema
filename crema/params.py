@@ -32,7 +32,9 @@ def _configure_parser():
         "More documentation and examples: <link tbd>"
     )
 
-    parser = argparse.ArgumentParser(description=desc,)
+    parser = argparse.ArgumentParser(
+        description=desc,
+    )
 
     parser.add_argument(
         "input_files",
