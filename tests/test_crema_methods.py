@@ -33,6 +33,26 @@ testframe_single = pd.DataFrame(
     }
 )
 
+# Used in test_single_basic_data
+testframe_single_basic = pd.DataFrame(
+    {
+        "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
+        "combined p-value": [0.7, 0.4, 0.1, 0.55, 0.3, 0.6, 0.2, 0.7, 0.56, 0.3],
+        "target/decoy": [
+            True,
+            False,
+            True,
+            True,
+            True,
+            True,
+            False,
+            False,
+            True,
+            False,
+        ],
+    }
+)
+
 # Used in test_single_text_scan_data
 testframe_single_text_scan = pd.DataFrame(
     {
@@ -185,6 +205,23 @@ testframe_multi_tdc = pd.DataFrame(
         "Q_Value": [1 / 3, 1 / 3, 1 / 3, 2 / 3, 1],
     }
 )
+
+
+@pytest.fixture
+def test_single_basic_dataset_class():
+    """
+    Creates a pytest fixture of a PsmDataset object
+    by reading in "single_basic.csv" to use in
+    subsequent test cases.
+
+    Returns
+    -------
+    PsmDataset
+        A :py:class:`~crema.dataset.PsmDataset` object
+        containing the PSM data from the given tab-delimited file.
+    """
+    psm = read_file(["data/single_basic.csv"])
+    return psm
 
 
 @pytest.fixture
@@ -360,6 +397,27 @@ def test_single_data(test_single_dataset_class):
     """
     actual = testframe_single.copy()
     compare = test_single_dataset_class.data
+    pd.testing.assert_frame_equal(actual, compare)
+
+
+def test_single_basic_data(test_single_basic_dataset_class):
+    """
+    Checks whether or not a PsmDataset object is created properly
+    after reading in a single tab delimited file.
+
+    Parameters
+    ----------
+    test_single_basic_dataset_class : pytest fixture of a PsmDataset object
+        A psm object created by reading in the "single_basic.csv" file
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the data in PsmDataset object
+        is equal to the dataframe named "testframe_single"
+    """
+    actual = testframe_single_basic.copy()
+    compare = test_single_basic_dataset_class.data
     pd.testing.assert_frame_equal(actual, compare)
 
 

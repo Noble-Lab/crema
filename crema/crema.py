@@ -16,12 +16,12 @@ def main():
     start_time = time.time()
 
     # Creates the parser for parse args and reads in command line arguments
-    params = Params().parsercrema.logfile.log
+    params = Params().parser
     args = params.parse_args()
 
     # Set up output and logging files
     out_file = "crema.psm_results.txt"
-    log_file = ""
+    log_file = "crema.logfile.log"
     if args.file_root is not None:
         out_file = args.file_root + out_file
         log_file = args.file_root + log_file
