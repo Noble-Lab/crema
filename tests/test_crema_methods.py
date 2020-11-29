@@ -37,7 +37,18 @@ testframe_single = pd.DataFrame(
 testframe_single_basic = pd.DataFrame(
     {
         "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-        "combined p-value": [0.7, 0.4, 0.1, 0.55, 0.3, 0.6, 0.2, 0.7, 0.56, 0.3],
+        "combined p-value": [
+            0.7,
+            0.4,
+            0.1,
+            0.55,
+            0.3,
+            0.6,
+            0.2,
+            0.7,
+            0.56,
+            0.3,
+        ],
         "target/decoy": [
             True,
             False,
