@@ -14,7 +14,7 @@ FILES = [
 
 def test_basic_cli(tmp_path):
     """Test that basic cli works."""
-    cmd = ["crema", FILES[2], "--output_dir", tmp_path]
+    cmd = ["crema", "data/single_basic.csv", "--output_dir", tmp_path]
     subprocess.run(cmd, check=True)
     assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
