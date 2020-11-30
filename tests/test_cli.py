@@ -94,7 +94,8 @@ def test_cli_multi(tmp_path):
     """Test that cli works with non-standard crux parameters and multiple file inputs."""
     cmd = [
         "crema",
-        ["data/multi_target.csv", "data/multi_decoy.csv"],
+        "data/multi_target.csv",
+        "data/multi_decoy.csv",
         "--output_dir",
         tmp_path,
         "--score",
