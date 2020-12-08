@@ -1,4 +1,4 @@
-scan,combined p-value,target/decoy
+scan,p-value,target
 1,0.7,TRUE
 2,0.4,FALSE
 3,0.1,TRUE

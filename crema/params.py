@@ -32,9 +32,7 @@ def _configure_parser():
         "More documentation and examples: <link tbd>"
     )
 
-    parser = argparse.ArgumentParser(
-        description=desc,
-    )
+    parser = argparse.ArgumentParser(description=desc,)
 
     parser.add_argument(
         "input_files",
@@ -48,15 +46,16 @@ def _configure_parser():
         type=str,
         default="combined p-value",
         help="name of the column that defines the scores (p-values) of the psms."
-        "\n Expects column values containing decimal or float values",
+        "\n Expects decimal or float column values",
     )
 
     parser.add_argument(
         "--spectrum",
         type=str,
+        nargs="+",
         default="scan",
-        help="name of the column that identifies the psm."
-        "\n Expects column values containing numeric or string identifier",
+        help="one or more column names that identify the psms."
+        "\n Expects numeric or string column values",
     )
 
     parser.add_argument(

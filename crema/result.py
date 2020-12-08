@@ -12,8 +12,8 @@ class Result:
         ----------
         data : pandas.DataFrame
             dataframe of PSMs with columns indicating spectrum, score, and target
-        spectrum_col : str
-            name of the column that identifies the psm
+        spectrum_col : str or tuple of str
+            one or more column names that identifies the psm
         score_col : str
             name of the column that defines the scores (p-values) of the psms
         target_col : str

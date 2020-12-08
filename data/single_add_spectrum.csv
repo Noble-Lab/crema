@@ -1,0 +1,12 @@
+scan,combined p-value,target/decoy,extras
+1,0.7,TRUE,a
+2,0.4,FALSE,b
+3,0.1,TRUE,c
+4,0.55,TRUE,d
+5,0.25,TRUE,e
+1,0.6,TRUE,z
+2,0.2,FALSE,b
+3,0.7,FALSE,y
+4,0.56,TRUE,d
+5,0.3,FALSE,x
+

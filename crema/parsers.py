@@ -19,10 +19,10 @@ def read_file(
 
     Parameters
     ----------
-    input_files : tuple of str
+    input_files : str or tuple of str
         one or more tab-delimited file(s) to read
-    spectrum_col : str
-        name of the column that identifies the psm
+    spectrum_col : str or tuple of str
+        one or more column names that identify the psm
     score_col : str
         name of the column that defines the scores (p-values) of the psms
     target_col : str
@@ -38,7 +38,15 @@ def read_file(
         containing the PSM data from the given tab-delimited file.
     """
     # Store column names in a list to be used by read_csv method
-    fields = [spectrum_col, score_col, target_col]
+    fields = []
+    if type(spectrum_col) == str:
+        fields = [spectrum_col, score_col, target_col]
+    else:
+        for col in spectrum_col:
+            fields.append(col)
+        fields.append(score_col)
+        fields.append(target_col)
+    # fields = [spectrum_col, score_col, target_col]
     # Create empty Pandas dataframe
     data = pd.DataFrame()
     # Loop through all given files

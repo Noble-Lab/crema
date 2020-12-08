@@ -29,8 +29,18 @@ def calculate_tdc(psm):
     score_col = psm.score_col
     target_col = psm.target_col
 
+    # determine items to sort by
+    sort_order = []
+    if type(spectrum_col) == str:
+        sort_order = [spectrum_col, score_col, target_col]
+    else:
+        for col in spectrum_col:
+            sort_order.append(col)
+        sort_order.append(score_col)
+        sort_order.append(target_col)
+
     # sort dataframe by spectrum and p-value ascending
-    data = data.sort_values(by=[spectrum_col, score_col, target_col])
+    data = data.sort_values(by=sort_order)
 
     # look through and delete all duplicate psms with higher p-values
     data = _delete_duplicates(data, spectrum_col, score_col, target_col)
@@ -46,6 +56,16 @@ def calculate_tdc(psm):
 
     # return a result object containing the manipulated data and respective calculations
     return Result(data, spectrum_col, score_col, target_col)
+
+
+def _compare_spectrum_col(spectrum_col, curr_row, next_row):
+    if type(spectrum_col) == str:
+        return curr_row[spectrum_col] != next_row[spectrum_col]
+    else:
+        for col in spectrum_col:
+            if curr_row[col] != next_row[col]:
+                return True
+        return False
 
 
 def _delete_duplicates(data, spectrum_col, score_col, target_col):
@@ -68,26 +88,28 @@ def _delete_duplicates(data, spectrum_col, score_col, target_col):
     data : pandas.DataFrame
         A pandas.DataFrame of the data from the original dataset with additional FDR and Q-Value columns
     """
-    # look through and delete all duplicate psms with higher p-values
-    curr_scan = 0
-    curr_val = 1
-    curr_target = True
-    first = 0
+
+    prev_score = 1
+    prev_target = True
+    prev_index = data.iloc[-1].name
     for index, row in data.iterrows():
-        if row[spectrum_col] != curr_scan:
-            curr_scan = row[spectrum_col]
-            curr_val = row[score_col]
-            curr_target = row[target_col]
-            first = index
+        # If spectrum col in current row is different from next row, increment curr variables and move on
+        if _compare_spectrum_col(
+            spectrum_col, data.loc[prev_index], data.loc[index]
+        ):
+            prev_score = row[score_col]
+            prev_target = row[target_col]
+            prev_index = index
+        # If they are the same, check if the score/target values are the same and remove accordingly
         else:
-            if row[score_col] == curr_val:
-                if row[target_col] == curr_target:
+            if row[score_col] == prev_score:
+                if row[target_col] == prev_target:
                     data = data.drop(index)
                 else:
-                    curr_target = not curr_target
+                    prev_target = not prev_target
                     decision = random.randint(1, 2)
                     if decision == 1:
-                        data.loc[first, target_col] = True
+                        data.loc[prev_index, target_col] = True
                     else:
                         data.loc[index, target_col] = False
                     data = data.drop(index)

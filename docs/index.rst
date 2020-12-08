@@ -10,8 +10,10 @@
    :caption: crema
 
    self
+   vignettes/index.rst
    cli.rst
    api/index.rst
+   notes.rst
 
 
 Getting Started
@@ -60,7 +62,7 @@ be installed automatically:
 
 .. code-block:: bash
 
-   $ pip3 install crema
+   $ pip3 install crema-ms
 
 Basic Usage
 -----------
@@ -71,10 +73,10 @@ Simple crema analyses can be performed from the command line:
 
 .. code-block:: bash
 
-   $ crema data/single.csv
+   $ crema data/single_basic.csv
 
 That's it. Giving crema nothing but the input file will force it to search for
-three specific column names: p-value, scan, target. It will then run the
+three specific column names: "combined p-value", "scan", and "target/decoy". It will then run the
 Target-Decoy Competition FDR method using the information from these columns
 to calculate confidence estimates for the given data.
 
@@ -93,7 +95,7 @@ Here's a simple demonstration of how to use crema as an API:
 .. code-block:: Python
 
    >>> import crema
-   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"], "scan", "p-value", "target")
+   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"])
    >>> results = crema.calculate_tdc(psms)
    >>> results.write_csv("save_to_here.txt")
 
@@ -112,13 +114,14 @@ Next, import crema as a package:
 
    >>> import crema
 
-Call the read_file method and pass in the desired input files, along with the names of the columns
-that identify to the psm spectrum, the psm p-value, and the psm target/decoy. This will return a
-dataset object that we will save as "psms" in this example:
+Call the read_file method and pass in the desired input files. In this example,
+the files "data/multi_target.csv" and "data/multi_decoy.csv" are already in crux
+format. Thus we do not need to specify non-default column names.
+This will return a dataset object that we will save as "psms" in this example:
 
 .. code-block:: Python
 
-   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"], "scan", "p-value", "target")
+   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"])
 
 Execute the desired FDR estimation method by calling the "calculate_[algorithm]" method and
 passing in the dataset object that we created above. This will return a result object that

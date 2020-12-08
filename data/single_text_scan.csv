@@ -1,9 +1,9 @@
-scan,p-value,target
+scan,combined p-value,target/decoy
 C:/test/string/fake/file/path/1,0.7,1
 C:/test/string/fake/file/path/2,0.4,-1
 C:/test/string/fake/file/path/3,0.1,1
 C:/test/string/fake/file/path/4,0.55,1
-C:/test/string/fake/file/path/5,0.3,1
+C:/test/string/fake/file/path/5,0.25,1
 C:/test/string/fake/file/path/1,0.6,1
 C:/test/string/fake/file/path/2,0.2,-1
 C:/test/string/fake/file/path/3,0.7,-1
