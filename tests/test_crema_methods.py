@@ -142,7 +142,18 @@ testframe_single_add_spectrum_data = pd.DataFrame(
             True,
             False,
         ],
-        "extras": ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j",],
+        "extras": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+        ],
     }
 )
 
@@ -217,7 +228,18 @@ testframe_single_arbitrary_tdc_false = pd.DataFrame(
 testframe_single_noncrux_data = pd.DataFrame(
     {
         "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-        "p-value": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
+        "p-value": [
+            0.7,
+            0.4,
+            0.1,
+            0.55,
+            0.25,
+            0.6,
+            0.2,
+            0.7,
+            0.56,
+            0.3,
+        ],
         "target": [
             True,
             False,
@@ -341,7 +363,7 @@ def test_single_int_targets_dataset_class():
         A :py:class:`~crema.dataset.PsmDataset` object
         containing the PSM data from the given tab-delimited file.
     """
-    psm = read_file(["data/single_int_targets.csv"],)
+    psm = read_file(["data/single_int_targets.csv"])
     return psm
 
 

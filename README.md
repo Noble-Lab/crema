@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/Noble-Lab/crema/master/docs/static/crema_logo_caramel_light.png" width=300>  
+<img src="https://github.com/Noble-Lab/crema/blob/master/docs/_static/crema_logo_caramel_light.png" width=300>  
 
 Confidence Estimation for Mass Spectrometry Proteomics
 
