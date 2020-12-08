@@ -171,7 +171,7 @@ def test_cli_add_spectrum(tmp_path):
     cmd = [
         "crema",
         "data/single_add_spectrum.csv",
-        "--scan",
+        "--spectrum",
         "scan",
         "extras",
         "--output_dir",

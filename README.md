@@ -1,5 +1,7 @@
 <img src="https://github.com/Noble-Lab/crema/blob/master/docs/_static/crema_logo_caramel_light.png" width=300>  
 
+---
+
 Confidence Estimation for Mass Spectrometry Proteomics
 
 **crema** is a Python package that implements various methods to estimate false discovery rates (FDR) of peptide

@@ -148,11 +148,11 @@ testframe_single_add_spectrum_data = pd.DataFrame(
             "c",
             "d",
             "e",
-            "f",
-            "g",
-            "h",
-            "i",
-            "j",
+            "z",
+            "b",
+            "y",
+            "d",
+            "x",
         ],
     }
 )
