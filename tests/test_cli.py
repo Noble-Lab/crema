@@ -28,6 +28,28 @@ def test_cli_basic(tmp_path):
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
+def test_cli_basic_tab(tmp_path):
+    """
+    Test that the cli works with a tab delimited file. Reads in a file
+    with crux default column names.
+
+    Parameters
+    ----------
+    tmp_path : pytest fixture of a temporary directory
+        A pytest temporary directory unique to the test invocation
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the the results file and log file
+        are created properly with the correct file path.
+    """
+    cmd = ["crema", "data/single_basic_tab.txt", "--output_dir", tmp_path]
+    subprocess.run(cmd, check=True)
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
+
+
 def test_cli_custom_root(tmp_path):
     """
     Test that the cli works with custom file root.
