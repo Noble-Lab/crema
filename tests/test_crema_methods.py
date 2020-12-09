@@ -341,9 +341,27 @@ def test_single_basic_dataset_class():
     -------
     PsmDataset
         A :py:class:`~crema.dataset.PsmDataset` object
-        containing the PSM data from the given tab-delimited file.
+        containing the PSM data from the given comma separated value file.
     """
     psm = read_file(["data/single_basic.csv"])
+    return psm
+
+
+@pytest.fixture
+def test_single_basic_tab_dataset_class():
+    """
+    Creates a pytest fixture of a PsmDataset object
+    by reading in "single_basic_tab.csv" to use in
+    subsequent test cases. This file has crux
+    default column names.
+
+    Returns
+    -------
+    PsmDataset
+        A :py:class:`~crema.dataset.PsmDataset` object
+        containing the PSM data from the given tab delimited file.
+    """
+    psm = read_file(["data/single_basic_tab.txt"])
     return psm
 
 
@@ -361,7 +379,7 @@ def test_single_int_targets_dataset_class():
     -------
     PsmDataset
         A :py:class:`~crema.dataset.PsmDataset` object
-        containing the PSM data from the given tab-delimited file.
+        containing the PSM data from the given comma separated value file.
     """
     psm = read_file(["data/single_int_targets.csv"])
     return psm
@@ -380,7 +398,7 @@ def test_single_text_scan_dataset_class():
     -------
     PsmDataset
         A :py:class:`~crema.dataset.PsmDataset` object
-        containing the PSM data from the given tab-delimited file.
+        containing the PSM data from the given comma separated value file.
     """
     psm = read_file(["data/single_text_scan.csv"])
     return psm
@@ -399,7 +417,7 @@ def test_single_add_spectrum_dataset_class():
     -------
     PsmDataset
         A :py:class:`~crema.dataset.PsmDataset` object
-        containing the PSM data from the given tab-delimited file.
+        containing the PSM data from the given comma separated value file.
     """
     psm = read_file(
         ["data/single_add_spectrum.csv"], spectrum_col=["scan", "extras"]
@@ -420,7 +438,7 @@ def test_single_arbitrary_dataset_class():
     -------
     PsmDataset
         A :py:class:`~crema.dataset.PsmDataset` object
-        containing the PSM data from the given tab-delimited file.
+        containing the PSM data from the given comma separated value file.
     """
     psm = read_file(["data/single_arbitrary.csv"])
     return psm
@@ -439,7 +457,7 @@ def test_single_noncrux_dataset_class():
     -------
     PsmDataset
         A :py:class:`~crema.dataset.PsmDataset` object
-        containing the PSM data from the given tab-delimited file.
+        containing the PSM data from the given comma separated value file.
     """
     psm = read_file(["data/single_noncrux.csv"], "scan", "p-value", "target")
     return psm
@@ -458,7 +476,7 @@ def test_multi_dataset_class():
     -------
     PsmDataset
         A :py:class:`~crema.dataset.PsmDataset` object
-        containing the PSM data from the given tab-delimited files.
+        containing the PSM data from the given comma separated value files.
     """
     files = ["data/multi_target.csv", "data/multi_decoy.csv"]
     psm = read_file(files)
@@ -508,6 +526,29 @@ def test_single_basic_tdc(test_single_basic_dataset_class):
     actual = testframe_single_basic_tdc.copy()
     output = calculate_tdc(test_single_basic_dataset_class)
     compare = output.data
+    pd.testing.assert_frame_equal(actual, compare)
+
+
+def test_single_basic_tab_data(test_single_basic_tab_dataset_class):
+    """
+    Checks whether or not a PsmDataset object is created properly
+    after reading in a single tab delimited file with crux default column names,
+    but tab delimited instead of comma separated. The point of this test is
+    to ensure that crema can read data separated by tabs as well as commas.
+
+    Parameters
+    ----------
+    test_single_basic_tab_dataset_class : pytest fixture of a PsmDataset object
+        A psm object created by reading in the "single_basic_tab.txt" file
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the data in PsmDataset object
+        is equal to the dataframe named "testframe_single_basic_data"
+    """
+    actual = testframe_single_basic_data.copy()
+    compare = test_single_basic_tab_dataset_class.data
     pd.testing.assert_frame_equal(actual, compare)
 
 

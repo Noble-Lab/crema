@@ -12,7 +12,6 @@ def read_file(
     spectrum_col="scan",
     score_col="combined p-value",
     target_col="target/decoy",
-    delimiter="," or "\t",
 ):
     """
     Read tab-delimited files.
@@ -27,9 +26,6 @@ def read_file(
         name of the column that defines the scores (p-values) of the psms
     target_col : str
         name of the column that indicates if a psm is a target/decoy
-    delimiter : str
-        string character equal to what is used to separate columns
-        within the tab-delimited file
 
     Returns
     -------
@@ -46,13 +42,15 @@ def read_file(
             fields.append(col)
         fields.append(score_col)
         fields.append(target_col)
-    # fields = [spectrum_col, score_col, target_col]
+
     # Create empty Pandas dataframe
     data = pd.DataFrame()
+
     # Loop through all given files
     for file in input_files:
         data = data.append(
-            pd.read_csv(file, sep=delimiter, usecols=fields), ignore_index=True
+            pd.read_csv(file, sep=None, usecols=fields, engine="python"),
+            ignore_index=True,
         )
     data = convert_target_col(data, target_col)
     return PsmDataset(data, spectrum_col, score_col, target_col)

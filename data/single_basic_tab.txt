@@ -1,0 +1,11 @@
+scan	combined p-value	target/decoy
+1	0.7	TRUE
+2	0.4	FALSE
+3	0.1	TRUE
+4	0.55	TRUE
+5	0.25	TRUE
+1	0.6	TRUE
+2	0.2	FALSE
+3	0.7	FALSE
+4	0.56	TRUE
+5	0.3	FALSE
