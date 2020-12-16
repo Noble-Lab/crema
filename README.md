@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/Noble-Lab/crema/master/docs/static/crema_logo.svg" width=300>
+<img src="https://raw.githubusercontent.com/Noble-Lab/crema/master/static/crema_logo.svg" width=300>
  
 ---
 
