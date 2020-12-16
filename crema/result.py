@@ -3,6 +3,8 @@ The :py:class:`Result` class is used to define a collection of peptide-spectrum 
 False Discovery Rates and Q-Values.
 """
 
+import os
+
 
 class Result:
     """
@@ -46,6 +48,27 @@ class Result:
         """The column specified by the col_name as a  :py:class:`pandas.DataFrame`."""
         return self._data.loc[:, col_name]
 
-    def write_csv(self, filepath):
-        """Exports the data as a CSV file to the specified filepath"""
-        return self.data.to_csv(filepath)
+    def write_file(self, output_dir=None, file_root=None):
+        """
+        Exports the data as a .txt file with the suffix "crema.psm_results.txt".
+
+        Parameters
+        ----------
+        output_dir : str, optional
+            The directory in which to save the files. Defaults to the current working directory if not specified.
+        file_root : str, optional
+            A prefix concatenated to the output result file. Defaults to none.
+
+        Returns
+        -------
+        str
+            The file path to the exported results file
+        """
+        out_file = "crema.psm_results.txt"
+        if output_dir is None:
+            output_dir = os.getcwd()
+        if file_root is not None:
+            out_file = file_root + out_file
+        file_path = os.path.join(output_dir, out_file)
+        self.data.to_csv(file_path)
+        return file_path

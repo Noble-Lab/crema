@@ -19,11 +19,9 @@ def main():
     params = Params().parser
     args = params.parse_args()
 
-    # Set up output and logging files
-    out_file = "crema.psm_results.txt"
+    # Set up logging files
     log_file = "crema.logfile.log"
     if args.file_root is not None:
-        out_file = args.file_root + out_file
         log_file = args.file_root + log_file
     if args.output_dir is None:
         args.output_dir = os.getcwd()
@@ -56,7 +54,7 @@ def main():
 
     # Write result to file
     logging.info("Writing to file...")
-    result.write_csv(os.path.join(args.output_dir, out_file))
+    result.write_file(output_dir=args.output_dir, file_root=args.file_root)
 
     # Calculate how long the confidence estimation took
     end_time = time.time()

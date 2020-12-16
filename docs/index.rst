@@ -19,22 +19,22 @@
 Getting Started
 ---------------
 **crema** produces confidence estimates for peptide detection in mass spectrometry proteomics experiments.
-It takes files holding data regarding peptide-spectrum matches (PSMs) as input, executes the
-desired estimation method, and produces confidence estimates of the PSMs as output.
+It takes as input files holding data regarding peptide-spectrum matches (PSMs), executes the
+desired estimation method, and produces as ouptut confidence estimates of the PSMs.
 
 Introduction
 ------------
-One of the fundamental tasks in proteomics is detecting peptides from mass spectra that we identify through
-Mass Spectrometry. We have tools that assign peptides to spectra, but unfortunately this matching is not 100% accurate -
-meaning there is uncertainty about whether Peptide Spectrum Matches are real or false positives. We want to be able to
-quantify this uncertainty so that we can be confident in our data and what it represents because this will further
-ensure that expensive proteomics experiments use relevant and accurate data.
+One of the fundamental tasks in mass spectrometry proteomics is detecting peptides on the basis of the observed mass
+spectra. Many tools exist to assign peptides to spectra, but unfortunately this matching is never 100% accurate,
+meaning that there is uncertainty about whether a given PSM is correct or a false positive. We want to be able to
+quantify this uncertainty so that we can be confident in our conclusions and ensure that expensive
+downstream validation experiments use relevant and accurate data.
 
-**crema** is a Python package that implements various methods to estimate false discovery rates (FDR) of peptide
-detection in mass spectrometry proteomics experiments. Although there are many ways to estimate FDR, crema focuses on
-methods that rely on the concept of target decoy competition. The sole purposes of crema is to do this, and to do this
-well. As a result, we developed crema to be lightweight and flexible. It has very minimal dependencies and supports a
-wide range of input and output formats. On top of that, it is extremely simple to use.
+crema is a Python package that implements various methods to estimate false discovery rates (FDR)
+in mass spectrometry proteomics experiments. crema focuses on
+methods that rely on the concept of "target-decoy competition." The sole purposes of crema is to do decoy-based FDR
+estimation, and to do it well. As a result, crema is lightweight and flexible. It has minimal dependencies and
+supports a wide range of input and output formats. On top of that, it is extremely simple to use.
 
 Ready to try crema for your analyses? See below for details on how to install and use crema.
 
@@ -76,13 +76,13 @@ Simple crema analyses can be performed from the command line:
    $ crema data/single_basic.csv
 
 That's it. Giving crema nothing but the input file will force it to search for
-three specific column names: "combined p-value", "scan", and "target/decoy". It will then run the
-Target-Decoy Competition FDR method using the information from these columns
+three specific column names: "combined p-value," "scan," and "target/decoy". The software will then run the
+target-decoy competition FDR estimation method using the information from these columns
 to calculate confidence estimates for the given data.
 
 Your results will be saved in your working directory as a
-csv file named `crema.psm_results.txt`. This file will contain two additional columns
-(False Discovery Rate and Q-Value) that are
+csv file named "crema.psm_results.txt". This file will contain two additional columns
+("false discovery rate" and "q-value") that are
 appended to the initial few columns specified from the input file.
 
 For a full list of parameters, see the :doc:`Command Line Interface <cli>`.
@@ -90,7 +90,7 @@ For a full list of parameters, see the :doc:`Command Line Interface <cli>`.
 Use **crema** as a Python package
 ###################################
 
-Here's a simple demonstration of how to use crema as an API:
+Here is a simple demonstration of how to use crema as an API:
 
 .. code-block:: Python
 
@@ -99,7 +99,7 @@ Here's a simple demonstration of how to use crema as an API:
    >>> results = crema.calculate_tdc(psms)
    >>> results.write_csv("save_to_here.txt")
 
-Let's break this down and see what's really happening!
+Let's break this down and see what's really happening.
 
 
 First, start up the Python interpreter:
@@ -114,33 +114,34 @@ Next, import crema as a package:
 
    >>> import crema
 
-Call the read_file method and pass in the desired input files. In this example,
-the files "data/multi_target.csv" and "data/multi_decoy.csv" are already in crux
-format. Thus we do not need to specify non-default column names.
-This will return a dataset object that we will save as "psms" in this example:
+Call the :doc:`read_file() <api/functions>` method and pass in the desired input files. In this example,
+the files "data/multi_target.csv" and "data/multi_decoy.csv" are already in the required
+format. Thus we do not need to specify column names.
+The :doc:`read_file() <api/functions>` method will return a :doc:`dataset <api/dataset>` object that we will save as
+"psms" in this example:
 
 .. code-block:: Python
 
    >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"])
 
-Execute the desired FDR estimation method by calling the "calculate_[algorithm]" method and
-passing in the dataset object that we created above. This will return a result object that
-we will save as "results" in this example:
+Execute the desired FDR estimation method by calling the :doc:`calculate_[algorithm] <api/functions>` method and
+passing in the dataset object that we created above. This operation will return a :doc:`result <api/result>` object that
+we will save as "results":
 
 .. code-block:: Python
 
    >>> results = crema.calculate_tdc(psms)
 
-Result objects contain a "write_csv" method that allows you to write your result to a csv file.
+Result objects contain a :doc:`write_file() <api/result>` method that allows you to write your result to a csv file.
 Your results will be saved in your working directory (unless otherwise specified) as a
 csv file named by the parameter you pass when calling the method.
 This file will contain two additional columns
-(False Discovery Rate and Q-Value) that are
+("false discovery rate" and "q-value") that are
 appended to the initial few columns specified from the input file.
 
 .. code-block:: Python
 
-   >>> results.write_csv("save_to_here.txt")
+   >>> results.write_file("save_to_here.txt")
 
-That's all there is to it! You've successfully used crema as an API to
-calculate confidence estimates for your data!
+That's all there is to it! You have successfully used crema as an API to
+calculate confidence estimates for your data.
