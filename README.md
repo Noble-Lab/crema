@@ -4,11 +4,11 @@
 
 Confidence Estimation for Mass Spectrometry Proteomics
 
-**crema** is a Python package that implements various methods to estimate false discovery rates (FDR) of peptide
-detection in mass spectrometry proteomics experiments. Although there are many ways to estimate FDR, crema focuses on
-methods that rely on the concept of target decoy competition. The sole purposes of crema is to do this, and to do this
-well. As a result, we developed crema to be lightweight and flexible. It has very minimal dependencies and supports a
-wide range of input and output formats. On top of that, it is extremely simple to use.
+**crema** is a Python package that implements various methods to estimate false discovery rates (FDR)
+in mass spectrometry proteomics experiments. crema focuses on
+methods that rely on the concept of "target-decoy competition." The sole purposes of crema is to do decoy-based FDR
+estimation, and to do it well. As a result, crema is lightweight and flexible. It has minimal dependencies and
+supports a wide range of input and output formats. On top of that, it is extremely simple to use.
 
 For more information, check out our
 [documentation](https://crema-ms.readthedocs.io).  
@@ -38,10 +38,11 @@ Alternatively, the Python API can be used to calculate confidence estimates in t
 interpreter and affords greater flexibility:
 
 ```Python
-    >>> import crema-ms
-    >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"])
+    >>> import crema
+    >>> input_files = ["data/multi_target.csv", "data/multi_decoy.csv"]
+    >>> psms = crema.read_file(input_files)
     >>> results = crema.calculate_tdc(psms)
-    >>> results.write_csv("save_to_here.txt")
+    >>> results.write_file(ouput_dir="example_output_dir")
 ```
 
 Check out our [documentation](hhttps://crema-ms.readthedocs.io) for more details
