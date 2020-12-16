@@ -28,8 +28,8 @@ def _configure_parser():
         f"crema version {crema.__version__}\n\n"
         "Written by Donavan See (seed99@cs.washington.edu)\n\n"
         "Department of Genome Sciences at the University of Washington\n\n"
-        "Official code website: <link tbd>\n\n"
-        "More documentation and examples: <link tbd>"
+        "Official code website: https://github.com/Noble-Lab/crema\n\n"
+        "More documentation and examples: https://crema-ms.readthedocs.io/"
     )
 
     parser = argparse.ArgumentParser(
