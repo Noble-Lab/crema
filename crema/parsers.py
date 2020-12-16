@@ -19,13 +19,13 @@ def read_file(
     Parameters
     ----------
     input_files : str or tuple of str
-        one or more tab-delimited file(s) to read
-    spectrum_col : str or tuple of str
-        one or more column names that identify the psm
-    score_col : str
-        name of the column that defines the scores (p-values) of the psms
-    target_col : str
-        name of the column that indicates if a psm is a target/decoy
+        One or more tab-delimited file(s) to read
+    spectrum_col : str or tuple of str, optional
+        One or more column names that identify the psm. Defaults to "scan".
+    score_col : str, optional
+        Name of the column that defines the scores (p-values) of the psms. Defaults to "combined p-value".
+    target_col : str, optional
+        Name of the column that indicates if a psm is a target/decoy. Defaults to "target/decoy".
 
     Returns
     -------
