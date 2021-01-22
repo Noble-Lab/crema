@@ -142,7 +142,18 @@ testframe_single_add_spectrum_data = pd.DataFrame(
             True,
             False,
         ],
-        "extras": ["a", "b", "c", "d", "e", "z", "b", "y", "d", "x",],
+        "extras": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "z",
+            "b",
+            "y",
+            "d",
+            "x",
+        ],
     }
 )
 
@@ -305,7 +316,18 @@ testframe_single_arbitrary_tdc_false = pd.DataFrame(
 testframe_single_noncrux_data = pd.DataFrame(
     {
         "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-        "p-value": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
+        "p-value": [
+            0.7,
+            0.4,
+            0.1,
+            0.55,
+            0.25,
+            0.6,
+            0.2,
+            0.7,
+            0.56,
+            0.3,
+        ],
         "target": [
             True,
             False,
