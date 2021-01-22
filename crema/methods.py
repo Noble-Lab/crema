@@ -27,7 +27,9 @@ def calculate_tdc(psm, score_col=0):
 
     # throw error if calculate_tdc is not called on a psm dataset object
     if not isinstance(psm, PsmDataset):
-        raise TypeError("Provided psm parameter is not an object of the PsmDataset class")
+        raise TypeError(
+            "Provided psm parameter is not an object of the PsmDataset class"
+        )
 
     # note down all column names from dataset object
     spectrum_col = psm.spectrum_col
@@ -45,10 +47,14 @@ def calculate_tdc(psm, score_col=0):
     elif type(score_col) == str:
         if type(psm.score_col) == str:
             if score_col != psm.score_col:
-                raise ValueError("Provided column name not found in PSM Dataset")
+                raise ValueError(
+                    "Provided column name not found in PSM Dataset"
+                )
         else:
             if score_col not in psm.score_col:
-                raise ValueError("Provided column name not found in PSM Dataset")
+                raise ValueError(
+                    "Provided column name not found in PSM Dataset"
+                )
     target_col = psm.target_col
 
     # determine items to sort by

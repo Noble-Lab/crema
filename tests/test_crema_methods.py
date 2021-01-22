@@ -142,18 +142,7 @@ testframe_single_add_spectrum_data = pd.DataFrame(
             True,
             False,
         ],
-        "extras": [
-            "a",
-            "b",
-            "c",
-            "d",
-            "e",
-            "z",
-            "b",
-            "y",
-            "d",
-            "x",
-        ],
+        "extras": ["a", "b", "c", "d", "e", "z", "b", "y", "d", "x",],
     }
 )
 
@@ -316,18 +305,7 @@ testframe_single_arbitrary_tdc_false = pd.DataFrame(
 testframe_single_noncrux_data = pd.DataFrame(
     {
         "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-        "p-value": [
-            0.7,
-            0.4,
-            0.1,
-            0.55,
-            0.25,
-            0.6,
-            0.2,
-            0.7,
-            0.56,
-            0.3,
-        ],
+        "p-value": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
         "target": [
             True,
             False,
@@ -528,7 +506,12 @@ def test_single_add_score_dataset_class():
         containing the PSM data from the given comma separated value file.
     """
     psm = read_file(
-        ["data/single_add_score.csv"], score_col=["combined p-value 0", "combined p-value 1", "combined p-value 2"]
+        ["data/single_add_score.csv"],
+        score_col=[
+            "combined p-value 0",
+            "combined p-value 1",
+            "combined p-value 2",
+        ],
     )
     return psm
 
@@ -846,7 +829,9 @@ def test_single_add_score_tdc(test_single_add_score_dataset_class):
     actual1 = testframe_single_add_score_tdc1.copy()
     actual2 = testframe_single_add_score_tdc2.copy()
     output0 = calculate_tdc(test_single_add_score_dataset_class)
-    output1 = calculate_tdc(test_single_add_score_dataset_class, "combined p-value 1")
+    output1 = calculate_tdc(
+        test_single_add_score_dataset_class, "combined p-value 1"
+    )
     output2 = calculate_tdc(test_single_add_score_dataset_class, 2)
     compare0 = output0.data
     compare1 = output1.data

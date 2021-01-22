@@ -91,8 +91,6 @@ def read_mztab(
         containing the PSM data from the given tab-delimited file.
     """
     mztab = pyteomics.mztab.MzTab(input_file)
-    print(type(mztab.spectrum_match_table))
-    mztab.spectrum_match_table.to_csv("C:/Users/donav/OneDrive/Desktop/mztab_psm_table.txt")
     print(mztab.spectrum_match_table)
 
 

@@ -32,9 +32,7 @@ def _configure_parser():
         "More documentation and examples: https://crema-ms.readthedocs.io/"
     )
 
-    parser = argparse.ArgumentParser(
-        description=desc,
-    )
+    parser = argparse.ArgumentParser(description=desc,)
 
     parser.add_argument(
         "input_files",
@@ -75,8 +73,8 @@ def _configure_parser():
         type=str,
         default=0,
         help="index of the score column to use for confidence estimation."
-             "\n Expects column name as a string, or as an integer index from 0 to n:"
-             "n being the total number of score columns.",
+        "\n Expects column name as a string, or as an integer index from 0 to n:"
+        "n being the total number of score columns.",
     )
 
     parser.add_argument(
