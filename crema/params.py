@@ -46,6 +46,7 @@ def _configure_parser():
     parser.add_argument(
         "--score",
         type=str,
+        nargs="+",
         default="combined p-value",
         help="name of the column that defines the scores (p-values) of the psms."
         "\n Expects decimal or float column values",
@@ -67,6 +68,15 @@ def _configure_parser():
         help="name of the column that indicates if a psm is a target/decoy."
         "\n Expects column values containing any of the following combinations: (True/False), (target/decoy),"
         "(t/d), (t/f), (1/0), (1/-1)",
+    )
+
+    parser.add_argument(
+        "--score_choice",
+        type=str,
+        default=0,
+        help="index of the score column to use for confidence estimation."
+             "\n Expects column name as a string, or as an integer index from 0 to n:"
+             "n being the total number of score columns.",
     )
 
     parser.add_argument(

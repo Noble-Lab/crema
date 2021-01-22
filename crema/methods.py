@@ -4,9 +4,11 @@ This module contains the various methods for calculating FDRs and q-values
 
 import random
 from .result import Result
+from .dataset import PsmDataset
+import pandas as pd
 
 
-def calculate_tdc(psm):
+def calculate_tdc(psm, score_col=0):
     """
     Calculates FDR and Q-Value using Target-Decoy Competition
 
@@ -14,6 +16,8 @@ def calculate_tdc(psm):
     ----------
     psm : A :py:class:`~crema.dataset.PsmDataset` object
         dataset to apply FDR calculation upon
+    score_col : The name of the desired score column to use for confidence estimate calculations. User can
+        specify the name of the column as a String or as an Integer representing the n-th score column in the dataset
 
     Returns
     -------
@@ -21,12 +25,30 @@ def calculate_tdc(psm):
         A pandas.DataFrame of the data from the original dataset with additional FDR and Q-Value columns
     """
 
-    # copy psm dataframe from dataset object - don't want to manipulate the original
-    data = psm.data.copy()
+    # throw error if calculate_tdc is not called on a psm dataset object
+    if not isinstance(psm, PsmDataset):
+        raise TypeError("Provided psm parameter is not an object of the PsmDataset class")
 
     # note down all column names from dataset object
     spectrum_col = psm.spectrum_col
-    score_col = psm.score_col
+    # Check that score_col argument is valid and grab the appropriate score column from psm dataset object
+    if type(score_col) == int:
+        if type(psm.score_col) == str:
+            if score_col > 0:
+                raise ValueError("Provided column index out of bounds")
+            score_col = psm.score_col
+        else:
+            if score_col >= len(psm.score_col):
+                raise ValueError("Provided column index out of bounds")
+            else:
+                score_col = psm.score_col[score_col]
+    elif type(score_col) == str:
+        if type(psm.score_col) == str:
+            if score_col != psm.score_col:
+                raise ValueError("Provided column name not found in PSM Dataset")
+        else:
+            if score_col not in psm.score_col:
+                raise ValueError("Provided column name not found in PSM Dataset")
     target_col = psm.target_col
 
     # determine items to sort by
@@ -38,6 +60,10 @@ def calculate_tdc(psm):
             sort_order.append(col)
         sort_order.append(score_col)
         sort_order.append(target_col)
+
+    # copy only the required columns from psm dataset object - don't want to manipulate the original
+    # data = psm.data.copy()
+    data = _select_columns(psm, spectrum_col, score_col, target_col)
 
     # sort dataframe by spectrum and p-value ascending
     data = data.sort_values(by=sort_order)
@@ -56,6 +82,22 @@ def calculate_tdc(psm):
 
     # return a result object containing the manipulated data and respective calculations
     return Result(data, spectrum_col, score_col, target_col)
+
+
+def _select_columns(psm, spectrum_col, score_col, target_col):
+    data = pd.DataFrame()
+    if type(spectrum_col) == str:
+        data = pd.concat([data, psm.data[spectrum_col]], axis=1)
+    else:
+        for col in spectrum_col:
+            data = pd.concat([data, psm.data[col]], axis=1)
+    if type(score_col) == str:
+        data = pd.concat([data, psm.data[score_col]], axis=1)
+    else:
+        for col in score_col:
+            data = pd.concat([data, psm.data[col]], axis=1)
+    data = pd.concat([data, psm.data[target_col]], axis=1)
+    return data
 
 
 def _compare_spectrum_col(spectrum_col, curr_row, next_row):
@@ -139,7 +181,11 @@ def _calculate_fdr(data, target_col):
             target += 1
         else:
             decoy += 1
-        fdr.append(min((decoy + 1) / target, 1))
+        if target == 0:
+            # To avoid division by zero
+            fdr.append(1)
+        else:
+            fdr.append(min((decoy + 1) / target, 1))
     data["FDR"] = fdr
 
 

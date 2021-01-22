@@ -4,6 +4,7 @@ This module contains the parsers for reading in PSMs
 
 import pandas as pd
 import numpy as np
+import pyteomics.mztab
 from .dataset import PsmDataset
 
 
@@ -22,8 +23,8 @@ def read_file(
         One or more tab-delimited file(s) to read
     spectrum_col : str or tuple of str, optional
         One or more column names that identify the psm. Defaults to "scan".
-    score_col : str, optional
-        Name of the column that defines the scores (p-values) of the psms. Defaults to "combined p-value".
+    score_col : str or tuple of str, optional
+        One or more column names that define the scores (p-values) of the psms. Defaults to "combined p-value".
     target_col : str, optional
         Name of the column that indicates if a psm is a target/decoy. Defaults to "target/decoy".
 
@@ -35,13 +36,23 @@ def read_file(
     """
     # Store column names in a list to be used by read_csv method
     fields = []
+
+    # Add spectrum column(s) to fields list
     if type(spectrum_col) == str:
-        fields = [spectrum_col, score_col, target_col]
+        fields.append(spectrum_col)
     else:
         for col in spectrum_col:
             fields.append(col)
+
+    # Add score column(s) to fields list
+    if type(score_col) == str:
         fields.append(score_col)
-        fields.append(target_col)
+    else:
+        for col in score_col:
+            fields.append(col)
+
+    # Add target column to fields list
+    fields.append(target_col)
 
     # Create empty Pandas dataframe
     data = pd.DataFrame()
@@ -52,11 +63,40 @@ def read_file(
             pd.read_csv(file, sep=None, usecols=fields, engine="python"),
             ignore_index=True,
         )
-    data = convert_target_col(data, target_col)
+    data = _convert_target_col(data, target_col)
     return PsmDataset(data, spectrum_col, score_col, target_col)
 
 
-def convert_target_col(data, target_col):
+def read_mztab(
+    input_file,
+):
+    """
+    Read file in mzTab format.
+
+    Parameters
+    ----------
+    input_file : str or tuple of str
+        The mzTab file required to be read
+    spectrum_col : str or tuple of str, optional
+        One or more column names that identify the psm. Defaults to "scan".
+    score_col : str or tuple of str, optional
+        One or more column names that define the scores (p-values) of the psms. Defaults to "combined p-value".
+    target_col : str, optional
+        Name of the column that indicates if a psm is a target/decoy. Defaults to "target/decoy".
+
+    Returns
+    -------
+    PsmDataset
+        A :py:class:`~crema.dataset.PsmDataset` object
+        containing the PSM data from the given tab-delimited file.
+    """
+    mztab = pyteomics.mztab.MzTab(input_file)
+    print(type(mztab.spectrum_match_table))
+    mztab.spectrum_match_table.to_csv("C:/Users/donav/OneDrive/Desktop/mztab_psm_table.txt")
+    print(mztab.spectrum_match_table)
+
+
+def _convert_target_col(data, target_col):
     """
     Convert values in target column to boolean True/False.
 

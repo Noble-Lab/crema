@@ -161,11 +161,99 @@ testframe_single_add_spectrum_data = pd.DataFrame(
 testframe_single_add_spectrum_tdc = pd.DataFrame(
     {
         "scan": [3, 2, 5, 5, 4, 1, 1, 3],
+        "extras": ["c", "b", "e", "x", "d", "z", "a", "y"],
         "combined p-value": [0.1, 0.2, 0.25, 0.3, 0.55, 0.6, 0.7, 0.7],
         "target/decoy": [True, False, True, False, True, True, True, False],
-        "extras": ["c", "b", "e", "x", "d", "z", "a", "y"],
         "FDR": [1, 1, 1, 1, 1, 3 / 4, 3 / 5, 4 / 5],
         "Q_Value": [3 / 5, 3 / 5, 3 / 5, 3 / 5, 3 / 5, 3 / 5, 3 / 5, 4 / 5],
+    }
+)
+
+# Used in test_single_add_score
+testframe_single_add_score_data = pd.DataFrame(
+    {
+        "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
+        "combined p-value 0": [
+            0.7,
+            0.4,
+            0.1,
+            0.55,
+            0.25,
+            0.6,
+            0.2,
+            0.7,
+            0.56,
+            0.3,
+        ],
+        "combined p-value 1": [
+            0.1,
+            0.4,
+            0.7,
+            0.8,
+            0.5,
+            0.4,
+            0.7,
+            0.6,
+            0.3,
+            0.6,
+        ],
+        "combined p-value 2": [
+            0.8,
+            0.5,
+            0.9,
+            0.4,
+            0.7,
+            0.1,
+            0.6,
+            0.3,
+            0.8,
+            0.4,
+        ],
+        "target/decoy": [
+            True,
+            False,
+            True,
+            True,
+            True,
+            True,
+            False,
+            False,
+            True,
+            False,
+        ],
+    }
+)
+
+# Used in test_single_add_score_tdc
+testframe_single_add_score_tdc0 = pd.DataFrame(
+    {
+        "scan": [3, 2, 5, 4, 1],
+        "combined p-value 0": [0.1, 0.2, 0.25, 0.55, 0.6],
+        "target/decoy": [True, False, True, True, True],
+        "FDR": [1, 1, 1, 2 / 3, 1 / 2],
+        "Q_Value": [0.5, 0.5, 0.5, 0.5, 0.5],
+    }
+)
+
+# Used in test_single_add_score_tdc
+testframe_single_add_score_tdc1 = pd.DataFrame(
+    {
+        "scan": [1, 4, 2, 5, 3],
+        "combined p-value 1": [0.1, 0.3, 0.4, 0.5, 0.6],
+        "target/decoy": [True, True, False, True, False],
+        "FDR": [1, 0.5, 1, 2 / 3, 1],
+        "Q_Value": [0.5, 0.5, 2 / 3, 2 / 3, 1],
+    }
+)
+
+# Used in test_single_add_score_tdc
+testframe_single_add_score_tdc2 = pd.DataFrame(
+    {
+        "scan": [1, 3, 4, 5, 2],
+        "combined p-value 2": [0.1, 0.3, 0.4, 0.4, 0.5],
+        "target/decoy": [True, False, True, False, False],
+        "FDR": [1.0, 1.0, 1.0, 1.0, 1.0],
+        "Q_Value": [1.0, 1.0, 1.0, 1.0, 1.0],
     }
 )
 
@@ -421,6 +509,26 @@ def test_single_add_spectrum_dataset_class():
     """
     psm = read_file(
         ["data/single_add_spectrum.csv"], spectrum_col=["scan", "extras"]
+    )
+    return psm
+
+
+@pytest.fixture
+def test_single_add_score_dataset_class():
+    """
+    Creates a pytest fixture of a PsmDataset object
+    by reading in "single_add_score.csv" to use in
+    subsequent test cases. This file has crux default
+    column names with additional score columns.
+
+    Returns
+    -------
+    PsmDataset
+        A :py:class:`~crema.dataset.PsmDataset` object
+        containing the PSM data from the given comma separated value file.
+    """
+    psm = read_file(
+        ["data/single_add_score.csv"], score_col=["combined p-value 0", "combined p-value 1", "combined p-value 2"]
     )
     return psm
 
@@ -693,6 +801,61 @@ def test_single_add_spectrum_tdc(test_single_add_spectrum_dataset_class):
     pd.testing.assert_frame_equal(actual, compare)
 
 
+def test_single_add_score_data(test_single_add_score_dataset_class):
+    """
+    Checks whether or not a PsmDataset object is created properly
+    after reading in a single tab delimited file with crux default
+    column names and additional score columns.
+    The point of this test is to make sure the user can specify more
+    than one score column if the need arises.
+
+    Parameters
+    ----------
+    test_single_add_score_dataset_class : pytest fixture of a PsmDataset object
+        A psm object created by reading in the "single_add_scorecsv" file
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the data in PsmDataset object
+        is equal to the dataframe named "testframe_single_add_score_data"
+    """
+    actual = testframe_single_add_score_data.copy()
+    compare = test_single_add_score_dataset_class.data
+    pd.testing.assert_frame_equal(actual, compare)
+
+
+def test_single_add_score_tdc(test_single_add_score_dataset_class):
+    """
+    Checks whether or not a Result object is created properly
+    after executing the calculate_tdc method on a PsmDataset object
+    from test_single_add_score_data. Tests multiple score columns.
+
+    Parameters
+    ----------
+    test_single_add_score_dataset_class : pytest fixture of a PsmDataset object
+        A psm object created by reading in the "single_add_score.csv" file
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the data in Result object
+        is equal to the dataframe named "testframe_single_add_score_tdc"
+    """
+    actual0 = testframe_single_add_score_tdc0.copy()
+    actual1 = testframe_single_add_score_tdc1.copy()
+    actual2 = testframe_single_add_score_tdc2.copy()
+    output0 = calculate_tdc(test_single_add_score_dataset_class)
+    output1 = calculate_tdc(test_single_add_score_dataset_class, "combined p-value 1")
+    output2 = calculate_tdc(test_single_add_score_dataset_class, 2)
+    compare0 = output0.data
+    compare1 = output1.data
+    compare2 = output2.data
+    pd.testing.assert_frame_equal(actual0, compare0)
+    pd.testing.assert_frame_equal(actual1, compare1)
+    pd.testing.assert_frame_equal(actual2, compare2)
+
+
 def test_single_arbitrary_data(test_single_arbitrary_dataset_class):
     """
     Checks whether or not a PsmDataset object is created properly
@@ -839,3 +1002,30 @@ def test_multi_tdc(test_multi_dataset_class):
     output = calculate_tdc(test_multi_dataset_class)
     compare = output.data
     pd.testing.assert_frame_equal(actual, compare)
+
+
+def test_errors():
+    """
+    Checks whether or not the correct types of errors are raised properly
+    after executing certain methods with incorrect parameters
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not respective errors are raised correctly
+    """
+    with pytest.raises(FileNotFoundError):
+        # This file doesn't exist
+        read_file(["data/fakefile.txt"])
+    with pytest.raises(ValueError):
+        # This spectrum_col doesn't exist
+        read_file(["data/single_basic.csv"], spectrum_col="badscan")
+    with pytest.raises(TypeError):
+        # This method takes in a psm datset object, not a pandas dataframe
+        calculate_tdc(read_file(["data/single_basic.csv"]).data)
+    with pytest.raises(ValueError):
+        # The score_col index is out of bounds (there's only 1 score_col in this file)
+        calculate_tdc(read_file(["data/single_basic.csv"]), score_col=10)
+    with pytest.raises(ValueError):
+        # There is only one spectrum_col in this file
+        read_file(["data/single_basic.csv"], spectrum_col=["scan", "badscan"])

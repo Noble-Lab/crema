@@ -50,7 +50,10 @@ def main():
 
     # Run confidence estimate method
     logging.info("Calculating confidence estimate...")
-    result = calculate_tdc(psms)
+    # Convert score_choice to int if it is a number
+    if args.score_choice.isnumeric():
+        args.score_choice = int(args.score_choice)
+    result = calculate_tdc(psms, args.score_choice)
 
     # Write result to file
     logging.info("Writing to file...")
