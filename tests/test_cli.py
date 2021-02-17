@@ -223,7 +223,7 @@ def test_cli_add_score(tmp_path):
     """
     cmd = [
         "crema",
-        "data/single_add_spectrum.csv",
+        "data/single_add_score.csv",
         "--score",
         "combined p-value 0",
         "combined p-value 1",
