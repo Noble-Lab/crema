@@ -130,7 +130,7 @@ def test_cli_int_targets(tmp_path):
 
     Returns
     -------
-    Pandas Assert Frame
+    pandas.DataFrame
         Asserts whether or not the the results file and log file
         are created properly with the correct file path.
     """
