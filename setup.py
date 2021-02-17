@@ -30,7 +30,12 @@ setuptools.setup(
     license="Apache 2.0",
     entry_points={"console_scripts": ["crema = crema.crema:main"]},
     classifiers=CATAGORIES,
-    install_requires=["numpy>=1.18.1", "pandas>=1.0.3", "numba>=0.48.0"],
+    install_requires=[
+        "numpy>=1.18.1",
+        "pandas>=1.0.3",
+        "numba>=0.48.0",
+        "pyteomics>=4.4.1",
+    ],
     use_scm_version=True,
     setup_requires=["setuptools-scm"],
     extras_require={

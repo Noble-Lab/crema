@@ -130,7 +130,7 @@ def test_cli_int_targets(tmp_path):
 
     Returns
     -------
-    Pandas Assert Frame
+    pandas.DataFrame
         Asserts whether or not the the results file and log file
         are created properly with the correct file path.
     """
@@ -196,6 +196,40 @@ def test_cli_add_spectrum(tmp_path):
         "--spectrum",
         "scan",
         "extras",
+        "--output_dir",
+        tmp_path,
+    ]
+    subprocess.run(cmd, check=True)
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
+
+
+def test_cli_add_score(tmp_path):
+    """
+    Test that the cli works with more than one score
+    column. Reads in a file with crux default column names.
+    Specifies three spectrum columns to read in.
+
+    Parameters
+    ----------
+    tmp_path : pytest fixture of a temporary directory
+        A pytest temporary directory unique to the test invocation
+
+    Returns
+    -------
+    Pandas Assert Frame
+        Asserts whether or not the the results file and log file
+        are created properly with the correct file path.
+    """
+    cmd = [
+        "crema",
+        "data/single_add_score.csv",
+        "--score",
+        "combined p-value 0",
+        "combined p-value 1",
+        "combined p-value 2",
+        "--score_choice",
+        "combined p-value 1",
         "--output_dir",
         tmp_path,
     ]

@@ -10,13 +10,13 @@ class PsmDataset:
     Parameters
         ----------
         data : pandas.DataFrame
-            dataframe of PSMs with columns indicating spectrum, score, and target
-        spectrum_col : str
-            name of the column that identifies the psm
-        score_col : str
-            name of the column that defines the scores (p-values) of the psms
+            Dataframe of PSMs with columns indicating spectrum, score, and target
+        spectrum_col : str or tuple of str, optional
+            One or more column names that identify the psm.
+        score_col : str or tuple of str, optional
+            One or more column names that define the scores (p-values) of the psms.
         target_col : str
-            name of the column that indicates if a psm is a target/decoy
+            Name of the column that indicates if a psm is a target/decoy.
 
 
     Attributes
