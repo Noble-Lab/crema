@@ -132,8 +132,21 @@ def test_get_col(psm_dataset, dataframe):
     psm_dataset : pytest fixture of a PsmDataset object
         The PsmDataset object used for the test
     """
-    pd.testing.assert_series_equal(psm_dataset.get_col("scan"), dataframe["scan"])
-    pd.testing.assert_series_equal(psm_dataset.get_col("combined p-value 0"), dataframe["combined p-value 0"])
-    pd.testing.assert_series_equal(psm_dataset.get_col("combined p-value 1"), dataframe["combined p-value 1"])
-    pd.testing.assert_series_equal(psm_dataset.get_col("combined p-value 2"), dataframe["combined p-value 2"])
-    pd.testing.assert_series_equal(psm_dataset.get_col("target/decoy"), dataframe["target/decoy"])
+    pd.testing.assert_series_equal(
+        psm_dataset.get_col("scan"), dataframe["scan"]
+    )
+    pd.testing.assert_series_equal(
+        psm_dataset.get_col("combined p-value 0"),
+        dataframe["combined p-value 0"],
+    )
+    pd.testing.assert_series_equal(
+        psm_dataset.get_col("combined p-value 1"),
+        dataframe["combined p-value 1"],
+    )
+    pd.testing.assert_series_equal(
+        psm_dataset.get_col("combined p-value 2"),
+        dataframe["combined p-value 2"],
+    )
+    pd.testing.assert_series_equal(
+        psm_dataset.get_col("target/decoy"), dataframe["target/decoy"]
+    )

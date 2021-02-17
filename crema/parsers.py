@@ -67,9 +67,7 @@ def read_file(
     return PsmDataset(data, spectrum_col, score_col, target_col)
 
 
-def read_mztab(
-    input_file,
-):
+def read_mztab(input_file,):
     """
     Read file in mzTab format.
 
@@ -101,12 +99,18 @@ def read_mztab(
     # Check that all column headers are valid, otherwise, throw error
     for col in spectrum_col:
         if col not in psm_table.columns:
-            raise KeyError("Provided mzTab file does not contain the specified spectrum column")
+            raise KeyError(
+                "Provided mzTab file does not contain the specified spectrum column"
+            )
     for col in score_col:
         if col not in psm_table.columns:
-            raise KeyError("Provided mzTab file does not contain the specified score column")
+            raise KeyError(
+                "Provided mzTab file does not contain the specified score column"
+            )
     if target_col not in psm_table.columns:
-        raise KeyError("Provided mzTab file does not contain the specified target/decoy column")
+        raise KeyError(
+            "Provided mzTab file does not contain the specified target/decoy column"
+        )
 
     # Store column header names in a list for pandas dataframe to concat
     columns = []
@@ -118,16 +122,9 @@ def read_mztab(
 
     # Create sub_table of psm containing only the necessary columns and reset index
     sub_table = pd.concat(columns, axis=1).reset_index(drop=True)
-    sub_table = _convert_target_col(
-        sub_table, target_col, decoy=True
-    )
+    sub_table = _convert_target_col(sub_table, target_col, decoy=True)
 
-    return PsmDataset(
-        sub_table,
-        spectrum_col,
-        score_col,
-        target_col,
-    )
+    return PsmDataset(sub_table, spectrum_col, score_col, target_col,)
 
 
 def _convert_target_col(data, target_col, decoy=False):

@@ -230,10 +230,7 @@ def psm_dataset_2(dataframe_2):
         A pandas.DataFrame containing psm data
     """
     return PsmDataset(
-        dataframe_2,
-        ["scan"],
-        ["combined p-value"],
-        "target/decoy",
+        dataframe_2, ["scan"], ["combined p-value"], "target/decoy",
     )
 
 
@@ -447,8 +444,20 @@ def test_delete_duplicates():
     expected = pd.DataFrame(
         {
             "scan": [1, 2, 3, 4, 5],
-            "combined p-value": [0.1, 0.4, 0.7, 0.2, 0.3,],
-            "target/decoy": [True, True, True, False, True,],
+            "combined p-value": [
+                0.1,
+                0.4,
+                0.7,
+                0.2,
+                0.3,
+            ],
+            "target/decoy": [
+                True,
+                True,
+                True,
+                False,
+                True,
+            ],
         }
     )
     actual = _delete_duplicates(

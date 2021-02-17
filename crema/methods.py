@@ -42,9 +42,7 @@ def calculate_tdc(psm, score_col=0):
             score_col = psm.score_col[score_col]
     elif type(score_col) == str:
         if score_col not in psm.score_col:
-            raise ValueError(
-                "Provided column name not found in PSM Dataset"
-            )
+            raise ValueError("Provided column name not found in PSM Dataset")
     target_col = psm.target_col
 
     # determine items to sort by
@@ -58,7 +56,9 @@ def calculate_tdc(psm, score_col=0):
     data = _select_columns(psm, spectrum_col, score_col, target_col)
     # Throw warning and delete rows with NaN score values (if any)
     if data[score_col].isnull().values.any():
-        warnings.warn("This score column contains NaN values - all NaN values will be dropped during calculation")
+        warnings.warn(
+            "This score column contains NaN values - all NaN values will be dropped during calculation"
+        )
         data = data.dropna()
     # sort dataframe by spectrum and p-value ascending
     data = data.sort_values(by=sort_order)

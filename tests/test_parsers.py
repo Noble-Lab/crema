@@ -161,18 +161,7 @@ def dataframe_add_spectrum():
                 True,
                 False,
             ],
-            "extras": [
-                "a",
-                "b",
-                "c",
-                "d",
-                "e",
-                "z",
-                "b",
-                "y",
-                "d",
-                "x",
-            ],
+            "extras": ["a", "b", "c", "d", "e", "z", "b", "y", "d", "x",],
         }
     )
 
@@ -259,18 +248,7 @@ def dataframe_non_crux():
     return pd.DataFrame(
         {
             "spectra_ref": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-            "p-score": [
-                0.7,
-                0.4,
-                0.1,
-                0.55,
-                0.25,
-                0.6,
-                0.2,
-                0.7,
-                0.56,
-                0.3,
-            ],
+            "p-score": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
             "decoy_ind": [
                 True,
                 False,
@@ -456,7 +434,11 @@ def test_read_file_add_score(dataframe_add_score, tmp_file):
         act_dataframe=dataframe_add_score,
         tmp_file=tmp_file,
         act_spectrum_col=["scan"],
-        act_score_col=["combined p-value 0", "combined p-value 1", "combined p-value 2"],
+        act_score_col=[
+            "combined p-value 0",
+            "combined p-value 1",
+            "combined p-value 2",
+        ],
         act_target_col="target/decoy",
     )
 
@@ -483,7 +465,9 @@ def test_read_file_non_crux(dataframe_non_crux, tmp_file):
     )
 
 
-def test_read_file_multi_file(dataframe_multi_file_1, dataframe_multi_file_2, tmp_path):
+def test_read_file_multi_file(
+    dataframe_multi_file_1, dataframe_multi_file_2, tmp_path
+):
     """
     Ensures that a PsmDataset object is created properly
     after reading in two separate files
@@ -512,7 +496,9 @@ def test_read_file_multi_file(dataframe_multi_file_1, dataframe_multi_file_2, tm
     # Asserts that the PsmDataset object is an instance of the PsmDataset class
     assert isinstance(psm_dataset, PsmDataset)
     # Asserts that the data saved in the PsmDataset object is as expected
-    expected_frame = dataframe_multi_file_1.append(dataframe_multi_file_2, ignore_index=True)
+    expected_frame = dataframe_multi_file_1.append(
+        dataframe_multi_file_2, ignore_index=True
+    )
     pd.testing.assert_frame_equal(psm_dataset.data, expected_frame)
     # Asserts that the spectrum column name saved in the PsmDataset object is as expected
     assert psm_dataset.spectrum_col == ["scan"]
@@ -523,11 +509,7 @@ def test_read_file_multi_file(dataframe_multi_file_1, dataframe_multi_file_2, tm
 
 
 def verify_dataset(
-    act_dataframe,
-    tmp_file,
-    act_spectrum_col,
-    act_score_col,
-    act_target_col,
+    act_dataframe, tmp_file, act_spectrum_col, act_score_col, act_target_col,
 ):
     """
     Helper method to speed up test writing.
@@ -584,7 +566,7 @@ def verify_mztab(msv_id, num_scores, expected_df_head, tmp_path):
     assert isinstance(psm_dataset, PsmDataset)
     assert psm_dataset.spectrum_col == ["spectra_ref"]
     score_col = []
-    for i in range (1, num_scores+1):
+    for i in range(1, num_scores + 1):
         score_col.append("search_engine_score[" + str(i) + "]")
     assert psm_dataset.score_col == score_col
     assert psm_dataset.target_col == "opt_global_cv_MS:1002217_decoy_peptide"
@@ -609,8 +591,8 @@ def test_read_mztab1(tmp_path):
                 0.9983276,
             ],
             "search_engine_score[2]": [
-                5.20000089003336E-08,
-                6.899999633797E-08,
+                5.20000089003336e-08,
+                6.899999633797e-08,
                 0.000249999949201165,
                 0.0000590000104995094,
                 0.000230000061930564,
@@ -634,20 +616,8 @@ def test_read_mztab1(tmp_path):
                 "ms_run[1]:index=449",
                 "ms_run[1]:index=790",
             ],
-            "search_engine_score[1]": [
-                28.5,
-                29.02,
-                60.55,
-                60.04,
-                103.69,
-            ],
-            "search_engine_score[2]": [
-                25.0,
-                25.0,
-                25.0,
-                25.0,
-                25.0,
-            ],
+            "search_engine_score[1]": [28.5, 29.02, 60.55, 60.04, 103.69,],
+            "search_engine_score[2]": [25.0, 25.0, 25.0, 25.0, 25.0,],
             "search_engine_score[3]": [
                 np.nan,
                 0.0109999999702295,
@@ -681,13 +651,7 @@ def test_read_mztab1(tmp_path):
                 "ms_run[1]:index=4268",
                 "ms_run[1]:index=2517",
             ],
-            "search_engine_score[1]": [
-                37.31,
-                57.93,
-                38.93,
-                40.83,
-                52.78,
-            ],
+            "search_engine_score[1]": [37.31, 57.93, 38.93, 40.83, 52.78,],
             "search_engine_score[2]": [
                 0.9998933,
                 1,

@@ -87,12 +87,7 @@ def result(dataframe):
     PsmDataset
         A Result object
     """
-    return Result(
-        dataframe,
-        ["scan"],
-        ["combined p-value0"],
-        "target/decoy",
-    )
+    return Result(dataframe, ["scan"], ["combined p-value0"], "target/decoy",)
 
 
 @pytest.fixture
@@ -156,10 +151,16 @@ def test_get_col(result, dataframe):
         The Result object used for the test
     """
     pd.testing.assert_series_equal(result.get_col("scan"), dataframe["scan"])
-    pd.testing.assert_series_equal(result.get_col("combined p-value"), dataframe["combined p-value"])
-    pd.testing.assert_series_equal(result.get_col("target/decoy"), dataframe["target/decoy"])
+    pd.testing.assert_series_equal(
+        result.get_col("combined p-value"), dataframe["combined p-value"]
+    )
+    pd.testing.assert_series_equal(
+        result.get_col("target/decoy"), dataframe["target/decoy"]
+    )
     pd.testing.assert_series_equal(result.get_col("FDR"), dataframe["FDR"])
-    pd.testing.assert_series_equal(result.get_col("Q_Value"), dataframe["Q_Value"])
+    pd.testing.assert_series_equal(
+        result.get_col("Q_Value"), dataframe["Q_Value"]
+    )
 
 
 def test_write_file(result, tmp_path, expected_file_path):
@@ -179,5 +180,9 @@ def test_write_file(result, tmp_path, expected_file_path):
     result.write_file(output_dir=tmp_path)
     result.write_file(output_dir=tmp_path, file_root="myFileRoot")
     assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
-    assert os.path.isfile(os.path.join(tmp_path, "myFileRootcrema.psm_results.txt"))
-    assert filecmp.cmp(os.path.join(tmp_path, "crema.psm_results.txt"), expected_file_path)
+    assert os.path.isfile(
+        os.path.join(tmp_path, "myFileRootcrema.psm_results.txt")
+    )
+    assert filecmp.cmp(
+        os.path.join(tmp_path, "crema.psm_results.txt"), expected_file_path
+    )
