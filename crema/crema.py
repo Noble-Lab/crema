@@ -51,7 +51,7 @@ def main():
     # Run confidence estimate method
     logging.info("Calculating confidence estimate...")
     # Convert score_choice to int if it is a number
-    if args.score_choice.isnumeric():
+    if type(args.score_choice) is not int:
         args.score_choice = int(args.score_choice)
     result = calculate_tdc(psms, args.score_choice)
 
