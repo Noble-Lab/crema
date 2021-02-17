@@ -1065,4 +1065,3 @@ def test_errors():
 # print(result9.data)
 # result10 = calculate_tdc(compare3, score_col=1)
 # print(result10.data)
-
