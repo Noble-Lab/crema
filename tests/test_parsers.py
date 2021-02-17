@@ -3,7 +3,7 @@ These are unit tests for functions within parsers.py:
 """
 import os
 import pytest
-import ppx
+# import ppx
 from crema import *
 
 
@@ -599,117 +599,117 @@ def verify_mztab(msv_id, num_scores, expected_df_head, tmp_path):
     pd.testing.assert_frame_equal(psm_dataset.data.head(), expected_df_head)
 
 
-def test_read_mztab1(tmp_path):
-    expected_df_head = pd.DataFrame(
-        {
-            "spectra_ref": [
-                "ms_run[1]:index=1492",
-                "ms_run[1]:index=1493",
-                "ms_run[2]:index=2260",
-                "ms_run[2]:index=1740",
-                "ms_run[1]:index=335",
-            ],
-            "search_engine_score[1]": [
-                0.9999993,
-                0.99999905,
-                0.982506,
-                0.99364066,
-                0.9983276,
-            ],
-            "search_engine_score[2]": [
-                5.20000089003336e-08,
-                6.899999633797e-08,
-                0.000249999949201165,
-                0.0000590000104995094,
-                0.000230000061930564,
-            ],
-            "opt_global_cv_MS:1002217_decoy_peptide": [
-                True,
-                True,
-                True,
-                True,
-                True,
-            ],
-        }
-    )
-    verify_mztab("MSV000085943", 2, expected_df_head, tmp_path)
-    expected_df_head = pd.DataFrame(
-        {
-            "spectra_ref": [
-                "ms_run[1]:index=111",
-                "ms_run[1]:index=112",
-                "ms_run[1]:index=448",
-                "ms_run[1]:index=449",
-                "ms_run[1]:index=790",
-            ],
-            "search_engine_score[1]": [
-                28.5,
-                29.02,
-                60.55,
-                60.04,
-                103.69,
-            ],
-            "search_engine_score[2]": [
-                25.0,
-                25.0,
-                25.0,
-                25.0,
-                25.0,
-            ],
-            "search_engine_score[3]": [
-                np.nan,
-                0.0109999999702295,
-                0.000180000050470909,
-                0.000659999852526374,
-                0.0000430000170645866,
-            ],
-            "search_engine_score[4]": [
-                0.730391,
-                0.99606955,
-                0.99999803,
-                0.99999774,
-                1,
-            ],
-            "opt_global_cv_MS:1002217_decoy_peptide": [
-                True,
-                True,
-                True,
-                True,
-                True,
-            ],
-        }
-    )
-    verify_mztab("MSV000085729", 4, expected_df_head, tmp_path)
-    expected_df_head = pd.DataFrame(
-        {
-            "spectra_ref": [
-                "ms_run[1]:index=6897",
-                "ms_run[1]:index=6019",
-                "ms_run[1]:index=1708",
-                "ms_run[1]:index=4268",
-                "ms_run[1]:index=2517",
-            ],
-            "search_engine_score[1]": [
-                37.31,
-                57.93,
-                38.93,
-                40.83,
-                52.78,
-            ],
-            "search_engine_score[2]": [
-                0.9998933,
-                1,
-                0.9999762,
-                0.99999636,
-                1,
-            ],
-            "opt_global_cv_MS:1002217_decoy_peptide": [
-                True,
-                True,
-                True,
-                True,
-                True,
-            ],
-        }
-    )
-    verify_mztab("MSV000085211", 2, expected_df_head, tmp_path)
+# def test_read_mztab1(tmp_path):
+#     expected_df_head = pd.DataFrame(
+#         {
+#             "spectra_ref": [
+#                 "ms_run[1]:index=1492",
+#                 "ms_run[1]:index=1493",
+#                 "ms_run[2]:index=2260",
+#                 "ms_run[2]:index=1740",
+#                 "ms_run[1]:index=335",
+#             ],
+#             "search_engine_score[1]": [
+#                 0.9999993,
+#                 0.99999905,
+#                 0.982506,
+#                 0.99364066,
+#                 0.9983276,
+#             ],
+#             "search_engine_score[2]": [
+#                 5.20000089003336e-08,
+#                 6.899999633797e-08,
+#                 0.000249999949201165,
+#                 0.0000590000104995094,
+#                 0.000230000061930564,
+#             ],
+#             "opt_global_cv_MS:1002217_decoy_peptide": [
+#                 True,
+#                 True,
+#                 True,
+#                 True,
+#                 True,
+#             ],
+#         }
+#     )
+#     verify_mztab("MSV000085943", 2, expected_df_head, tmp_path)
+#     expected_df_head = pd.DataFrame(
+#         {
+#             "spectra_ref": [
+#                 "ms_run[1]:index=111",
+#                 "ms_run[1]:index=112",
+#                 "ms_run[1]:index=448",
+#                 "ms_run[1]:index=449",
+#                 "ms_run[1]:index=790",
+#             ],
+#             "search_engine_score[1]": [
+#                 28.5,
+#                 29.02,
+#                 60.55,
+#                 60.04,
+#                 103.69,
+#             ],
+#             "search_engine_score[2]": [
+#                 25.0,
+#                 25.0,
+#                 25.0,
+#                 25.0,
+#                 25.0,
+#             ],
+#             "search_engine_score[3]": [
+#                 np.nan,
+#                 0.0109999999702295,
+#                 0.000180000050470909,
+#                 0.000659999852526374,
+#                 0.0000430000170645866,
+#             ],
+#             "search_engine_score[4]": [
+#                 0.730391,
+#                 0.99606955,
+#                 0.99999803,
+#                 0.99999774,
+#                 1,
+#             ],
+#             "opt_global_cv_MS:1002217_decoy_peptide": [
+#                 True,
+#                 True,
+#                 True,
+#                 True,
+#                 True,
+#             ],
+#         }
+#     )
+#     verify_mztab("MSV000085729", 4, expected_df_head, tmp_path)
+#     expected_df_head = pd.DataFrame(
+#         {
+#             "spectra_ref": [
+#                 "ms_run[1]:index=6897",
+#                 "ms_run[1]:index=6019",
+#                 "ms_run[1]:index=1708",
+#                 "ms_run[1]:index=4268",
+#                 "ms_run[1]:index=2517",
+#             ],
+#             "search_engine_score[1]": [
+#                 37.31,
+#                 57.93,
+#                 38.93,
+#                 40.83,
+#                 52.78,
+#             ],
+#             "search_engine_score[2]": [
+#                 0.9998933,
+#                 1,
+#                 0.9999762,
+#                 0.99999636,
+#                 1,
+#             ],
+#             "opt_global_cv_MS:1002217_decoy_peptide": [
+#                 True,
+#                 True,
+#                 True,
+#                 True,
+#                 True,
+#             ],
+#         }
+#     )
+#     verify_mztab("MSV000085211", 2, expected_df_head, tmp_path)
