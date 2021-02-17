@@ -73,7 +73,7 @@ def _configure_parser():
     parser.add_argument(
         "--score_choice",
         type=str,
-        default=0,
+        default="0",
         help="index of the score column to use for confidence estimation."
         "\n Expects column name as a string, or as an integer index from 0 to n:"
         "n being the total number of score columns.",
