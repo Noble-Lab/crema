@@ -161,7 +161,18 @@ def dataframe_add_spectrum():
                 True,
                 False,
             ],
-            "extras": ["a", "b", "c", "d", "e", "z", "b", "y", "d", "x",],
+            "extras": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "z",
+                "b",
+                "y",
+                "d",
+                "x",
+            ],
         }
     )
 
@@ -248,7 +259,18 @@ def dataframe_non_crux():
     return pd.DataFrame(
         {
             "spectra_ref": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-            "p-score": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
+            "p-score": [
+                0.7,
+                0.4,
+                0.1,
+                0.55,
+                0.25,
+                0.6,
+                0.2,
+                0.7,
+                0.56,
+                0.3,
+            ],
             "decoy_ind": [
                 True,
                 False,
@@ -509,7 +531,11 @@ def test_read_file_multi_file(
 
 
 def verify_dataset(
-    act_dataframe, tmp_file, act_spectrum_col, act_score_col, act_target_col,
+    act_dataframe,
+    tmp_file,
+    act_spectrum_col,
+    act_score_col,
+    act_target_col,
 ):
     """
     Helper method to speed up test writing.
@@ -616,8 +642,20 @@ def test_read_mztab1(tmp_path):
                 "ms_run[1]:index=449",
                 "ms_run[1]:index=790",
             ],
-            "search_engine_score[1]": [28.5, 29.02, 60.55, 60.04, 103.69,],
-            "search_engine_score[2]": [25.0, 25.0, 25.0, 25.0, 25.0,],
+            "search_engine_score[1]": [
+                28.5,
+                29.02,
+                60.55,
+                60.04,
+                103.69,
+            ],
+            "search_engine_score[2]": [
+                25.0,
+                25.0,
+                25.0,
+                25.0,
+                25.0,
+            ],
             "search_engine_score[3]": [
                 np.nan,
                 0.0109999999702295,
@@ -651,7 +689,13 @@ def test_read_mztab1(tmp_path):
                 "ms_run[1]:index=4268",
                 "ms_run[1]:index=2517",
             ],
-            "search_engine_score[1]": [37.31, 57.93, 38.93, 40.83, 52.78,],
+            "search_engine_score[1]": [
+                37.31,
+                57.93,
+                38.93,
+                40.83,
+                52.78,
+            ],
             "search_engine_score[2]": [
                 0.9998933,
                 1,

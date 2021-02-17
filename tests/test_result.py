@@ -87,7 +87,12 @@ def result(dataframe):
     PsmDataset
         A Result object
     """
-    return Result(dataframe, ["scan"], ["combined p-value0"], "target/decoy",)
+    return Result(
+        dataframe,
+        ["scan"],
+        ["combined p-value0"],
+        "target/decoy",
+    )
 
 
 @pytest.fixture

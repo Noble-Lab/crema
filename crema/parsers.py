@@ -67,7 +67,7 @@ def read_file(
     return PsmDataset(data, spectrum_col, score_col, target_col)
 
 
-def read_mztab(input_file,):
+def read_mztab(input_file):
     """
     Read file in mzTab format.
 
@@ -124,7 +124,12 @@ def read_mztab(input_file,):
     sub_table = pd.concat(columns, axis=1).reset_index(drop=True)
     sub_table = _convert_target_col(sub_table, target_col, decoy=True)
 
-    return PsmDataset(sub_table, spectrum_col, score_col, target_col,)
+    return PsmDataset(
+        sub_table,
+        spectrum_col,
+        score_col,
+        target_col,
+    )
 
 
 def _convert_target_col(data, target_col, decoy=False):

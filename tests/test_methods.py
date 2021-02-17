@@ -230,7 +230,10 @@ def psm_dataset_2(dataframe_2):
         A pandas.DataFrame containing psm data
     """
     return PsmDataset(
-        dataframe_2, ["scan"], ["combined p-value"], "target/decoy",
+        dataframe_2,
+        ["scan"],
+        ["combined p-value"],
+        "target/decoy",
     )
 
 
