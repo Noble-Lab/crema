@@ -225,11 +225,12 @@ def test_cli_add_score(tmp_path):
         "crema",
         "data/single_add_spectrum.csv",
         "--score",
-        '"combined p-value 0"',
-        '"combined p-value 1"',
-        '"combined p-value 2"',
+        "combined p-value 0",
+        "combined p-value 1",
+        "combined p-value 2",
         "--score_choice",
-        '"combined p-value 1"' "--output_dir",
+        "combined p-value 1",
+        "--output_dir",
         tmp_path,
     ]
     subprocess.run(cmd, check=True)
