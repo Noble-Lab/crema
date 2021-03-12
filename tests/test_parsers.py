@@ -40,6 +40,18 @@ def dataframe_basic():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
+            ],
             "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
             "combined p-value": [
                 0.7,
@@ -83,6 +95,18 @@ def dataframe_text_spectrum():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
+            ],
             "scan": [
                 "C:/test/string/fake/file/path/1",
                 "C:/test/string/fake/file/path/2",
@@ -137,6 +161,18 @@ def dataframe_add_spectrum():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
+            ],
             "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
             "combined p-value": [
                 0.7,
@@ -162,18 +198,7 @@ def dataframe_add_spectrum():
                 True,
                 False,
             ],
-            "extras": [
-                "a",
-                "b",
-                "c",
-                "d",
-                "e",
-                "z",
-                "b",
-                "y",
-                "d",
-                "x",
-            ],
+            "extras": ["a", "b", "c", "d", "e", "z", "b", "y", "d", "x",],
         }
     )
 
@@ -192,6 +217,18 @@ def dataframe_add_score():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
+            ],
             "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
             "combined p-value 0": [
                 0.7,
@@ -259,19 +296,20 @@ def dataframe_non_crux():
     """
     return pd.DataFrame(
         {
-            "spectra_ref": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-            "p-score": [
-                0.7,
-                0.4,
-                0.1,
-                0.55,
-                0.25,
-                0.6,
-                0.2,
-                0.7,
-                0.56,
-                0.3,
+            "peptide": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
             ],
+            "spectra_ref": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
+            "p-score": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
             "decoy_ind": [
                 True,
                 False,
@@ -302,6 +340,18 @@ def dataframe_multi_file_1():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
+            ],
             "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
             "combined p-value": [
                 0.7,
@@ -345,6 +395,18 @@ def dataframe_multi_file_2():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
+            ],
             "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
             "combined p-value": [
                 0.4,
@@ -390,6 +452,7 @@ def test_read_file_basic(dataframe_basic, tmp_file):
     verify_dataset(
         act_dataframe=dataframe_basic,
         tmp_file=tmp_file,
+        act_sequence_col=["sequence"],
         act_spectrum_col=["scan"],
         act_score_col=["combined p-value"],
         act_target_col="target/decoy",
@@ -412,6 +475,7 @@ def test_read_file_text_spectrum(dataframe_text_spectrum, tmp_file):
     verify_dataset(
         act_dataframe=dataframe_text_spectrum,
         tmp_file=tmp_file,
+        act_sequence_col=["sequence"],
         act_spectrum_col=["scan"],
         act_score_col=["combined p-value"],
         act_target_col="target/decoy",
@@ -434,6 +498,7 @@ def test_read_file_add_spectrum(dataframe_add_spectrum, tmp_file):
     verify_dataset(
         act_dataframe=dataframe_add_spectrum,
         tmp_file=tmp_file,
+        act_sequence_col=["sequence"],
         act_spectrum_col=["scan", "extras"],
         act_score_col=["combined p-value"],
         act_target_col="target/decoy",
@@ -456,6 +521,7 @@ def test_read_file_add_score(dataframe_add_score, tmp_file):
     verify_dataset(
         act_dataframe=dataframe_add_score,
         tmp_file=tmp_file,
+        act_sequence_col=["sequence"],
         act_spectrum_col=["scan"],
         act_score_col=[
             "combined p-value 0",
@@ -482,6 +548,7 @@ def test_read_file_non_crux(dataframe_non_crux, tmp_file):
     verify_dataset(
         act_dataframe=dataframe_non_crux,
         tmp_file=tmp_file,
+        act_sequence_col=["peptide"],
         act_spectrum_col=["spectra_ref"],
         act_score_col=["p-score"],
         act_target_col="decoy_ind",
@@ -512,6 +579,7 @@ def test_read_file_multi_file(
     # Create a PsmDataset object by calling the read_file() function
     psm_dataset = read_file(
         [path1, path2],
+        sequence_col=["sequence"],
         spectrum_col=["scan"],
         score_col=["combined p-value"],
         target_col="target/decoy",
@@ -524,6 +592,8 @@ def test_read_file_multi_file(
     )
     pd.testing.assert_frame_equal(psm_dataset.data, expected_frame)
     # Asserts that the spectrum column name saved in the PsmDataset object is as expected
+    assert psm_dataset.sequence_col == ["sequence"]
+    # Asserts that the spectrum column name saved in the PsmDataset object is as expected
     assert psm_dataset.spectrum_col == ["scan"]
     # Asserts that the score column name saved in the PsmDataset object is as expected
     assert psm_dataset.score_col == ["combined p-value"]
@@ -534,6 +604,7 @@ def test_read_file_multi_file(
 def verify_dataset(
     act_dataframe,
     tmp_file,
+    act_sequence_col,
     act_spectrum_col,
     act_score_col,
     act_target_col,
@@ -549,6 +620,8 @@ def verify_dataset(
         The actual dataframe that is being used to create the testing file
     tmp_file : str
         The filepath to be used to create the testing file
+    act_sequence_col : tuple of str
+        The actual column name(s) of the sequence column used in the testing file
     act_spectrum_col : tuple of str
         The actual column name(s) of the spectrum column used in the testing file
     act_score_col : tuple of str
@@ -561,6 +634,7 @@ def verify_dataset(
     # Create a PsmDataset object by calling the read_file() function
     psm_dataset = read_file(
         tmp_file,
+        sequence_col=act_sequence_col,
         spectrum_col=act_spectrum_col,
         score_col=act_score_col,
         target_col=act_target_col,
@@ -570,6 +644,8 @@ def verify_dataset(
     # Asserts that the data saved in the PsmDataset object is as expected
     pd.testing.assert_frame_equal(psm_dataset.data, act_dataframe)
     # Asserts that the spectrum column name saved in the PsmDataset object is as expected
+    assert psm_dataset.sequence_col == act_sequence_col
+    # Asserts that the spectrum column name saved in the PsmDataset object is as expected
     assert psm_dataset.spectrum_col == act_spectrum_col
     # Asserts that the score column name saved in the PsmDataset object is as expected
     assert psm_dataset.score_col == act_score_col
@@ -577,27 +653,27 @@ def verify_dataset(
     assert psm_dataset.target_col == act_target_col
 
 
-def download_msv(msv_id, tmp_path):
-    dat = ppx.MSVDataset(msv_id)
-    mztab_file = dat.list_files("ccms_result")[0]
-    file_path = "ccms_result/" + mztab_file
-    file = dat.download(files=file_path, dest_dir=tmp_path)[0]
-    return file
-
-
-def verify_mztab(msv_id, num_scores, expected_df_head, tmp_path):
-    file = download_msv(msv_id, tmp_path)
-    psm_dataset = read_mztab(file)
-    # result = calculate_tdc(psm_dataset, 2)
-    # print(result.data)
-    assert isinstance(psm_dataset, PsmDataset)
-    assert psm_dataset.spectrum_col == ["spectra_ref"]
-    score_col = []
-    for i in range(1, num_scores + 1):
-        score_col.append("search_engine_score[" + str(i) + "]")
-    assert psm_dataset.score_col == score_col
-    assert psm_dataset.target_col == "opt_global_cv_MS:1002217_decoy_peptide"
-    pd.testing.assert_frame_equal(psm_dataset.data.head(), expected_df_head)
+# def download_msv(msv_id, tmp_path):
+#     dat = ppx.MSVDataset(msv_id)
+#     mztab_file = dat.list_files("ccms_result")[0]
+#     file_path = "ccms_result/" + mztab_file
+#     file = dat.download(files=file_path, dest_dir=tmp_path)[0]
+#     return file
+#
+#
+# def verify_mztab(msv_id, num_scores, expected_df_head, tmp_path):
+#     file = download_msv(msv_id, tmp_path)
+#     psm_dataset = read_mztab(file)
+#     # result = calculate_tdc(psm_dataset, 2)
+#     # print(result.data)
+#     assert isinstance(psm_dataset, PsmDataset)
+#     assert psm_dataset.spectrum_col == ["spectra_ref"]
+#     score_col = []
+#     for i in range(1, num_scores + 1):
+#         score_col.append("search_engine_score[" + str(i) + "]")
+#     assert psm_dataset.score_col == score_col
+#     assert psm_dataset.target_col == "opt_global_cv_MS:1002217_decoy_peptide"
+#     pd.testing.assert_frame_equal(psm_dataset.data.head(), expected_df_head)
 
 
 # def test_read_mztab1(tmp_path):

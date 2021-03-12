@@ -5,14 +5,17 @@ This module contains the parsers for reading in PSMs
 import pandas as pd
 import numpy as np
 import pyteomics.mztab
+import pyteomics.fasta
 from .dataset import PsmDataset
 
 
 def read_file(
     input_files,
+    sequence_col=["sequence"],
     spectrum_col=["scan"],
     score_col=["combined p-value"],
     target_col="target/decoy",
+    fasta=None,
 ):
     """
     Read tab-delimited files.
@@ -21,12 +24,16 @@ def read_file(
     ----------
     input_files : str or tuple of str
         One or more tab-delimited file(s) to read
+    sequence_col : tuple of str, optional
+        One or more column names that identify the peptide sequence. Defaults to ["sequence"].
     spectrum_col : tuple of str, optional
         One or more column names that identify the psm. Defaults to ["scan"].
     score_col : str or tuple of str, optional
         One or more column names that identifies the scores (p-values) of the psms. Defaults to ["combined p-value"].
     target_col : str, optional
         Name of the column that indicates if a psm is a target/decoy. Defaults to "target/decoy".
+    fasta : str
+        Path to a FASTA file containing target/decoy protein mappings
 
     Returns
     -------
@@ -36,6 +43,12 @@ def read_file(
     """
     # Store column names in a list to be used by read_csv method
     fields = []
+
+    # Add sequence column(s) to fields list
+    if type(sequence_col) == str:
+        sequence_col = [sequence_col]
+    for col in sequence_col:
+        fields.append(col)
 
     # Add spectrum column(s) to fields list
     if type(spectrum_col) == str:
@@ -64,7 +77,19 @@ def read_file(
             ignore_index=True,
         )
     data = _convert_target_col(data, target_col)
-    return PsmDataset(data, spectrum_col, score_col, target_col)
+
+    # Check for protein map FASTA file and parse accordingly
+    protein_map = None
+    if fasta is not None:
+        protein_map = _parse_fasta(fasta)
+    return PsmDataset(
+        data,
+        sequence_col,
+        spectrum_col,
+        score_col,
+        target_col,
+        protein_map=protein_map,
+    )
 
 
 def read_mztab(input_file):
@@ -124,12 +149,7 @@ def read_mztab(input_file):
     sub_table = pd.concat(columns, axis=1).reset_index(drop=True)
     sub_table = _convert_target_col(sub_table, target_col, decoy=True)
 
-    return PsmDataset(
-        sub_table,
-        spectrum_col,
-        score_col,
-        target_col,
-    )
+    return PsmDataset(sub_table, spectrum_col, score_col, target_col,)
 
 
 def _convert_target_col(data, target_col, decoy=False):
@@ -181,3 +201,43 @@ def _convert_target_col(data, target_col, decoy=False):
         }
         data[target_col] = data[target_col].map(targets)
     return data
+
+
+def _parse_fasta(file):
+    """
+    Parse fasta file to provide target/decoy protein mapping.
+
+    Parameters
+    ----------
+    file : str
+        Path to a FASTA file containing target/decoy protein mappings
+
+    Returns
+    -------
+    protein_map : dict
+        A dictionary of target/decoy proteins: {key = protein description, value = [target sequence, decoy sequence]}
+    """
+    protein_map = {}
+    fasta = pyteomics.fasta.read(file)
+    has_next = True
+    while has_next:
+        try:
+            protein = fasta.next()
+        except StopIteration:
+            has_next = False
+        else:
+            desc = protein.description.split("|")
+            target_decoy_id = desc[0]
+            sequence_id = desc[1]
+            if sequence_id in protein_map.keys():
+                if "decoy" in target_decoy_id:
+                    protein_map[sequence_id][1] = protein.sequence
+                else:
+                    protein_map[sequence_id][0] = protein.sequence
+            else:
+                protein_map[sequence_id] = [None, None]
+                if "decoy" in target_decoy_id:
+                    protein_map[sequence_id][1] = protein.sequence
+                else:
+                    protein_map[sequence_id][0] = protein.sequence
+    return protein_map

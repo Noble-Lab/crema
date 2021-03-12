@@ -19,6 +19,18 @@ def dataframe():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+                "MNO",
+            ],
             "scan": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
             "combined p-value 0": [
                 0.7,
@@ -90,6 +102,7 @@ def psm_dataset(dataframe):
     """
     return PsmDataset(
         dataframe,
+        ["sequence"],
         ["scan"],
         ["combined p-value0", "combined p-value 1", "combined p-value 2"],
         "target/decoy",
@@ -132,6 +145,9 @@ def test_get_col(psm_dataset, dataframe):
     psm_dataset : pytest fixture of a PsmDataset object
         The PsmDataset object used for the test
     """
+    pd.testing.assert_series_equal(
+        psm_dataset.get_col("sequence"), dataframe["sequence"]
+    )
     pd.testing.assert_series_equal(
         psm_dataset.get_col("scan"), dataframe["scan"]
     )

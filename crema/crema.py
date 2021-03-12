@@ -46,18 +46,20 @@ def main():
 
     # Create dataset object
     logging.info("Creating dataset object...")
-    psms = read_file(args.input_files, args.spectrum, args.score, args.target)
+    psms = read_file(
+        args.input_files, args.sequence, args.spectrum, args.score, args.target
+    )
 
     # Run confidence estimate method
     logging.info("Calculating confidence estimate...")
     # Convert score_choice to int if it is a number
     if args.score_choice.isnumeric():
         args.score_choice = int(args.score_choice)
-    result = calculate_tdc(psms, args.score_choice)
+    psm_result, peptide_result = calculate_tdc(psms, args.score_choice)
 
     # Write result to file
     logging.info("Writing to file...")
-    result.write_file(output_dir=args.output_dir, file_root=args.file_root)
+    psm_result.write_file(output_dir=args.output_dir, file_root=args.file_root)
 
     # Calculate how long the confidence estimation took
     end_time = time.time()

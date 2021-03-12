@@ -32,9 +32,7 @@ def _configure_parser():
         "More documentation and examples: https://crema-ms.readthedocs.io/"
     )
 
-    parser = argparse.ArgumentParser(
-        description=desc,
-    )
+    parser = argparse.ArgumentParser(description=desc,)
 
     parser.add_argument(
         "input_files",
@@ -44,12 +42,12 @@ def _configure_parser():
     )
 
     parser.add_argument(
-        "--score",
+        "--sequence",
         type=str,
         nargs="+",
-        default="combined p-value",
-        help="name of the column that defines the scores (p-values) of the psms."
-        "\n Expects decimal or float column values",
+        default="sequence",
+        help="One or more column names that identify the peptide sequence."
+        "\n Expects string column values",
     )
 
     parser.add_argument(
@@ -58,7 +56,16 @@ def _configure_parser():
         nargs="+",
         default="scan",
         help="one or more column names that identify the psms."
-        "\n Expects numeric or string column values",
+        "\n Expects string column values",
+    )
+
+    parser.add_argument(
+        "--score",
+        type=str,
+        nargs="+",
+        default="combined p-value",
+        help="name of the column that defines the scores (p-values) of the psms."
+        "\n Expects decimal or float column values",
     )
 
     parser.add_argument(

@@ -27,12 +27,16 @@ class Result:
         data : pandas.DataFrame
     """
 
-    def __init__(self, data, spectrum_col, score_col, target_col):
+    def __init__(
+        self, data, level, sequence_col, spectrum_col, score_col, target_col
+    ):
         """
         Initialize a PsmDataset object.
         """
 
         self._data = data.reset_index(drop=True)
+        self.level = level
+        self.sequence_col = sequence_col
         self.spectrum_col = spectrum_col
         self.score_col = score_col
         self.target_col = target_col
@@ -48,7 +52,9 @@ class Result:
         """The column specified by the col_name as a  :py:class:`pandas.DataFrame`."""
         return self._data.loc[:, col_name]
 
-    def write_file(self, output_dir=None, file_root=None):
+    def write_file(
+        self, output_dir=None, file_root=None, indicator="0", sep="\t"
+    ):
         """
         Exports the data as a .txt file with the suffix "crema.psm_results.txt".
 
@@ -58,17 +64,21 @@ class Result:
             The directory in which to save the files. Defaults to the current working directory if not specified.
         file_root : str, optional
             A prefix concatenated to the output result file. Defaults to none.
+        indicator : str, optional
+            S
+        sep : str, default "\t"
+            The delimiter to use to separate columns
 
         Returns
         -------
         str
             The file path to the exported results file
         """
-        out_file = "crema.psm_results.txt"
+        out_file = "crema." + self.level + "_" + indicator + "_results.txt"
         if output_dir is None:
             output_dir = os.getcwd()
         if file_root is not None:
             out_file = file_root + out_file
         file_path = os.path.join(output_dir, out_file)
-        self.data.to_csv(file_path)
+        self.data.to_csv(file_path, sep)
         return file_path

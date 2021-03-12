@@ -32,7 +32,9 @@ def calculate_tdc(psm, score_col=0):
             "Provided psm parameter is not an object of the PsmDataset class"
         )
     # note down all column names from dataset object
+    sequence_col = psm.sequence_col
     spectrum_col = psm.spectrum_col
+    target_col = psm.target_col
 
     # Check that score_col argument is valid and grab the appropriate score column from psm dataset object
     if type(score_col) == int:
@@ -43,28 +45,108 @@ def calculate_tdc(psm, score_col=0):
     elif type(score_col) == str:
         if score_col not in psm.score_col:
             raise ValueError("Provided column name not found in PSM Dataset")
-    target_col = psm.target_col
-
-    # determine items to sort by
-    sort_order = []
-    for col in spectrum_col:
-        sort_order.append(col)
-    sort_order.append(score_col)
-    sort_order.append(target_col)
 
     # copy only the required columns from psm dataset object - don't want to manipulate the original
-    data = _select_columns(psm, spectrum_col, score_col, target_col)
+    data = _select_columns(
+        psm, sequence_col, spectrum_col, score_col, target_col
+    )
+
     # Throw warning and delete rows with NaN score values (if any)
     if data[score_col].isnull().values.any():
         warnings.warn(
             "This score column contains NaN values - all NaN values will be dropped during calculation"
         )
         data = data.dropna()
-    # sort dataframe by spectrum and p-value ascending
+
+    psm_data = _compete(data, spectrum_col, score_col, target_col)
+
+    psm_result = _calculate_confidence(
+        psm_data, "psm", sequence_col, spectrum_col, score_col, target_col
+    )
+
+    peptide_data = _compete(psm_data, sequence_col, score_col, target_col)
+
+    if psm.protein_map is not None:
+        # peptide_data = _pick_peptides(peptide_data, sequence_col, psm.protein_map)
+        peptide_data = _pick_peptides(
+            peptide_data, sequence_col, score_col, target_col, psm.protein_map
+        )
+
+    peptide_result = _calculate_confidence(
+        peptide_data,
+        "peptide",
+        sequence_col,
+        spectrum_col,
+        score_col,
+        target_col,
+    )
+
+    psm.results.get("psm").append(psm_result)
+    psm.results.get("peptide").append(peptide_result)
+
+    return psm_result, peptide_result
+
+
+def _pick_peptides(data, sequence_col, score_col, target_col, protein_map):
+    # sort dataframe by p-value ascending
+    data = data.sort_values(by=[score_col])
+    # create winning set
+    win_set = set()
+    # add winners to set
+    for i, row in data.iterrows():
+        partner = _find_partner(
+            row[sequence_col[0]], row[target_col], protein_map
+        )
+        if partner not in win_set:
+            win_set.add(row[sequence_col[0]])
+    # delete non winners
+    for i, row in data.iterrows():
+        if row[sequence_col[0]] not in win_set:
+            data.drop(i, inplace=True)
+    return data
+
+
+def _find_partner(sequence, target, protein_map):
+    # Look through all target/decoy protein pairings
+    if target:
+        for key in protein_map:
+            target = protein_map[key][0]
+            decoy = protein_map[key][1]
+            target_index = target.find(sequence)
+            # If peptide sequence found in target protein
+            if target_index >= 0:
+                return decoy[target_index : target_index + len(sequence)]
+    else:
+        for key in protein_map:
+            target = protein_map[key][0]
+            decoy = protein_map[key][1]
+            decoy_index = decoy.find(sequence)
+            # If peptide sequence found in decoy protein
+            if decoy_index >= 0:
+                return target[decoy_index : decoy_index + len(sequence)]
+
+
+def _compete(data, compete_col, score_col, target_col):
+    # determine items to sort by
+    sort_order = []
+    for col in compete_col:
+        sort_order.append(col)
+    sort_order.append(score_col)
+    sort_order.append(target_col)
+
+    # sort dataframe by competing column (psm or peptide) and p-value ascending
     data = data.sort_values(by=sort_order)
-    # look through and delete all duplicate psms with higher p-values
-    data = _delete_duplicates(data, spectrum_col, score_col, target_col)
-    # sort dataframe by spectrum and p-value ascending
+
+    # look through and delete all duplicate competing columns with higher p-values
+    data = _delete_duplicates(data, compete_col, score_col, target_col)
+
+    return data
+
+
+def _calculate_confidence(
+    data, level, sequence_col, spectrum_col, score_col, target_col
+):
+    # sort dataframe by p-value ascending
     data = data.sort_values(by=[score_col])
 
     # calculate fdr at each psm
@@ -74,10 +156,12 @@ def calculate_tdc(psm, score_col=0):
     data = _calculate_q_value(data, "FDR")
 
     # return a result object containing the manipulated data and respective calculations
-    return Result(data, spectrum_col, score_col, target_col)
+    return Result(
+        data, level, sequence_col, spectrum_col, score_col, target_col
+    )
 
 
-def _select_columns(psm, spectrum_col, score_col, target_col):
+def _select_columns(psm, sequence_col, spectrum_col, score_col, target_col):
     """
     Selects the specified columns from the psm dataset
 
@@ -85,6 +169,8 @@ def _select_columns(psm, spectrum_col, score_col, target_col):
     ----------
     psm : pandas.DataFrame
         PSM Dataset to pull columns from
+    sequence_col : list of str
+        name of the column that identifies the peptide sequence
     spectrum_col : list of str
         name of the column that identifies the psm
     score_col : str
@@ -98,6 +184,8 @@ def _select_columns(psm, spectrum_col, score_col, target_col):
         A pandas.DataFrame of the data from the selected data from the given psm datset
     """
     data = pd.DataFrame()
+    for col in sequence_col:
+        data = pd.concat([data, psm.data[col]], axis=1)
     for col in spectrum_col:
         data = pd.concat([data, psm.data[col]], axis=1)
     data = pd.concat([data, psm.data[score_col]], axis=1)

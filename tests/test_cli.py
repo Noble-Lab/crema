@@ -24,7 +24,7 @@ def test_cli_basic(tmp_path):
     """
     cmd = ["crema", "data/single_basic.csv", "--output_dir", tmp_path]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
@@ -46,7 +46,7 @@ def test_cli_basic_tab(tmp_path):
     """
     cmd = ["crema", "data/single_basic_tab.txt", "--output_dir", tmp_path]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
@@ -78,7 +78,7 @@ def test_cli_custom_root(tmp_path):
     ]
     subprocess.run(cmd, check=True)
     assert os.path.isfile(
-        os.path.join(tmp_path, "myFileRootcrema.psm_results.txt")
+        os.path.join(tmp_path, "myFileRootcrema.psm_0_results.txt")
     )
     assert os.path.isfile(
         os.path.join(tmp_path, "myFileRootcrema.logfile.log")
@@ -107,13 +107,15 @@ def test_cli_custom_param(tmp_path):
         "data/single_noncrux.csv",
         "--output_dir",
         tmp_path,
+        "--sequence",
+        "peptide",
         "--score",
         "p-value",
         "--target",
         "target",
     ]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
@@ -141,7 +143,7 @@ def test_cli_int_targets(tmp_path):
         tmp_path,
     ]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
@@ -169,7 +171,7 @@ def test_cli_text_scan(tmp_path):
         tmp_path,
     ]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
@@ -200,7 +202,7 @@ def test_cli_add_spectrum(tmp_path):
         tmp_path,
     ]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
@@ -234,7 +236,7 @@ def test_cli_add_score(tmp_path):
         tmp_path,
     ]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))
 
 
@@ -263,5 +265,5 @@ def test_cli_multi(tmp_path):
         tmp_path,
     ]
     subprocess.run(cmd, check=True)
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
+    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_0_results.txt"))
     assert os.path.isfile(os.path.join(tmp_path, "crema.logfile.log"))

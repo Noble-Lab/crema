@@ -1,12 +1,12 @@
-scan,combined p-value,target/decoy
-1,0.7,TRUE
-2,0.4,FALSE
-3,0.1,TRUE
-4,0.55,TRUE
-5,0.25,TRUE
-1,0.6,TRUE
-2,0.2,FALSE
-3,0.7,FALSE
-4,0.56,TRUE
-5,0.3,FALSE
+sequence,scan,combined p-value,target/decoy
+ABC,1,0.7,TRUE
+ABC,2,0.4,FALSE
+DEF,3,0.1,TRUE
+DEF,4,0.55,TRUE
+GHI,5,0.25,TRUE
+GHI,1,0.6,TRUE
+JKL,2,0.2,FALSE
+JKL,3,0.7,FALSE
+MNO,4,0.56,TRUE
+MNO,5,0.3,FALSE
 

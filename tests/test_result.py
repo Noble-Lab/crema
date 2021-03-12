@@ -22,6 +22,17 @@ def dataframe():
     """
     return pd.DataFrame(
         {
+            "sequence": [
+                "ABC",
+                "ABC",
+                "DEF",
+                "DEF",
+                "GHI",
+                "GHI",
+                "JKL",
+                "JKL",
+                "MNO",
+            ],
             "scan": [2, 4, 3, 6, 9, 1, 7, 8, 5],
             "combined p-value": [
                 0.1,
@@ -89,6 +100,8 @@ def result(dataframe):
     """
     return Result(
         dataframe,
+        "peptide",
+        ["sequence"],
         ["scan"],
         ["combined p-value0"],
         "target/decoy",
@@ -184,10 +197,13 @@ def test_write_file(result, tmp_path, expected_file_path):
     """
     result.write_file(output_dir=tmp_path)
     result.write_file(output_dir=tmp_path, file_root="myFileRoot")
-    assert os.path.isfile(os.path.join(tmp_path, "crema.psm_results.txt"))
     assert os.path.isfile(
-        os.path.join(tmp_path, "myFileRootcrema.psm_results.txt")
+        os.path.join(tmp_path, "crema.peptide_0_results.txt")
+    )
+    assert os.path.isfile(
+        os.path.join(tmp_path, "myFileRootcrema.peptide_0_results.txt")
     )
     assert filecmp.cmp(
-        os.path.join(tmp_path, "crema.psm_results.txt"), expected_file_path
+        os.path.join(tmp_path, "crema.peptide_0_results.txt"),
+        expected_file_path,
     )
