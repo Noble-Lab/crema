@@ -150,12 +150,7 @@ def read_mztab(input_file):
     sub_table = pd.concat(columns, axis=1).reset_index(drop=True)
     sub_table = _convert_target_col(sub_table, target_col, decoy=True)
 
-    return PsmDataset(
-        sub_table,
-        spectrum_col,
-        score_col,
-        target_col,
-    )
+    return PsmDataset(sub_table, spectrum_col, score_col, target_col,)
 
 
 def _convert_target_col(data, target_col, decoy=False):
@@ -246,8 +241,13 @@ def _parse_fasta(file):
                     protein_map[sequence_id][0] = protein.sequence
                     num_targets += 1
                 # Check to make sure target and decoy protein sequences are the same length
-                if protein_map[sequence_id][0] is not None and protein_map[sequence_id][1] is not None:
-                    if len(protein_map[sequence_id][0]) != len(protein_map[sequence_id][1]):
+                if (
+                    protein_map[sequence_id][0] is not None
+                    and protein_map[sequence_id][1] is not None
+                ):
+                    if len(protein_map[sequence_id][0]) != len(
+                        protein_map[sequence_id][1]
+                    ):
                         raise ValueError(
                             "Target and Decoy Proteins must be the same length."
                         )

@@ -198,7 +198,18 @@ def dataframe_add_spectrum():
                 True,
                 False,
             ],
-            "extras": ["a", "b", "c", "d", "e", "z", "b", "y", "d", "x",],
+            "extras": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "z",
+                "b",
+                "y",
+                "d",
+                "x",
+            ],
         }
     )
 
@@ -309,7 +320,18 @@ def dataframe_non_crux():
                 "MNO",
             ],
             "spectra_ref": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-            "p-score": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
+            "p-score": [
+                0.7,
+                0.4,
+                0.1,
+                0.55,
+                0.25,
+                0.6,
+                0.2,
+                0.7,
+                0.56,
+                0.3,
+            ],
             "decoy_ind": [
                 True,
                 False,
