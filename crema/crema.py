@@ -46,8 +46,13 @@ def main():
 
     # Create dataset object
     logging.info("Creating dataset object...")
-    psms = read_file(
-        args.input_files, args.sequence, args.spectrum, args.score, args.target
+    dataset = read_file(
+        input_files=args.input_files,
+        sequence_col=args.sequence,
+        spectrum_col=args.spectrum,
+        score_col=args.score,
+        target_col=args.target,
+        fasta=args.fasta,
     )
 
     # Run confidence estimate method
@@ -55,11 +60,11 @@ def main():
     # Convert score_choice to int if it is a number
     if args.score_choice.isnumeric():
         args.score_choice = int(args.score_choice)
-    psm_result, peptide_result = calculate_tdc(psms, args.score_choice)
+    calculate_tdc(dataset, args.score_choice)
 
     # Write result to file
     logging.info("Writing to file...")
-    psm_result.write_file(output_dir=args.output_dir, file_root=args.file_root)
+    dataset.write_results(output_dir=args.output_dir, file_root=args.file_root)
 
     # Calculate how long the confidence estimation took
     end_time = time.time()

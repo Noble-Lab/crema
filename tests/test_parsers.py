@@ -198,18 +198,7 @@ def dataframe_add_spectrum():
                 True,
                 False,
             ],
-            "extras": [
-                "a",
-                "b",
-                "c",
-                "d",
-                "e",
-                "z",
-                "b",
-                "y",
-                "d",
-                "x",
-            ],
+            "extras": ["a", "b", "c", "d", "e", "z", "b", "y", "d", "x",],
         }
     )
 
@@ -320,18 +309,7 @@ def dataframe_non_crux():
                 "MNO",
             ],
             "spectra_ref": [1, 2, 3, 4, 5, 1, 2, 3, 4, 5],
-            "p-score": [
-                0.7,
-                0.4,
-                0.1,
-                0.55,
-                0.25,
-                0.6,
-                0.2,
-                0.7,
-                0.56,
-                0.3,
-            ],
+            "p-score": [0.7, 0.4, 0.1, 0.55, 0.25, 0.6, 0.2, 0.7, 0.56, 0.3,],
             "decoy_ind": [
                 True,
                 False,
@@ -596,8 +574,8 @@ def test_read_file_multi_file(
     path1 = os.path.join(tmp_path, "test1.txt")
     path2 = os.path.join(tmp_path, "test2.txt")
     # Create a temporary file from the given dataframe
-    dataframe_multi_file_1.to_csv(path1)
-    dataframe_multi_file_2.to_csv(path2)
+    dataframe_multi_file_1.to_csv(path1, sep="\t")
+    dataframe_multi_file_2.to_csv(path2, sep="\t")
     # Create a PsmDataset object by calling the read_file() function
     psm_dataset = read_file(
         [path1, path2],
@@ -652,7 +630,7 @@ def verify_dataset(
         The actual column name of the target column used in the testing file
     """
     # Create a temporary file from the given dataframe
-    act_dataframe.to_csv(tmp_file)
+    act_dataframe.to_csv(tmp_file, sep="\t")
     # Create a PsmDataset object by calling the read_file() function
     psm_dataset = read_file(
         tmp_file,

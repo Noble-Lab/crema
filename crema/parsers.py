@@ -73,7 +73,7 @@ def read_file(
         input_files = [input_files]
     for file in input_files:
         data = data.append(
-            pd.read_csv(file, sep=None, usecols=fields, engine="python"),
+            pd.read_csv(file, sep="\t", usecols=fields, engine="c"),
             ignore_index=True,
         )
     data = _convert_target_col(data, target_col)
@@ -82,6 +82,7 @@ def read_file(
     protein_map = None
     if fasta is not None:
         protein_map = _parse_fasta(fasta)
+
     return PsmDataset(
         data,
         sequence_col,
@@ -225,6 +226,9 @@ def _parse_fasta(file):
     protein_map = {}
     fasta = pyteomics.fasta.read(file)
     has_next = True
+    num_pairs = 0
+    num_targets = 0
+    num_decoys = 0
     while has_next:
         try:
             protein = fasta.next()
@@ -237,12 +241,28 @@ def _parse_fasta(file):
             if sequence_id in protein_map.keys():
                 if "decoy" in target_decoy_id:
                     protein_map[sequence_id][1] = protein.sequence
+                    num_decoys += 1
                 else:
                     protein_map[sequence_id][0] = protein.sequence
+                    num_targets += 1
+                # Check to make sure target and decoy protein sequences are the same length
+                if protein_map[sequence_id][0] is not None and protein_map[sequence_id][1] is not None:
+                    if len(protein_map[sequence_id][0]) != len(protein_map[sequence_id][1]):
+                        raise ValueError(
+                            "Target and Decoy Proteins must be the same length."
+                        )
             else:
                 protein_map[sequence_id] = [None, None]
+                num_pairs += 1
                 if "decoy" in target_decoy_id:
                     protein_map[sequence_id][1] = protein.sequence
+                    num_decoys += 1
                 else:
                     protein_map[sequence_id][0] = protein.sequence
+                    num_targets += 1
+    # Check to make sure each target protein has a corresponding decoy protein
+    if num_targets != num_pairs or num_decoys != num_pairs:
+        raise ValueError(
+            "All target proteins must have a corresponding decoy."
+        )
     return protein_map

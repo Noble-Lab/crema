@@ -83,7 +83,6 @@ def calculate_tdc(psm, score_col=0):
 
     psm.results.get("psm").append(psm_result)
     psm.results.get("peptide").append(peptide_result)
-
     return psm_result, peptide_result
 
 
@@ -94,16 +93,92 @@ def _pick_peptides(data, sequence_col, score_col, target_col, protein_map):
     win_set = set()
     # add winners to set
     for i, row in data.iterrows():
-        partner = _find_partner(
-            row[sequence_col[0]], row[target_col], protein_map
+        (
+            raw_sequence,
+            modification,
+            modified_acid,
+            occurrence,
+        ) = _get_raw_peptide(row[sequence_col[0]])
+        raw_partner = _find_partner(raw_sequence, row[target_col], protein_map)
+        partner = _modify_sequence(
+            raw_partner, modification, modified_acid, occurrence
         )
         if partner not in win_set:
-            win_set.add(row[sequence_col[0]])
+            sequence = _modify_sequence(
+                raw_sequence, modification, modified_acid, occurrence
+            )
+            win_set.add(sequence)
     # delete non winners
     for i, row in data.iterrows():
-        if row[sequence_col[0]] not in win_set:
+        (
+            raw_sequence,
+            modification,
+            modified_acid,
+            occurrence,
+        ) = _get_raw_peptide(row[sequence_col[0]])
+        sequence = _modify_sequence(
+            raw_sequence, modification, modified_acid, occurrence
+        )
+        if sequence not in win_set:
             data.drop(i, inplace=True)
     return data
+
+
+# Add modification back to raw sequence
+def _modify_sequence(raw_partner, modification, modified_acid, occurrence):
+    if modification is not None:
+        start = raw_partner.find(modified_acid)
+        while start >= 0 and occurrence > 1:
+            start = raw_partner.find(modified_acid, start + len(modified_acid))
+            occurrence -= 1
+        return (
+            raw_partner[: start + 1] + modified_acid + raw_partner[start + 1 :]
+        )
+    return raw_partner
+
+
+def _get_raw_peptide(sequence):
+    # remove any modifications
+    modification = None
+    modified_acid = None
+    occurrence = None
+    try:
+        start = sequence.index("[")
+        end = sequence.index("]")
+        modification = sequence[start : end + 1]
+        modified_acid = sequence[start - 1 : start]
+        occurrence = sequence[:start].count(modified_acid)
+        sequence = sequence[:start] + sequence[end + 1 :]
+    except ValueError:
+        pass
+    # remove any flanking amino acids
+    # count the number of "." to indicate front/back flanking amino acids
+    num_flanks = sequence.count(".")
+    # flanking amino acid on both sides
+    if num_flanks == 2:
+        sequence = sequence[sequence.index(".") + 1 :]
+        sequence = sequence[: sequence.index(".")]
+    # flanking amino acid on one side (assume longer string is peptide)
+    elif num_flanks == 1:
+        split = sequence.index(".")
+        first = split - 1
+        second = len(sequence) - split
+        if first > second:
+            sequence = sequence[:split]
+        elif second > first:
+            sequence = sequence[split + 1 :]
+        else:
+            raise ValueError(
+                "Peptide sequence and flanking amino acid are the same length, unable to differentiate"
+            )
+    # no flanking amino acid
+    elif num_flanks == 0:
+        pass
+    else:
+        raise ValueError(
+            'Peptide sequence not properly formatted (excess amount of "." character)'
+        )
+    return sequence, modification, modified_acid, occurrence
 
 
 def _find_partner(sequence, target, protein_map):
@@ -201,7 +276,7 @@ def _compare_spectrum_col(spectrum_col, curr_row, next_row):
     return False
 
 
-def _delete_duplicates(data, spectrum_col, score_col, target_col):
+def _delete_duplicates(data, compete_col, score_col, target_col):
     """
     Deletes duplicate PSMs based on unique spectrum identifier
 
@@ -209,8 +284,8 @@ def _delete_duplicates(data, spectrum_col, score_col, target_col):
     ----------
     data : pandas.DataFrame
         dataframe of PSMs of data from original dataset object (MUST BE SORTED BY SPECTRUM, SCORE, TARGET)
-    spectrum_col : list of str
-        name of the column that identifies the psm
+    compete_col : list of str
+        name of the column that identifies the psm/peptide/protein currently competing
     score_col : str
         name of the column that defines the scores (p-values) of the psms
     target_col : str
@@ -227,7 +302,7 @@ def _delete_duplicates(data, spectrum_col, score_col, target_col):
     for index, row in data.iterrows():
         # If spectrum col in current row is different from next row, increment curr variables and move on
         if _compare_spectrum_col(
-            spectrum_col, data.loc[prev_index], data.loc[index]
+            compete_col, data.loc[prev_index], data.loc[index]
         ):
             prev_score = row[score_col]
             prev_target = row[target_col]

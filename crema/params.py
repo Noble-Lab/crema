@@ -100,4 +100,11 @@ def _configure_parser():
         help="The directory where output files will be created. Defaults to current working directory.",
     )
 
+    parser.add_argument(
+        "--fasta",
+        type=str,
+        default=None,
+        help="Path to fasta file providing target/decoy protein pairings",
+    )
+
     return parser
