@@ -2,6 +2,7 @@
 necessary for running crema from the command line.
 """
 import argparse
+import textwrap
 from . import __version__
 
 
@@ -51,59 +52,61 @@ def _configure_parser():
         type=str,
         nargs="+",
         help=(
-            "One or more collection of peptide-spectrum matches (PSMs) in a "
-            "tab-delimited format."
+            "One or more collection of peptide-spectrum matches (PSMs) in the "
+            "mzTab or Crux tab-delimited formats."
         ),
     )
 
     parser.add_argument(
+        "-s",
         "--score",
         type=str,
         nargs="+",
-        default="combined p-value",
-        help="name of the column that defines the scores (p-values) of the psms."
-        "\n Expects decimal or float column values",
+        default=None,
+        help=(
+            "One or more columns that indicate possible scores by which to "
+            "rank the PSMs. If more than one is provided, the best will be "
+            "selected automatically. If none are provided, crema will try all "
+            "available scores."
+        ),
     )
 
     parser.add_argument(
-        "--spectrum",
-        type=str,
-        nargs="+",
-        default="scan",
-        help="one or more column names that identify the psms."
-        "\n Expects numeric or string column values",
-    )
-
-    parser.add_argument(
-        "--target",
-        type=str,
-        default="target/decoy",
-        help="name of the column that indicates if a psm is a target/decoy."
-        "\n Expects column values containing any of the following combinations: (True/False), (target/decoy),"
-        "(t/d), (t/f), (1/0), (1/-1)",
-    )
-
-    parser.add_argument(
-        "--score_choice",
-        type=str,
-        default="0",
-        help="index of the score column to use for confidence estimation."
-        "\n Expects column name as a string, or as an integer index from 0 to n:"
-        "n being the total number of score columns.",
-    )
-
-    parser.add_argument(
+        "-f",
         "--file_root",
         type=str,
-        help="This string will be added as a prefix to all output file names",
+        help="This string will be added as a prefix to all output file names.",
     )
 
     parser.add_argument(
+        "-o",
         "--output_dir",
         type=str,
-        help="The directory where output files will be created. Defaults to current working directory.",
+        help=(
+            "The directory where output files will be created. Defaults to "
+            "the current working directory."
+        ),
     )
 
+    parser.add_argument(
+        "-e",
+        "--eval_fdr",
+        type=float,
+        default=0.01,
+        help=(
+            "The FDR threshold by which to choose the best score column and "
+            "to report in logging messages."
+        ),
+    )
+
+    parser.add_argument(
+        "-m",
+        "--method",
+        type=str,
+        default="tdc",
+        choices=["tdc"],
+        help="The confidence estimation method to use.",
+    )
     return parser
 
 

@@ -17,7 +17,7 @@ except ImportError:
 
 # Here is where we can export public functions and classes.
 from crema.dataset import PsmDataset
-from crema.methods import calculate_tdc
-from crema.parsers import *
-from crema.result import Result
-from crema.params import Params
+from crema.parsers.crux import read_crux
+from crema.parsers.txt import read_txt
+from crema.parsers.mztab import read_mztab
+from crema.confidence import TdcConfidence, assign_confidence
