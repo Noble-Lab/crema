@@ -74,7 +74,7 @@ def tdc(scores, target, desc=True):
     scores = scores[srt_idx]
     target = target[srt_idx]
     cum_targets = target.cumsum()
-    cum_decoys = ((target - 1) ** 2).cumsum()
+    cum_decoys = (~target).cumsum()
 
     # Handles zeros in denominator
     fdr = np.divide(

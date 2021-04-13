@@ -18,7 +18,7 @@ def read_crux(txt_files, copy_data=True):
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
-        data. This argument only has an effect when `pin_files` is a
+        data. This argument only has an effect when `txt_files` is a
         :py:class:`pandas.DataFrame`
 
     Returns
