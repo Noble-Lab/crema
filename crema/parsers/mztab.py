@@ -43,7 +43,7 @@ def read_mztab(mztab_files):
             f"spectrum. These are: {', '.join(spectrum_col)}."
         )
 
-    if sequence_col not in psms.columns or mod_col not in columns:
+    if sequence_col not in psms.columns or mod_col not in psms.columns:
         raise KeyError(
             "The mzTab file does not the columns to specify peptide sequence "
             "and modifications."
@@ -93,7 +93,4 @@ def _parse_psms(mztab_file):
         A :py:class:`pandas.DataFrame` containing the parsed PSMs.
     """
     LOGGER.info("Reading PSMs from %s...", mztab_file)
-    with MzTab(mztab_file) as mztab_ref:
-        psms = mztab_ref.spectrum_match_table
-
-    return psms
+    return MzTab(str(mztab_file)).spectrum_match_table

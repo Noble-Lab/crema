@@ -55,3 +55,9 @@ def real_crux_txt():
     targets = Path("data/example_psms_target.txt")
     decoys = Path("data/example_psms_decoy.txt")
     return targets, decoys
+
+
+@pytest.fixture
+def real_mztab():
+    """Return a real mzTab file"""
+    return Path("data/MSV000085729.mzTab")
