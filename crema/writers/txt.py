@@ -23,7 +23,7 @@ def to_txt(conf, output_dir=None, file_root=None, sep="\t", decoys=False):
         current working directory.
     file_root : str or None, optional
         An optional prefix for the confidence estimate files. The suffix will
-        always be "mokapot.{level}.txt" where "{level}" indicates the level at
+        always be "crema.{level}.txt" where "{level}" indicates the level at
         which confidence estimation was performed (i.e. PSMs, peptides,
         proteins).
     sep : str, optional

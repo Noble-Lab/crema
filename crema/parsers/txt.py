@@ -34,6 +34,8 @@ def read_txt(
         indicated either in square brackets :code:`[]` or parentheses
         :code:`()`. The exact modification format within these entities does
         not matter, so long as it is consistent.
+    sep : str, optional
+        The delimiter to use.
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
@@ -125,4 +127,4 @@ def _convert_target_col(data):
             "values."
         )
 
-    return data < 1
+    return data > 0
