@@ -54,27 +54,5 @@ def test_read_txt(basic_crux_csv):
 
 
 def test_read_mztab(real_mztab):
-    psms = crema.read_mztab(real_mztab)
-
-
-def download_msv(msv_id, tmp_path):
-    dat = ppx.MSVDataset(msv_id)
-    mztab_file = dat.list_files("ccms_result")[0]
-    file_path = "ccms_result/" + mztab_file
-    file = dat.download(files=file_path, dest_dir=tmp_path)[0]
-    return file
-
-
-def verify_mztab(msv_id, num_scores, expected_df_head, tmp_path):
-    file = download_msv(msv_id, tmp_path)
-    psm_dataset = read_mztab(file)
-    # result = calculate_tdc(psm_dataset, 2)
-    # print(result.data)
-    assert isinstance(psm_dataset, PsmDataset)
-    assert psm_dataset.spectrum_col == ["spectra_ref"]
-    score_col = []
-    for i in range(1, num_scores + 1):
-        score_col.append("search_engine_score[" + str(i) + "]")
-    assert psm_dataset.score_col == score_col
-    assert psm_dataset.target_col == "opt_global_cv_MS:1002217_decoy_peptide"
-    pd.testing.assert_frame_equal(psm_dataset.data.head(), expected_df_head)
+    with pytest.raises(ValueError):
+        psms = crema.read_mztab(real_mztab)
