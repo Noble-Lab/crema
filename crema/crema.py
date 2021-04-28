@@ -6,9 +6,9 @@ import sys
 import time
 import logging
 
-from .parsers import *
+from .parsers.crux import read_crux
+from .parsers.mztab import read_mztab
 from .params import Params
-from .methods import calculate_tdc
 
 
 def main():
@@ -16,27 +16,30 @@ def main():
     start_time = time.time()
 
     # Creates the parser for parse args and reads in command line arguments
-    params = Params().parser
-    args = params.parse_args()
+    args = Params()
 
     # Set up logging files
-    log_file = "crema.logfile.log"
+    log_file = "crema.log"
     if args.file_root is not None:
-        log_file = args.file_root + log_file
+        log_file = args.file_root + "." + log_file
     if args.output_dir is None:
         args.output_dir = os.getcwd()
 
     # Configure logging
     logging.basicConfig(
         filename=os.path.join(args.output_dir, log_file),
+        filemode="w+",
         level=logging.INFO,
-        format="%(asctime)s %(message)s",
+        format="[%(levelname)s] %(message)s",
     )
 
+    # Write logs to stderr as well
+    logging.getLogger().addHandler(logging.StreamHandler())
+
     logging.info("crema")
-    logging.info("Written by Donavan See (seed99@cs.washington.edu) in the")
+    logging.info("Written by Donavan See and William E Fondrie in the ")
     logging.info(
-        "Department of Genome Sciences at the University of " "Washington."
+        "Department of Genome Sciences at the University of Washington."
     )
     logging.info("Command issued:")
     logging.info("%s", " ".join(sys.argv))
@@ -45,26 +48,24 @@ def main():
     logging.info("=================")
 
     # Create dataset object
-    logging.info("Creating dataset object...")
-    psms = read_file(args.input_files, args.spectrum, args.score, args.target)
+    try:
+        psms = read_crux(args.psm_files)
+    except:  # TODO: Add specific exceptions
+        psms = read_mztab(args.psm_files)
 
-    # Run confidence estimate method
-    logging.info("Calculating confidence estimate...")
-    # Convert score_choice to int if it is a number
-    if args.score_choice.isnumeric():
-        args.score_choice = int(args.score_choice)
-    result = calculate_tdc(psms, args.score_choice)
+    conf = psms.assign_confidence(
+        score_column=args.score, eval_fdr=args.eval_fdr, method=args.method,
+    )
 
     # Write result to file
-    logging.info("Writing to file...")
-    result.write_file(output_dir=args.output_dir, file_root=args.file_root)
+    logging.info("Writing results...")
+    conf.to_txt(output_dir=args.output_dir, file_root=args.file_root)
 
     # Calculate how long the confidence estimation took
     end_time = time.time()
     total_time = end_time - start_time
-
-    logging.info("=== DONE! ===")
-    logging.info("Time Taken:" + str(total_time))
+    logging.info("==== DONE! =====")
+    logging.info("Wall Time: %.2fs", total_time)
 
 
 if __name__ == "__main__":
