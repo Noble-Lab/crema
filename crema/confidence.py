@@ -4,6 +4,8 @@ peptide-spectrum matches with calculated False Discovery Rates and Q-Values.
 import logging
 from abc import ABC, abstractmethod
 
+import pandas as pd
+
 from . import qvalues
 from .utils import listify
 from .writers.txt import to_txt
@@ -173,7 +175,7 @@ class Confidence(ABC):
         for level, df in self.decoy_confidence_estimates.items():
             self.decoy_confidence_estimates[level] = df[cols]
 
-    def _compete(self, df, group_columns):
+    def _compete(self, df, level, group_columns):
         """Perform target-decoy competition
 
         For each group defined by `group_columns`, keep only the element
@@ -183,6 +185,8 @@ class Confidence(ABC):
         ----------
         df : panda.DataFrame
             The DataFrame on which to perform the competition.
+        level : str
+            The level of confidence estimates
         group_columns: str or list of str
             The columns that define a group. The best score is retained
             within the group.
@@ -204,6 +208,14 @@ class Confidence(ABC):
             .sort_values(group_columns + [self._score_column])
             .drop_duplicates(group_columns, keep=keep)
         )
+        if level == "peptides" and self.dataset.peptide_pairing is not None:
+            for index, row in out_df.iterrows():
+                winners = set()
+                if row[self.dataset.peptide_column] in self.dataset.peptide_pairing \
+                        and self.dataset.peptide_pairing[row[self.dataset.peptide_column]] not in winners:
+                    winners.add(row[self.dataset.peptide_column])
+                else:
+                    out_df.drop(index)
         return out_df
 
     def __getitem__(self, column):
@@ -315,7 +327,7 @@ class TdcConfidence(Confidence):
         df = self.data
         for level, group_cols in zip(self.levels, self._level_columns):
             # First perform the competition step
-            df = self._compete(df, group_cols)
+            df = self._compete(df, level, group_cols)
             targets = df[self.dataset.target_column]
 
             # Now calculate q-values:

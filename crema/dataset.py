@@ -30,6 +30,10 @@ class PsmDataset:
         indicated either in square brackets :code:`[]` or parentheses
         :code:`()`. The exact modification format within these entities does
         not matter, so long as it is consistent.
+    peptide_pairing: dict
+        A map of target and decoy peptide sequence pairings to be used for TDC.
+        This should be in the form {key=target_sequence:value=decoy_sequence}
+        where decoy sequences are shuffled versions of target sequences.
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
@@ -43,6 +47,7 @@ class PsmDataset:
     score_columns : list of str
     target_column : str
     peptide_column : str
+    peptide_pairing : dict
     """
 
     def __init__(
@@ -52,6 +57,7 @@ class PsmDataset:
         spectrum_columns,
         score_columns,
         peptide_column,
+        peptide_pairing=None,
         copy_data=True,
     ):
         """Initialize a PsmDataset object."""
@@ -59,6 +65,7 @@ class PsmDataset:
         self.score_columns = listify(score_columns)
         self.target_column = target_column
         self.peptide_column = peptide_column
+        self.peptide_pairing = peptide_pairing
 
         fields = sum(
             [
@@ -156,3 +163,16 @@ class PsmDataset:
             raise RuntimeError("No PSMs were found below the 'eval_fdr'.")
 
         return best_score, best_passing, best_desc
+
+    def add_peptide_pairing(self, pairing):
+        """Adds a target/decoy peptide pairing to this collection of PSMs
+
+
+        """
+        if isinstance(pairing, dict):
+            self.peptide_pairing = pairing
+        else:
+            raise ValueError(
+                "The provided peptide pairing is not in the form of a "
+                "Python Dict"
+            )
