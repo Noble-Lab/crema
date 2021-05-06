@@ -14,7 +14,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def assign_confidence(
-    psms, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
+        psms, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -175,7 +175,7 @@ class Confidence(ABC):
         for level, df in self.decoy_confidence_estimates.items():
             self.decoy_confidence_estimates[level] = df[cols]
 
-    def _compete(self, df, level, group_columns):
+    def _compete(self, df, group_columns):
         """Perform target-decoy competition
 
         For each group defined by `group_columns`, keep only the element
@@ -185,8 +185,6 @@ class Confidence(ABC):
         ----------
         df : panda.DataFrame
             The DataFrame on which to perform the competition.
-        level : str
-            The level of confidence estimates
         group_columns: str or list of str
             The columns that define a group. The best score is retained
             within the group.
@@ -203,19 +201,17 @@ class Confidence(ABC):
             keep = "first"
 
         group_columns = listify(group_columns)
+        # out_df = (
+        #     df.sample(frac=1)  # This is so ties are broken randomly.
+        #     .sort_values(group_columns + [self._score_column])
+        #     .drop_duplicates(group_columns, keep=keep)
+        # )
         out_df = (
             df.sample(frac=1)  # This is so ties are broken randomly.
-            .sort_values(group_columns + [self._score_column])
-            .drop_duplicates(group_columns, keep=keep)
+            .sort_values([self._score_column] + group_columns)  # Can I swap the ordering of these for peptide compete?
         )
-        if level == "peptides" and self.dataset.peptide_pairing is not None:
-            for index, row in out_df.iterrows():
-                winners = set()
-                if row[self.dataset.peptide_column] in self.dataset.peptide_pairing \
-                        and self.dataset.peptide_pairing[row[self.dataset.peptide_column]] not in winners:
-                    winners.add(row[self.dataset.peptide_column])
-                else:
-                    out_df.drop(index)
+        for columns in group_columns:
+            out_df = out_df.drop_duplicates(columns, keep=keep)
         return out_df
 
     def __getitem__(self, column):
@@ -325,9 +321,13 @@ class TdcConfidence(Confidence):
     def assign_confidence(self):
         """Assign confidence estimates using target-decoy competition"""
         df = self.data
+        pairing = self.dataset.peptide_pairing
         for level, group_cols in zip(self.levels, self._level_columns):
             # First perform the competition step
-            df = self._compete(df, level, group_cols)
+            if level == "peptides" and pairing is not None:
+                df["pair"] = [pairing.get(sequence) for sequence in df["sequence"]]
+                group_cols = listify(group_cols) + ["pair"]
+            df = self._compete(df, group_cols)
             targets = df[self.dataset.target_column]
 
             # Now calculate q-values:
