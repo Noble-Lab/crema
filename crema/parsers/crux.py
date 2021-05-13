@@ -90,7 +90,7 @@ def read_crux(txt_files, copy_data=True):
         sep="\t",
         copy_data=False,
     )
-    psms.add_peptide_pairing(_create_pairing(pairing_data))
+    psms.add_peptide_pairing(_create_pairing(pairing_data, pairing_fields))
     return psms
 
 
@@ -114,7 +114,7 @@ def _parse_psms(txt_file, cols, log=True):
     return pd.read_csv(txt_file, sep="\t", usecols=lambda c: c in cols)
 
 
-def _create_pairing(pairing_data):
+def _create_pairing(pairing_data, pairing_fields):
     """Parse a single Crux tab-delimited file
 
     Parameters
@@ -128,6 +128,11 @@ def _create_pairing(pairing_data):
     pairing : dict
         A map of target and decoy peptide sequence pairings
     """
+    # ensure pairing_data dataframe contains all necessary columns
+    for field in pairing_fields:
+        if field not in pairing_data.columns:
+            return None
+
     # split pairing_data into targets and decoys
     targets = (
         pairing_data[pairing_data["target/decoy"] == "target"]

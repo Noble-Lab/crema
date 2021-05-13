@@ -170,6 +170,8 @@ class PsmDataset:
 
     def add_peptide_pairing(self, pairing):
         """Adds a target/decoy peptide pairing to this collection of PSMs"""
+        if pairing is None:
+            return
         if isinstance(pairing, dict):
             self.peptide_pairing = pairing
         else:
