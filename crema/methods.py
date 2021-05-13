@@ -4,7 +4,6 @@ This module contains the various methods for calculating FDRs and q-values
 
 import random
 import warnings
-from .result import Result
 from .dataset import PsmDataset
 import pandas as pd
 

@@ -10,3 +10,15 @@ def listify(obj):
         obj = [obj]
 
     return list(obj)
+
+
+def new_column(name, df):
+    """Add a new column, ensuring a unique name"""
+    new_name = name
+    cols = set(df.columns)
+    i = 0
+    while new_name in cols:
+        new_name = name + "_" + str(i)
+        i += 1
+
+    return new_name

@@ -2,11 +2,13 @@
 These are unit tests for functions within parsers.py:
 """
 import os
+import unittest
+
 import pytest
 import pandas as pd
 
 import crema
-
+from crema.parsers.crux import read_crux
 from ..fixtures import *
 
 
@@ -31,6 +33,28 @@ def test_read_crux(real_crux_txt):
     assert psms.targets.shape == (21818,)
     assert psms.targets.sum() == 10909
     assert (~psms.targets).sum() == 10909
+
+
+def test_read_crux_peptide_pairing(mod_target_crux_txt, mod_decoy_crux_txt):
+    """Test that peptide pairing is correctly created when parsing crux files"""
+    expected_peptide_pairing = {
+        "ALLSLR": "ALLLSR",
+        "ALLLSR": "ALLLSR",
+        "AILSIR": "AILSIR",
+        "LAVITR": "LAVITR",
+        "QTPPAR": "QTAPPR",
+        "QTAPPR": "QTAPPR",
+        "IPLVNL": "IPLVNL",
+        "SRGPPR": "SRGPPR",
+        "GEVPN[0.98]R": "GN[0.98]PEVR",
+        "GN[0.98]PEVR": "GN[0.98]PEVR",
+        "GGHMDR": "GDMGHR",
+        "GDMGHR": "GDMGHR",
+        "NPANRT": "NPANRT",
+        "SADAGPR": "SADAGPR",
+    }
+    psms = read_crux([mod_decoy_crux_txt, mod_target_crux_txt])
+    unittest.TestCase().assertDictEqual(expected_peptide_pairing, psms.peptide_pairing)
 
 
 def test_read_txt(basic_crux_csv):

@@ -6,6 +6,7 @@ import time
 import pandas as pd
 from .txt import read_txt
 from ..utils import listify
+from ..utils import new_column
 
 LOGGER = logging.getLogger(__name__)
 
@@ -71,7 +72,7 @@ def read_crux(txt_files, copy_data=True):
         pairing_data = txt_files.copy(deep=copy_data).loc[:, pairing_fields]
     else:
         data = pd.concat([_parse_psms(f, fields) for f in txt_files])
-        pairing_data = pd.concat([_parse_psms(f, pairing_fields) for f in txt_files])
+        pairing_data = pd.concat([_parse_psms(f, pairing_fields, log=False) for f in txt_files])
 
     psms = read_txt(
         data,
@@ -86,7 +87,7 @@ def read_crux(txt_files, copy_data=True):
     return psms
 
 
-def _parse_psms(txt_file, cols):
+def _parse_psms(txt_file, cols, log=True):
     """Parse a single Crux tab-delimited file
 
     Parameters
@@ -101,7 +102,8 @@ def _parse_psms(txt_file, cols):
     pandas.DataFrame
         A :py:class:`pandas.DataFrame` containing the parsed PSMs
     """
-    LOGGER.info("Reading PSMs from %s...", txt_file)
+    if log:
+        LOGGER.info("Reading PSMs from %s...", txt_file)
     return pd.read_csv(txt_file, sep="\t", usecols=lambda c: c in cols)
 
 
@@ -121,20 +123,22 @@ def _create_pairing(pairing_data):
     """
     # split pairing_data into targets and decoys
     targets = pairing_data[pairing_data["target/decoy"] == "target"]\
+        .sample(frac=1)\
         .drop_duplicates(["peptide mass", "sequence"])\
-        .sample(frac=1).reset_index(drop=True)
+        .reset_index(drop=True)
     decoys = pairing_data[pairing_data["target/decoy"] == "decoy"]\
-        .drop_duplicates(["peptide mass", "sequence"])\
-        .sample(frac=1).sort_values("original target sequence")\
+        .sample(frac=1).sort_values("original target sequence") \
+        .drop_duplicates(["peptide mass", "sequence"]) \
         .reset_index(drop=True)
 
+    raw_sequence = new_column("raw_sequence", targets)
     targets = pd.concat(
-        [targets, targets["sequence"].str.replace(r"\[\d+.\d+\]", "", regex=True).rename("raw_sequence")], axis=1
+        [targets, targets["sequence"].str.replace(r"\[\d+.\d+\]", "", regex=True).rename(raw_sequence)], axis=1
     )
 
     pairing = {}
     del_row = set()
-    for mass, sequence, raw_sequence in zip(targets["peptide mass"], targets["sequence"], targets["raw_sequence"]):
+    for mass, sequence, raw_sequence in zip(targets["peptide mass"], targets["sequence"], targets[raw_sequence]):
         if sequence in pairing:
             continue
         # try to make faster?

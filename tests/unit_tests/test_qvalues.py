@@ -63,7 +63,7 @@ def test_tdc_ascending(desc_scores):
 
 
 def test_tdc_non_bool():
-    """If targets is not boolean, should get a value errir"""
+    """If targets is not boolean, should get a value error"""
     scores = np.array([1, 2, 3, 4, 5])
     targets = np.array(["1", "0", "1", "0", "blarg"])
     with pytest.raises(ValueError):

@@ -8,6 +8,7 @@ import pandas as pd
 
 from . import qvalues
 from .utils import listify
+from .utils import new_column
 from .writers.txt import to_txt
 
 LOGGER = logging.getLogger(__name__)
@@ -201,14 +202,9 @@ class Confidence(ABC):
             keep = "first"
 
         group_columns = listify(group_columns)
-        # out_df = (
-        #     df.sample(frac=1)  # This is so ties are broken randomly.
-        #     .sort_values(group_columns + [self._score_column])
-        #     .drop_duplicates(group_columns, keep=keep)
-        # )
         out_df = (
             df.sample(frac=1)  # This is so ties are broken randomly.
-            .sort_values([self._score_column] + group_columns)  # Can I swap the ordering of these for peptide compete?
+            .sort_values([self._score_column] + group_columns)
         )
         for columns in group_columns:
             out_df = out_df.drop_duplicates(columns, keep=keep)
@@ -325,8 +321,9 @@ class TdcConfidence(Confidence):
         for level, group_cols in zip(self.levels, self._level_columns):
             # First perform the competition step
             if level == "peptides" and pairing is not None:
-                df["pair"] = [pairing.get(sequence) for sequence in df["sequence"]]
-                group_cols = listify(group_cols) + ["pair"]
+                pair_col = new_column("pair", df)
+                df[pair_col] = [pairing.get(sequence) for sequence in df[group_cols]]
+                group_cols = listify(group_cols) + [pair_col]
             df = self._compete(df, group_cols)
             targets = df[self.dataset.target_column]
 
