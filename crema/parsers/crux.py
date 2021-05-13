@@ -66,13 +66,20 @@ def read_crux(txt_files, copy_data=True):
 
     # Read in the files:
     fields = spectrum + [peptide] + [target] + scores
-    pairing_fields = ["peptide mass", "sequence", "target/decoy", "original target sequence"]
+    pairing_fields = [
+        "peptide mass",
+        "sequence",
+        "target/decoy",
+        "original target sequence",
+    ]
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
         pairing_data = txt_files.copy(deep=copy_data).loc[:, pairing_fields]
     else:
         data = pd.concat([_parse_psms(f, fields) for f in txt_files])
-        pairing_data = pd.concat([_parse_psms(f, pairing_fields, log=False) for f in txt_files])
+        pairing_data = pd.concat(
+            [_parse_psms(f, pairing_fields, log=False) for f in txt_files]
+        )
 
     psms = read_txt(
         data,
@@ -122,30 +129,49 @@ def _create_pairing(pairing_data):
         A map of target and decoy peptide sequence pairings
     """
     # split pairing_data into targets and decoys
-    targets = pairing_data[pairing_data["target/decoy"] == "target"]\
-        .sample(frac=1)\
-        .drop_duplicates(["peptide mass", "sequence"])\
+    targets = (
+        pairing_data[pairing_data["target/decoy"] == "target"]
+        .sample(frac=1)
+        .drop_duplicates(["peptide mass", "sequence"])
         .reset_index(drop=True)
-    decoys = pairing_data[pairing_data["target/decoy"] == "decoy"]\
-        .sample(frac=1).sort_values("original target sequence") \
-        .drop_duplicates(["peptide mass", "sequence"]) \
+    )
+    decoys = (
+        pairing_data[pairing_data["target/decoy"] == "decoy"]
+        .sample(frac=1)
+        .sort_values("original target sequence")
+        .drop_duplicates(["peptide mass", "sequence"])
         .reset_index(drop=True)
+    )
 
     raw_sequence = new_column("raw_sequence", targets)
     targets = pd.concat(
-        [targets, targets["sequence"].str.replace(r"\[\d+.\d+\]", "", regex=True).rename(raw_sequence)], axis=1
+        [
+            targets,
+            targets["sequence"]
+            .str.replace(r"\[\d+.\d+\]", "", regex=True)
+            .rename(raw_sequence),
+        ],
+        axis=1,
     )
 
     pairing = {}
     del_row = set()
-    for mass, sequence, raw_sequence in zip(targets["peptide mass"], targets["sequence"], targets[raw_sequence]):
+    for mass, sequence, raw_sequence in zip(
+        targets["peptide mass"], targets["sequence"], targets[raw_sequence]
+    ):
         if sequence in pairing:
             continue
         # try to make faster?
-        left = decoys["original target sequence"].searchsorted(raw_sequence, side="left")
-        right = decoys["original target sequence"].searchsorted(raw_sequence, side="right")
+        left = decoys["original target sequence"].searchsorted(
+            raw_sequence, side="left"
+        )
+        right = decoys["original target sequence"].searchsorted(
+            raw_sequence, side="right"
+        )
         sub_decoy = decoys.iloc[left:right]
-        for d_index, d_mass, d_sequence in zip(sub_decoy.index, sub_decoy["peptide mass"], sub_decoy["sequence"]):
+        for d_index, d_mass, d_sequence in zip(
+            sub_decoy.index, sub_decoy["peptide mass"], sub_decoy["sequence"]
+        ):
             if d_index in del_row:
                 continue
             if _check_match(mass, sequence, d_mass, d_sequence):
@@ -183,6 +209,6 @@ def _check_match(target_mass, target_sequence, decoy_mass, decoy_sequence):
     if target_mass != decoy_mass:
         return False
     # check that modifications are on the same amino acids
-    target_mod = sorted(re.findall(r'\w\[\d+.\d+\]', target_sequence))
-    decoy_mod = sorted(re.findall(r'\w\[\d+.\d+\]', decoy_sequence))
+    target_mod = sorted(re.findall(r"\w\[\d+.\d+\]", target_sequence))
+    decoy_mod = sorted(re.findall(r"\w\[\d+.\d+\]", decoy_sequence))
     return target_mod == decoy_mod

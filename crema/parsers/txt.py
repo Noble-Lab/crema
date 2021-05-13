@@ -76,7 +76,7 @@ def read_txt(
 
 
 def _parse_psms(txt_file, sep, cols):
-    """"Parse a single delimited txt file.
+    """ "Parse a single delimited txt file.
 
     Parameters
     ----------

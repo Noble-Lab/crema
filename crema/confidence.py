@@ -15,7 +15,11 @@ LOGGER = logging.getLogger(__name__)
 
 
 def assign_confidence(
-        psms, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
+    psms,
+    score_column=None,
+    desc=None,
+    eval_fdr=0.01,
+    method="tdc",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -202,9 +206,10 @@ class Confidence(ABC):
             keep = "first"
 
         group_columns = listify(group_columns)
-        out_df = (
-            df.sample(frac=1)  # This is so ties are broken randomly.
-            .sort_values([self._score_column] + group_columns)
+        out_df = df.sample(
+            frac=1
+        ).sort_values(  # This is so ties are broken randomly.
+            [self._score_column] + group_columns
         )
         for columns in group_columns:
             out_df = out_df.drop_duplicates(columns, keep=keep)
@@ -322,14 +327,18 @@ class TdcConfidence(Confidence):
             # First perform the competition step
             if level == "peptides" and pairing is not None:
                 pair_col = new_column("pair", df)
-                df[pair_col] = [pairing.get(sequence) for sequence in df[group_cols]]
+                df[pair_col] = [
+                    pairing.get(sequence) for sequence in df[group_cols]
+                ]
                 group_cols = listify(group_cols) + [pair_col]
             df = self._compete(df, group_cols)
             targets = df[self.dataset.target_column]
 
             # Now calculate q-values:
             df["crema q-value"] = qvalues.tdc(
-                scores=df[self._score_column], target=targets, desc=self._desc,
+                scores=df[self._score_column],
+                target=targets,
+                desc=self._desc,
             )
 
             LOGGER.info(

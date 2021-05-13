@@ -54,7 +54,9 @@ def main():
         psms = read_mztab(args.psm_files)
 
     conf = psms.assign_confidence(
-        score_column=args.score, eval_fdr=args.eval_fdr, method=args.method,
+        score_column=args.score,
+        eval_fdr=args.eval_fdr,
+        method=args.method,
     )
 
     # Write result to file

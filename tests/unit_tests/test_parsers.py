@@ -54,7 +54,9 @@ def test_read_crux_peptide_pairing(mod_target_crux_txt, mod_decoy_crux_txt):
         "SADAGPR": "SADAGPR",
     }
     psms = read_crux([mod_decoy_crux_txt, mod_target_crux_txt])
-    unittest.TestCase().assertDictEqual(expected_peptide_pairing, psms.peptide_pairing)
+    unittest.TestCase().assertDictEqual(
+        expected_peptide_pairing, psms.peptide_pairing
+    )
 
 
 def test_read_txt(basic_crux_csv):

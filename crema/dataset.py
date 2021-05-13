@@ -110,18 +110,22 @@ class PsmDataset:
         return self._data.loc[:, column]
 
     def assign_confidence(
-        self, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
+        self,
+        score_column=None,
+        desc=None,
+        eval_fdr=0.01,
+        method="tdc",
     ):
-        """Assign confidences estimates to this collection of PSMs.
-
-
-        """
+        """Assign confidences estimates to this collection of PSMs."""
         methods = {
             "tdc": TdcConfidence,
         }
 
         conf = methods[method](
-            psms=self, score_column=score_column, desc=desc, eval_fdr=eval_fdr,
+            psms=self,
+            score_column=score_column,
+            desc=desc,
+            eval_fdr=eval_fdr,
         )
 
         return conf
@@ -165,10 +169,7 @@ class PsmDataset:
         return best_score, best_passing, best_desc
 
     def add_peptide_pairing(self, pairing):
-        """Adds a target/decoy peptide pairing to this collection of PSMs
-
-
-        """
+        """Adds a target/decoy peptide pairing to this collection of PSMs"""
         if isinstance(pairing, dict):
             self.peptide_pairing = pairing
         else:
