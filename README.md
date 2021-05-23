@@ -31,7 +31,7 @@ manipulated to accept files in formats that use differing column headers.
 Simple crema calculations can be performed at the command line:
 
 ```Bash
-$ crema data/single_basic.csv
+$ crema data/targets.txt data/decoys.txt
 ```
 
 Alternatively, the Python API can be used to calculate confidence estimates in the Python
@@ -39,10 +39,10 @@ interpreter and affords greater flexibility:
 
 ```Python
     >>> import crema
-    >>> input_files = ["data/multi_target.csv", "data/multi_decoy.csv"]
-    >>> psms = crema.read_file(input_files)
-    >>> results = crema.calculate_tdc(psms)
-    >>> results.write_file(ouput_dir="example_output_dir")
+    >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
+    >>> psms = crema.read_crux(input_files)
+    >>> results =  psms.assign_confidence(score_column="combined p-value", desc=True, eval_fdr=0.01, method="tdc")
+    >>> results.to_txt(ouput_dir="example_output_dir", file_root="test", sep="\t", decoys=False)
 ```
 
 Check out our [documentation](hhttps://crema-ms.readthedocs.io) for more details

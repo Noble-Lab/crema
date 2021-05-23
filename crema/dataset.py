@@ -109,6 +109,26 @@ class PsmDataset:
         """Return the specified column"""
         return self._data.loc[:, column]
 
+    def add_peptide_pairing(self, pairing):
+        """Adds a target/decoy peptide pairing to this collection of PSMs
+
+        Parameters
+        ----------
+        pairing : dict
+            A dictionary containing the target/decoy mapping to be used
+            during TDC
+
+        """
+        if pairing is None:
+            return
+        if isinstance(pairing, dict):
+            self.peptide_pairing = pairing
+        else:
+            raise ValueError(
+                "The provided peptide pairing is not in the form of a "
+                "Python Dict"
+            )
+
     def assign_confidence(
         self,
         score_column=None,
@@ -149,7 +169,7 @@ class PsmDataset:
         n_passing : int
             The number of PSMs that meet the specified FDR threshold.
         desc : bool
-            Are higher scores better for the best score?
+            True if higher scores better, False if lower scares are better.
         """
         best_score = None
         best_passing = 0
@@ -167,15 +187,3 @@ class PsmDataset:
             raise RuntimeError("No PSMs were found below the 'eval_fdr'.")
 
         return best_score, best_passing, best_desc
-
-    def add_peptide_pairing(self, pairing):
-        """Adds a target/decoy peptide pairing to this collection of PSMs"""
-        if pairing is None:
-            return
-        if isinstance(pairing, dict):
-            self.peptide_pairing = pairing
-        else:
-            raise ValueError(
-                "The provided peptide pairing is not in the form of a "
-                "Python Dict"
-            )

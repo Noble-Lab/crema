@@ -6,8 +6,6 @@ import numpy as np
 import pandas as pd
 from crema import PsmDataset
 
-from ..fixtures import *
-
 
 @pytest.fixture
 def simple_df(basic_crux_df):

@@ -2,8 +2,6 @@
 from pathlib import Path
 import subprocess
 
-from ..fixtures import *
-
 
 def test_cli_basic(basic_crux_txt, tmp_path):
     """Test that the basic cli works."""

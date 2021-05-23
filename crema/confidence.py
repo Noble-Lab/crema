@@ -1,4 +1,4 @@
-"""The :py:class:`Result` class is used to define a collection of
+"""The :py:class:`Confidence` class is used to define a collection of
 peptide-spectrum matches with calculated False Discovery Rates and Q-Values.
 """
 import logging
@@ -32,7 +32,8 @@ def assign_confidence(
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        Are higher scores better? If None, crema will try both and use the
+        True if higher scores better, False if lower scares are better.
+        If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
         this parameter is ignored.
@@ -79,7 +80,8 @@ class Confidence(ABC):
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        Are higher scores better? If None, crema will try both and use the
+        True if higher scores better, False if lower scares are better.
+        If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
         this parameter is ignored.
@@ -263,16 +265,16 @@ class TdcConfidence(Confidence):
     target and decoy PSMs meeting a specified score threshold, the false
     discovery rate (FDR) is estimated as:
 
-    ...math:
-        FDR = \frac{Decoys + 1}{Targets}
+    .. math::
+        FDR = \\frac{Decoys + 1}{Targets}
 
     More formally, let the scores of target and decoy PSMs be indicated as
     :math:`f_1, f_2, ..., f_{m_f}` and :math:`d_1, d_2, ..., d_{m_d}`,
     respectively. For a score threshold :math:`t`, the false discovery
     rate is estimated as:
 
-    ...math:
-        E\\{FDR(t)\\} = \frac{|\\{d_i > t; i=1, ..., m_d\\}| + 1}
+    .. math::
+        E\\{FDR(t)\\} = \\frac{|\\{d_i > t; i=1, ..., m_d\\}| + 1}
         {\\{|f_i > t; i=1, ..., m_f|\\}}
 
     The reported q-value for each PSM is the minimum FDR at which that
@@ -287,7 +289,8 @@ class TdcConfidence(Confidence):
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        Are higher scores better? If None, crema will try both and use the
+        True if higher scores better, False if lower scares are better.
+        If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
         this parameter is ignored.
@@ -306,7 +309,6 @@ class TdcConfidence(Confidence):
     decoy_confidence_estimates : Dict
         A dictionary containing the confidence estimates for the decoy hits at
         each level, each as a :py:class:`pandas.DataFrame`
-
     """
 
     def __init__(self, psms, score_column=None, desc=None, eval_fdr=0.01):

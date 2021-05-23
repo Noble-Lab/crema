@@ -9,7 +9,6 @@ import pandas as pd
 
 import crema
 from crema.parsers.crux import read_crux
-from ..fixtures import *
 
 
 def test_read_crux(real_crux_txt):

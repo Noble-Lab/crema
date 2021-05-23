@@ -1,4 +1,0 @@
-Result
-=========
-
-.. automodule:: crema.result

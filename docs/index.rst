@@ -10,10 +10,9 @@
    :caption: crema
 
    self
-   vignettes/index.rst
    cli.rst
    api/index.rst
-   notes.rst
+   Changelog <changelog.rst>
 
 
 Getting Started
@@ -54,7 +53,12 @@ package manager.
 
 crema also depends on several Python packages:
 
+- `numba <http://numba.pydata.org/>`_
+- `numpy <https://numpy.org/>`_
 - `pandas <https://pandas.pydata.org/>`_
+- `pyteomics <https://pyteomics.readthedocs.io/en/latest/>`_
+
+
 
 
 We recommend using `pip` to install crema. Missing dependencies will also
@@ -69,21 +73,28 @@ Basic Usage
 Use **crema** from the Command Line
 ###################################
 
-Simple crema analyses can be performed from the command line:
+If your input files are in the mzTab or Crux tab-delimited formats, then simple crema analyses can be performed
+straight from the command line!
+
+Suppose your mzTab file is located at the directory "data/psms.mztab". Simply run the following command:
 
 .. code-block:: bash
 
-   $ crema data/single_basic.csv
+   $ crema data/psms.mztab
 
-That's it. Giving crema nothing but the input file will force it to search for
-three specific column names: "combined p-value," "scan," and "target/decoy". The software will then run the
-target-decoy competition FDR estimation method using the information from these columns
+Suppose your Crux files are located at the directory "data/target_psms.txt" and "data/decoy_psms.txt".
+Simply run the following command:
+
+.. code-block:: bash
+
+   $ crema data/target_psms.txt data/decoy_psms.txt
+
+That's it. The software will then run the target-decoy competition FDR estimation method using information from these columns
 to calculate confidence estimates for the given data.
 
-Your results will be saved in your working directory as a
-csv file named "crema.psm_results.txt". This file will contain two additional columns
-("false discovery rate" and "q-value") that are
-appended to the initial few columns specified from the input file.
+Your results will be saved in your working directory as .txt files named "crema.psms.txt" and "crema.peptides.txt".
+These files will contain an additional column ("crema q-value") that is appended to several columns
+(specifically those that identify the psm, peptide sequence, and score) parsed from the input file.
 
 For a full list of parameters, see the :doc:`Command Line Interface <cli>`.
 
@@ -94,13 +105,13 @@ Here is a simple demonstration of how to use crema as an API:
 
 .. code-block:: Python
 
-   >>> import crema
-   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"])
-   >>> results = crema.calculate_tdc(psms)
-   >>> results.write_csv("save_to_here.txt")
+    >>> import crema
+    >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
+    >>> psms = crema.read_crux(input_files)
+    >>> results =  psms.assign_confidence(score_column="combined p-value", desc=True, eval_fdr=0.01, method="tdc")
+    >>> results.to_txt(ouput_dir="example_output_dir", file_root="test", sep="\t", decoys=False)
 
 Let's break this down and see what's really happening.
-
 
 First, start up the Python interpreter:
 
@@ -114,34 +125,39 @@ Next, import crema as a package:
 
    >>> import crema
 
-Call the :doc:`read_file() <api/functions>` method and pass in the desired input files. In this example,
-the files "data/multi_target.csv" and "data/multi_decoy.csv" are already in the required
-format. Thus we do not need to specify column names.
-The :doc:`read_file() <api/functions>` method will return a :doc:`dataset <api/dataset>` object that we will save as
-"psms" in this example:
+Call the :doc:`read_crux() <api/functions>` method and pass in the desired input files. Note that
+the files "data/target_psms.txt" and "data/decoy_psms.txt" are already in the required Crux file
+format. The :doc:`read_crux() <api/functions>` method will return a :doc:`dataset <api/dataset>` object
+that we will save as "psms" in this example:
 
 .. code-block:: Python
 
-   >>> psms = crema.read_file(["data/multi_target.csv", "data/multi_decoy.csv"])
+   >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
+   >>> psms = crema.read_crux(input_files)
 
-Execute the desired FDR estimation method by calling the :doc:`calculate_[algorithm] <api/functions>` method and
-passing in the dataset object that we created above. This operation will return a :doc:`result <api/result>` object that
-we will save as "results":
-
-.. code-block:: Python
-
-   >>> results = crema.calculate_tdc(psms)
-
-Result objects contain a :doc:`write_file() <api/result>` method that allows you to write your result to a csv file.
-Your results will be saved in your working directory (unless otherwise specified) as a
-csv file named by the parameter you pass when calling the method.
-This file will contain two additional columns
-("false discovery rate" and "q-value") that are
-appended to the initial few columns specified from the input file.
+Execute the desired FDR estimation method by calling the :doc:`assign_confidence <api/functions>` method on
+the dataset object that we created above.
+This operation will return a :doc:`confidence <api/confidence>` object that we will save as "results":
 
 .. code-block:: Python
 
-   >>> results.write_file("save_to_here.txt")
+   >>> results =  psms.assign_confidence(score_column="combined p-value", desc=True, eval_fdr=0.01, method="tdc")
+
+Note: The parameters passed here are optional and are only specified here for
+demonstration. Further details can be found in the documentation for the :doc:`dataset <api/dataset>` class.
+
+Confidence objects contain a :doc:`to_txt() <api/confidence>` method that allows you to write your results to a txt file.
+Your results will be saved in your working directory (unless otherwise specified)
+as .txt files named "crema.psms.txt" and "crema.peptides.txt".
+These files will contain an additional column ("crema q-value") that is appended to several columns
+(specifically those that identify the psm, peptide sequence, and score) parsed from the input file.
+
+.. code-block:: Python
+
+   >>> results.to_txt(ouput_dir="example_output_dir", file_root=None, sep="\t", decoys=False)
+
+Note: The parameters passed here are optional and are only specified here for
+demonstration. Further details can be found in the documentation for the :doc:`confidence <api/confidence>` class.
 
 That's all there is to it! You have successfully used crema as an API to
 calculate confidence estimates for your data.

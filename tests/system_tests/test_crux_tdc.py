@@ -2,7 +2,7 @@
 import unittest
 
 import numpy as np
-from ..fixtures import *
+import pandas as pd
 from crema.parsers.crux import read_crux
 
 
