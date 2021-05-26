@@ -42,6 +42,7 @@ class PsmDataset:
 
     Attributes
     ----------
+    methods : dict
     data : pandas.DataFrame
     spectrum_columns : list of str
     score_columns : list of str
@@ -49,6 +50,10 @@ class PsmDataset:
     peptide_column : str
     peptide_pairing : dict
     """
+
+    methods = {
+        "tdc": TdcConfidence,
+    }
 
     def __init__(
         self,
@@ -65,7 +70,7 @@ class PsmDataset:
         self.score_columns = listify(score_columns)
         self.target_column = target_column
         self.peptide_column = peptide_column
-        self.peptide_pairing = peptide_pairing
+        self._peptide_pairing = peptide_pairing
 
         fields = sum(
             [
@@ -105,29 +110,28 @@ class PsmDataset:
         """An array indicating whether each PSM is a target"""
         return self[self.target_column].values
 
+    @property
+    def peptide_pairing(self):
+        """A dictionary containing target/decoy peptide pairs"""
+        return self._peptide_pairing
+
     def __getitem__(self, column):
         """Return the specified column"""
         return self._data.loc[:, column]
 
-    def add_peptide_pairing(self, pairing):
-        """Adds a target/decoy peptide pairing to this collection of PSMs
-
-        Parameters
-        ----------
-        pairing : dict
-            A dictionary containing the target/decoy mapping to be used
-            during TDC
-
-        """
-        if pairing is None:
-            return
-        if isinstance(pairing, dict):
-            self.peptide_pairing = pairing
-        else:
-            raise ValueError(
-                "The provided peptide pairing is not in the form of a "
-                "Python Dict"
-            )
+    @peptide_pairing.setter
+    def peptide_pairing(self, pairing):
+        """Set the peptide pairing"""
+        self._peptide_pairing = pairing
+        # if pairing is None:
+        #     self._peptide_pairing = None
+        # if isinstance(pairing, dict):
+        #     self._peptide_pairing = pairing
+        # else:
+        #     raise ValueError(
+        #         "The provided peptide pairing is not in the form of a "
+        #         "Python Dict"
+        #     )
 
     def assign_confidence(
         self,
@@ -136,12 +140,8 @@ class PsmDataset:
         eval_fdr=0.01,
         method="tdc",
     ):
-        """Assign confidences estimates to this collection of PSMs."""
-        methods = {
-            "tdc": TdcConfidence,
-        }
 
-        conf = methods[method](
+        conf = self.methods[method](
             psms=self,
             score_column=score_column,
             desc=desc,
@@ -169,7 +169,7 @@ class PsmDataset:
         n_passing : int
             The number of PSMs that meet the specified FDR threshold.
         desc : bool
-            True if higher scores better, False if lower scares are better.
+            True if higher scores better, False if lower scores are better.
         """
         best_score = None
         best_passing = 0

@@ -1,5 +1,5 @@
 """The :py:class:`Confidence` class is used to define a collection of
-peptide-spectrum matches with calculated False Discovery Rates and Q-Values.
+peptide-spectrum matches with calculated false discovery rates (FDR) and q-values.
 """
 import logging
 from abc import ABC, abstractmethod
@@ -7,8 +7,7 @@ from abc import ABC, abstractmethod
 import pandas as pd
 
 from . import qvalues
-from .utils import listify
-from .utils import new_column
+from . import utils
 from .writers.txt import to_txt
 
 LOGGER = logging.getLogger(__name__)
@@ -32,7 +31,7 @@ def assign_confidence(
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        True if higher scores better, False if lower scares are better.
+        True if higher scores better, False if lower scores are better.
         If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
@@ -48,7 +47,7 @@ def assign_confidence(
     Confidence object or List of Confidence objects
         The confidence estimates for each PsmDataset.
     """
-    psms = listify(psms)
+    psms = utils.listify(psms)
     confs = []
     for dset in psms:
         conf = dset.assign_confidence(
@@ -80,7 +79,7 @@ class Confidence(ABC):
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        True if higher scores better, False if lower scares are better.
+        True if higher scores better, False if lower scores are better.
         If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
@@ -207,10 +206,9 @@ class Confidence(ABC):
         else:
             keep = "first"
 
-        group_columns = listify(group_columns)
-        out_df = df.sample(
-            frac=1
-        ).sort_values(  # This is so ties are broken randomly.
+        group_columns = utils.listify(group_columns)
+        # Shuffle dataframe so ties are broken randomly.
+        out_df = df.sample(frac=1).sort_values(
             [self._score_column] + group_columns
         )
         for columns in group_columns:
@@ -289,7 +287,7 @@ class TdcConfidence(Confidence):
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        True if higher scores better, False if lower scares are better.
+        True if higher scores better, False if lower scores are better.
         If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
@@ -328,11 +326,11 @@ class TdcConfidence(Confidence):
         for level, group_cols in zip(self.levels, self._level_columns):
             # First perform the competition step
             if level == "peptides" and pairing is not None:
-                pair_col = new_column("pair", df)
+                pair_col = utils.new_column("pair", df)
                 df[pair_col] = [
                     pairing.get(sequence) for sequence in df[group_cols]
                 ]
-                group_cols = listify(group_cols) + [pair_col]
+                group_cols = utils.listify(group_cols) + [pair_col]
             df = self._compete(df, group_cols)
             targets = df[self.dataset.target_column]
 

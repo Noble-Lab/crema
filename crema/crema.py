@@ -19,7 +19,7 @@ def main():
     args = Params()
 
     # Set up logging files
-    log_file = "crema.log"
+    log_file = "crema.log.txt"
     if args.file_root is not None:
         log_file = args.file_root + "." + log_file
     if args.output_dir is None:

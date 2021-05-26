@@ -1,12 +1,11 @@
 """A parser for the crux tab-delimited format"""
-import logging
 import re
+import logging
 
-import time
 import pandas as pd
+
 from .txt import read_txt
-from ..utils import listify
-from ..utils import new_column
+from .. import utils
 
 LOGGER = logging.getLogger(__name__)
 
@@ -50,7 +49,7 @@ def read_crux(txt_files, copy_data=True):
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))
     else:
-        txt_files = listify(txt_files)
+        txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
             with open(txt_file) as txt_ref:
                 cols = txt_ref.readline().rstrip().split("\t")
@@ -90,7 +89,7 @@ def read_crux(txt_files, copy_data=True):
         sep="\t",
         copy_data=False,
     )
-    psms.add_peptide_pairing(_create_pairing(pairing_data, pairing_fields))
+    psms.peptide_pairing = _create_pairing(pairing_data, pairing_fields)
     return psms
 
 
@@ -129,34 +128,25 @@ def _create_pairing(pairing_data, pairing_fields):
         A map of target and decoy peptide sequence pairings
     """
     # ensure pairing_data dataframe contains all necessary columns
-    for field in pairing_fields:
-        if field not in pairing_data.columns:
-            return None
+    if not set(pairing_fields).issubset(pairing_data.columns):
+        return None
 
     # split pairing_data into targets and decoys
-    targets = (
-        pairing_data[pairing_data["target/decoy"] == "target"]
-        .sample(frac=1)
+    pairing_data = (
+        pairing_data.sample(frac=1)
         .drop_duplicates(["peptide mass", "sequence"])
         .reset_index(drop=True)
     )
-    decoys = (
-        pairing_data[pairing_data["target/decoy"] == "decoy"]
-        .sample(frac=1)
-        .sort_values("original target sequence")
-        .drop_duplicates(["peptide mass", "sequence"])
-        .reset_index(drop=True)
+    is_decoy = pairing_data["target/decoy"] == "decoy"
+    targets = pairing_data.loc[~is_decoy, :]
+    decoys = pairing_data.loc[is_decoy, :].sort_values(
+        "original target sequence"
     )
 
-    raw_sequence = new_column("raw_sequence", targets)
-    targets = pd.concat(
-        [
-            targets,
-            targets["sequence"]
-            .str.replace(r"\[\d+.\d+\]", "", regex=True)
-            .rename(raw_sequence),
-        ],
-        axis=1,
+    # create new column containing target peptide sequences without modifications
+    raw_sequence = utils.new_column("raw_sequence", targets)
+    targets[raw_sequence] = targets["sequence"].str.replace(
+        r"\[.*?\]", "", regex=True
     )
 
     pairing = {}
@@ -214,6 +204,6 @@ def _check_match(target_mass, target_sequence, decoy_mass, decoy_sequence):
     if target_mass != decoy_mass:
         return False
     # check that modifications are on the same amino acids
-    target_mod = sorted(re.findall(r"\w\[\d+.\d+\]", target_sequence))
-    decoy_mod = sorted(re.findall(r"\w\[\d+.\d+\]", decoy_sequence))
+    target_mod = sorted(re.findall(r"\w\[.*?\]", target_sequence))
+    decoy_mod = sorted(re.findall(r"\w\[.*?\]", decoy_sequence))
     return target_mod == decoy_mod

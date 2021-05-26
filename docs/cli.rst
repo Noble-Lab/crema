@@ -10,11 +10,11 @@ Output
 ---------
 There will be three output files:
 
-#. A txt file named "crema.psms.txt" containing an additional column (crema q-value) of psm level confidence estimate results appended to the original data from the input file.
+#. A txt file named "crema.psms.txt" containing an additional column (crema q-value) of psm level confidence estimate results appended to the spectrum, peptide, and score columns from the input file.
 
-#. A txt file named "crema.peptides.txt" containing an additional column (crema q-value) of peptide level confidence estimate results appended to the original data from the input file.
+#. A txt file named "crema.peptides.txt" containing an additional column (crema q-value) of peptide level confidence estimate results appended to the spectrum, peptide, and score columns from the input file.
 
-#. A txt file named "crema.log" containing the logging information from using crema.
+#. A txt file named "crema.log.txt" containing the logging information from using crema.
 
 Note that the program writes to the current working directory by default:
 
