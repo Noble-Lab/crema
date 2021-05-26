@@ -40,7 +40,7 @@ def assign_confidence(
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
     method : {"tdc"}, optional
-        The method for crema to use when calculating the confidence estiamtes.
+        The method for crema to use when calculating the confidence estimates.
 
     Returns
     -------

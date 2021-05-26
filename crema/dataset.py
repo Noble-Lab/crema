@@ -42,12 +42,12 @@ class PsmDataset:
 
     Attributes
     ----------
-    methods : dict
     data : pandas.DataFrame
     spectrum_columns : list of str
     score_columns : list of str
     target_column : str
     peptide_column : str
+    methods : dict
     peptide_pairing : dict
     """
 
@@ -140,6 +140,31 @@ class PsmDataset:
         eval_fdr=0.01,
         method="tdc",
     ):
+        """Assign confidence estimates to this collection of peptide-spectrum matches.
+
+            Parameters
+            ----------
+            score_column : str, optional
+                The score by which to rank the PSMs for confidence estimation. If
+                :code:`None`, the score that yields the most PSMs at the specified
+                false discovery rate threshold (`eval_fdr`), will be used.
+            desc : bool, optional
+                True if higher scores better, False if lower scores are better.
+                If None, crema will try both and use the
+                choice that yields the most PSMs at the specified false discovery
+                rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
+                this parameter is ignored.
+            eval_fdr : float, optional
+                The false discovery rate threshold used to evaluate the best
+                `score_column` and `desc` to choose. This should range from 0 to 1.
+            method : {"tdc"}, optional
+                The method for crema to use when calculating the confidence estimates.
+
+            Returns
+            -------
+            Confidence object
+                The confidence estimates for this PsmDataset.
+            """
 
         conf = self.methods[method](
             psms=self,
