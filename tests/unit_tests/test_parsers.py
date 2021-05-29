@@ -41,7 +41,8 @@ def test_read_crux_peptide_pairing(mod_target_crux_txt, mod_decoy_crux_txt):
         "GGHMDR": "GDMGHR",
     }
     psms = read_crux(
-        [mod_decoy_crux_txt, mod_target_crux_txt], peptide_tdc=True,
+        [mod_decoy_crux_txt, mod_target_crux_txt],
+        peptide_tdc=True,
     )
     assert expected_peptide_pairing == psms.peptide_pairing
 

@@ -35,7 +35,9 @@ def test_crux_tdc(target_crux_txt, decoy_crux_txt, tmp_path):
         ],
     )
     expected_decoy_psms = pd.DataFrame(
-        [[9, 90, "DRIUAN", 0.5, 2 / 9],],
+        [
+            [9, 90, "DRIUAN", 0.5, 2 / 9],
+        ],
         columns=[
             "scan",
             "spectrum precursor m/z",
@@ -60,7 +62,9 @@ def test_crux_tdc(target_crux_txt, decoy_crux_txt, tmp_path):
         ],
     )
     expected_decoy_peptides = pd.DataFrame(
-        [[9, 90, "DRIUAN", 0.5, 2 / 9],],
+        [
+            [9, 90, "DRIUAN", 0.5, 2 / 9],
+        ],
         columns=[
             "scan",
             "spectrum precursor m/z",

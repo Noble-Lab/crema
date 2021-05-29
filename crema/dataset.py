@@ -135,7 +135,11 @@ class PsmDataset:
         return self._data.loc[:, column]
 
     def assign_confidence(
-        self, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
+        self,
+        score_column=None,
+        desc=None,
+        eval_fdr=0.01,
+        method="tdc",
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
@@ -166,7 +170,10 @@ class PsmDataset:
             score_column, _, desc = self.find_best_score(eval_fdr)
 
         conf = self.methods[method](
-            psms=self, score_column=score_column, desc=desc, eval_fdr=eval_fdr,
+            psms=self,
+            score_column=score_column,
+            desc=desc,
+            eval_fdr=eval_fdr,
         )
 
         return conf

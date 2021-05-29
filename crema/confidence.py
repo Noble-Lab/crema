@@ -12,7 +12,11 @@ LOGGER = logging.getLogger(__name__)
 
 
 def assign_confidence(
-    psms, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
+    psms,
+    score_column=None,
+    desc=None,
+    eval_fdr=0.01,
+    method="tdc",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -328,7 +332,9 @@ class TdcConfidence(Confidence):
 
             # Now calculate q-values:
             df["crema q-value"] = qvalues.tdc(
-                scores=df[self._score_column], target=targets, desc=self._desc,
+                scores=df[self._score_column],
+                target=targets,
+                desc=self._desc,
             )
 
             LOGGER.info(

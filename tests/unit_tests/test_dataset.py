@@ -61,7 +61,8 @@ def test_getitem(simple_df):
 
     pd.testing.assert_series_equal(psms["scan"], simple_df["scan"])
     pd.testing.assert_series_equal(
-        psms["combined p-value"], simple_df["combined p-value"],
+        psms["combined p-value"],
+        simple_df["combined p-value"],
     )
 
 
