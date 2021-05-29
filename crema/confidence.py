@@ -4,8 +4,6 @@ peptide-spectrum matches with calculated false discovery rates (FDR) and q-value
 import logging
 from abc import ABC, abstractmethod
 
-import pandas as pd
-
 from . import qvalues
 from . import utils
 from .writers.txt import to_txt
@@ -14,11 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def assign_confidence(
-    psms,
-    score_column=None,
-    desc=None,
-    eval_fdr=0.01,
-    method="tdc",
+    psms, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -111,7 +105,7 @@ class Confidence(ABC):
     }
 
     @abstractmethod
-    def assign_confidence(self):
+    def _assign_confidence(self):
         """How should confidence estimates be assigned?
 
         Each method will have its own way of doing this. The results
@@ -120,14 +114,12 @@ class Confidence(ABC):
         """
         pass
 
-    def __init__(self, psms, score_column=None, desc=None, eval_fdr=0.01):
+    def __init__(self, psms, score_column, desc=None, eval_fdr=0.01):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
             raise ValueError("'eval_fdr' should be between 0 and 1.")
 
-        if score_column is None:
-            score_column, _, desc = psms.find_best_score(eval_fdr)
-        elif desc is None:
+        if desc is None:
             scores, targ = psms[score_column], psms.targets
             t_pass = (qvalues.tdc(scores, targ, desc=True) <= eval_fdr).sum()
             f_pass = (qvalues.tdc(scores, targ, desc=False) <= eval_fdr).sum()
@@ -140,14 +132,14 @@ class Confidence(ABC):
         self._eval_fdr = eval_fdr
         self._levels = ("psms", "peptides")
         self._level_columns = (
-            self.dataset.spectrum_columns,
-            self.dataset.peptide_column,
+            self.dataset._spectrum_columns,
+            self.dataset._peptide_column,
         )
         self.confidence_estimates = {}
         self.decoy_confidence_estimates = {}
 
         # Assign confidence estimates
-        self.assign_confidence()
+        self._assign_confidence()
 
         # Clean up tables
         self._prettify_tables()
@@ -170,16 +162,16 @@ class Confidence(ABC):
     def _prettify_tables(self):
         """Reorder the columns of the result tables for consistency"""
         cols = [
-            *self.dataset.spectrum_columns,
-            self.dataset.peptide_column,
+            *self.dataset._spectrum_columns,
+            self.dataset._peptide_column,
             self._score_column,
             "crema q-value",
         ]
         for level, df in self.confidence_estimates.items():
-            self.confidence_estimates[level] = df[cols]
+            self.confidence_estimates[level] = df.loc[:, cols]
 
         for level, df in self.decoy_confidence_estimates.items():
-            self.decoy_confidence_estimates[level] = df[cols]
+            self.decoy_confidence_estimates[level] = df.loc[:, cols]
 
     def _compete(self, df, group_columns):
         """Perform target-decoy competition
@@ -208,11 +200,11 @@ class Confidence(ABC):
 
         group_columns = utils.listify(group_columns)
         # Shuffle dataframe so ties are broken randomly.
-        out_df = df.sample(frac=1).sort_values(
-            [self._score_column] + group_columns
+        out_df = (
+            df.sample(frac=1)
+            .sort_values([self._score_column] + group_columns)
+            .drop_duplicates(group_columns, keep=keep)
         )
-        for columns in group_columns:
-            out_df = out_df.drop_duplicates(columns, keep=keep)
         return out_df
 
     def __getitem__(self, column):
@@ -319,26 +311,24 @@ class TdcConfidence(Confidence):
             psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr
         )
 
-    def assign_confidence(self):
+    def _assign_confidence(self):
         """Assign confidence estimates using target-decoy competition"""
         df = self.data
         pairing = self.dataset.peptide_pairing
+        pair_col = utils.new_column("pairing", df)
         for level, group_cols in zip(self.levels, self._level_columns):
             # First perform the competition step
             if level == "peptides" and pairing is not None:
-                pair_col = utils.new_column("pair", df)
-                df[pair_col] = [
-                    pairing.get(sequence) for sequence in df[group_cols]
-                ]
+                df[pair_col] = df["sequence"].map(lambda x: pairing.get(x, x))
                 group_cols = utils.listify(group_cols) + [pair_col]
+                group_cols.remove("sequence")
+
             df = self._compete(df, group_cols)
-            targets = df[self.dataset.target_column]
+            targets = df[self.dataset._target_column]
 
             # Now calculate q-values:
             df["crema q-value"] = qvalues.tdc(
-                scores=df[self._score_column],
-                target=targets,
-                desc=self._desc,
+                scores=df[self._score_column], target=targets, desc=self._desc,
             )
 
             LOGGER.info(

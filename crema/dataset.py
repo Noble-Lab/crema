@@ -66,18 +66,18 @@ class PsmDataset:
         copy_data=True,
     ):
         """Initialize a PsmDataset object."""
-        self.spectrum_columns = listify(spectrum_columns)
         self.score_columns = listify(score_columns)
-        self.target_column = target_column
-        self.peptide_column = peptide_column
+        self._spectrum_columns = listify(spectrum_columns)
+        self._target_column = target_column
+        self._peptide_column = peptide_column
         self._peptide_pairing = peptide_pairing
 
         fields = sum(
             [
-                self.spectrum_columns,
+                self._spectrum_columns,
                 self.score_columns,
-                [self.target_column],
-                [self.peptide_column],
+                [self._target_column],
+                [self._peptide_column],
             ],
             [],
         )
@@ -96,9 +96,24 @@ class PsmDataset:
             raise ValueError("No target PSMs were detected.")
 
     @property
+    def columns(self):
+        """The columns of the PSM :py:class:`pandas.DataFrame`"""
+        return self._data.columns
+
+    @property
     def data(self):
         """The collection of PSMs as a :py:class:`pandas.DataFrame`."""
-        return self._data
+        return self._data.copy()
+
+    @property
+    def spectra(self):
+        """The mass spectrum identifiers as a :py:class:`pandas.DataFrame`."""
+        return self[self._spectrum_columns]
+
+    @property
+    def peptides(self):
+        """The peptides as a :py:class:`pandas.Series`."""
+        return self[self._peptide_column]
 
     @property
     def scores(self):
@@ -108,7 +123,7 @@ class PsmDataset:
     @property
     def targets(self):
         """An array indicating whether each PSM is a target"""
-        return self[self.target_column].values
+        return self[self._target_column].values
 
     @property
     def peptide_pairing(self):
@@ -119,26 +134,8 @@ class PsmDataset:
         """Return the specified column"""
         return self._data.loc[:, column]
 
-    @peptide_pairing.setter
-    def peptide_pairing(self, pairing):
-        """Set the peptide pairing"""
-        self._peptide_pairing = pairing
-        # if pairing is None:
-        #     self._peptide_pairing = None
-        # if isinstance(pairing, dict):
-        #     self._peptide_pairing = pairing
-        # else:
-        #     raise ValueError(
-        #         "The provided peptide pairing is not in the form of a "
-        #         "Python Dict"
-        #     )
-
     def assign_confidence(
-        self,
-        score_column=None,
-        desc=None,
-        eval_fdr=0.01,
-        method="tdc",
+        self, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
@@ -165,12 +162,11 @@ class PsmDataset:
         Confidence object
             The confidence estimates for this PsmDataset.
         """
+        if score_column is None:
+            score_column, _, desc = self.find_best_score(eval_fdr)
 
         conf = self.methods[method](
-            psms=self,
-            score_column=score_column,
-            desc=desc,
-            eval_fdr=eval_fdr,
+            psms=self, score_column=score_column, desc=desc, eval_fdr=eval_fdr,
         )
 
         return conf

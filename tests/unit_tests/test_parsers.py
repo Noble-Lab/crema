@@ -14,7 +14,7 @@ def test_read_crux(real_crux_txt):
     psms = crema.read_crux(real_crux_txt)
     assert isinstance(psms.data, pd.DataFrame)
     assert psms.data.shape == (21818, 11)
-    assert psms.spectrum_columns == ["scan", "spectrum precursor m/z"]
+    assert list(psms.spectra.columns) == ["scan", "spectrum precursor m/z"]
 
     scores = {
         "refactored xcorr",
@@ -36,24 +36,14 @@ def test_read_crux_peptide_pairing(mod_target_crux_txt, mod_decoy_crux_txt):
     """Test that peptide pairing is correctly created when parsing crux files"""
     expected_peptide_pairing = {
         "ALLSLR": "ALLLSR",
-        "ALLLSR": "ALLLSR",
-        "AILSIR": "AILSIR",
-        "LAVITR": "LAVITR",
         "QTPPAR": "QTAPPR",
-        "QTAPPR": "QTAPPR",
-        "IPLVNL": "IPLVNL",
-        "SRGPPR": "SRGPPR",
         "GEVPN[0.98]R": "GN[0.98]PEVR",
-        "GN[0.98]PEVR": "GN[0.98]PEVR",
         "GGHMDR": "GDMGHR",
-        "GDMGHR": "GDMGHR",
-        "NPANRT": "NPANRT",
-        "SADAGPR": "SADAGPR",
     }
-    psms = read_crux([mod_decoy_crux_txt, mod_target_crux_txt])
-    unittest.TestCase().assertDictEqual(
-        expected_peptide_pairing, psms.peptide_pairing
+    psms = read_crux(
+        [mod_decoy_crux_txt, mod_target_crux_txt], peptide_tdc=True,
     )
+    assert expected_peptide_pairing == psms.peptide_pairing
 
 
 def test_read_txt(basic_crux_csv):
@@ -68,9 +58,9 @@ def test_read_txt(basic_crux_csv):
     )
     assert isinstance(psms.data, pd.DataFrame)
     assert psms.data.shape == (10, 5)
-    assert psms.spectrum_columns == ["scan"]
+    assert psms.spectra.columns == ["scan"]
     assert set(psms.score_columns) == {"combined p-value", "x"}
-    assert psms.peptide_column == "sequence"
+    assert psms.peptides.name == "sequence"
     assert psms.targets.shape == (10,)
     assert psms.targets.sum() == 6
     assert (~psms.targets).sum() == 4
