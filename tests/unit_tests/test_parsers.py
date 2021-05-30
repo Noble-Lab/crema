@@ -1,12 +1,10 @@
 """
 These are unit tests for functions within parsers.py:
 """
-import unittest
 import pytest
 import pandas as pd
 
 import crema
-from crema.parsers.crux import read_crux
 
 
 def test_read_crux(real_crux_txt):
@@ -40,7 +38,7 @@ def test_read_crux_peptide_pairing(mod_target_crux_txt, mod_decoy_crux_txt):
         "GEVPN[0.98]R": "GN[0.98]PEVR",
         "GGHMDR": "GDMGHR",
     }
-    psms = read_crux(
+    psms = crema.read_crux(
         [mod_decoy_crux_txt, mod_target_crux_txt],
         peptide_tdc=True,
     )

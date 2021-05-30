@@ -82,17 +82,17 @@ def test_crux_tdc(target_crux_txt, decoy_crux_txt, tmp_path):
     )
     np.array_equal(
         expected_target_psms.values,
-        conf.confidence_estimates.get("psms").values,
+        conf.confidence_estimates["psms"].values,
     )
     np.array_equal(
         expected_decoy_psms.values,
-        conf.decoy_confidence_estimates.get("psms").values,
+        conf.decoy_confidence_estimates["psms"].values,
     )
     np.array_equal(
         expected_target_peptides.values,
-        conf.confidence_estimates.get("peptides").values,
+        conf.confidence_estimates["peptides"].values,
     )
     np.array_equal(
         expected_decoy_peptides.values,
-        conf.decoy_confidence_estimates.get("peptides").values,
+        conf.decoy_confidence_estimates["peptides"].values,
     )
