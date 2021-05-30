@@ -11,9 +11,9 @@ Once read, a collection of PSMs is stored in a :py:class:`~crema.dataset.PsmData
 Calling the :py:func:`~crema.assign_confidence()` function will calculate confidence estimates
 for the respective psm data using the specified confidence estimate method.
 
-This will produce a :py:class:`~crema.Confidence` object that stores the calculated
+This will produce a :py:class:`~crema.confidence` object that stores the calculated
 confidence estimates via false discovery rates (FDR) and q-values. Results stored in a
-:py:class:`~crema.Confidence` object can be exported by calling the :py:func:`~crema.to_txt()` function.
+:py:class:`~crema.confidence` object can be exported by calling the :py:func:`~crema.to_txt()` function.
 
 
 .. toctree::
