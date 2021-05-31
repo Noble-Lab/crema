@@ -28,14 +28,14 @@ html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(
 /** Signature bg **/
 html.writer-html4 .rst-content dl:not(.docutils)>dt,
 html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)>dt {
-    background: #C9F4ED;
-    border-top: 3px solid #24B8A0;
+    background: #f5aa64;
+    border-top: 3px solid #a15f22;
 }
 
 /** [source] link **/
 .rst-content .viewcode-back,
 .rst-content .viewcode-link {
-    color: #24B8A0;
+    color: #999999;
 }
 
 /** note **/
@@ -45,7 +45,7 @@ html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(
 
 /** note title **/
 .rst-content .note, .rst-content .seealso, .rst-content .wy-alert-info.admonition, .rst-content .wy-alert-info.admonition-todo, .rst-content .wy-alert-info.attention, .rst-content .wy-alert-info.caution, .rst-content .wy-alert-info.danger, .rst-content .wy-alert-info.error, .rst-content .wy-alert-info.hint, .rst-content .wy-alert-info.important, .rst-content .wy-alert-info.tip, .rst-content .wy-alert-info.warning, .wy-alert.wy-alert-info {
-    background: #c9F4ED;
+    background: #f5aa64;
 }
 
 /** Function call

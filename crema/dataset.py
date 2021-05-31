@@ -30,6 +30,10 @@ class PsmDataset:
         indicated either in square brackets :code:`[]` or parentheses
         :code:`()`. The exact modification format within these entities does
         not matter, so long as it is consistent.
+    peptide_pairing: dict
+        A map of target and decoy peptide sequence pairings to be used for TDC.
+        This should be in the form {key=target_sequence:value=decoy_sequence}
+        where decoy sequences are shuffled versions of target sequences.
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
@@ -43,7 +47,13 @@ class PsmDataset:
     score_columns : list of str
     target_column : str
     peptide_column : str
+    methods : dict
+    peptide_pairing : dict
     """
+
+    methods = {
+        "tdc": TdcConfidence,
+    }
 
     def __init__(
         self,
@@ -52,20 +62,22 @@ class PsmDataset:
         spectrum_columns,
         score_columns,
         peptide_column,
+        peptide_pairing=None,
         copy_data=True,
     ):
         """Initialize a PsmDataset object."""
-        self.spectrum_columns = listify(spectrum_columns)
         self.score_columns = listify(score_columns)
-        self.target_column = target_column
-        self.peptide_column = peptide_column
+        self._spectrum_columns = listify(spectrum_columns)
+        self._target_column = target_column
+        self._peptide_column = peptide_column
+        self._peptide_pairing = peptide_pairing
 
         fields = sum(
             [
-                self.spectrum_columns,
+                self._spectrum_columns,
                 self.score_columns,
-                [self.target_column],
-                [self.peptide_column],
+                [self._target_column],
+                [self._peptide_column],
             ],
             [],
         )
@@ -84,9 +96,24 @@ class PsmDataset:
             raise ValueError("No target PSMs were detected.")
 
     @property
+    def columns(self):
+        """The columns of the PSM :py:class:`pandas.DataFrame`"""
+        return self._data.columns
+
+    @property
     def data(self):
         """The collection of PSMs as a :py:class:`pandas.DataFrame`."""
-        return self._data
+        return self._data.copy()
+
+    @property
+    def spectra(self):
+        """The mass spectrum identifiers as a :py:class:`pandas.DataFrame`."""
+        return self[self._spectrum_columns]
+
+    @property
+    def peptides(self):
+        """The peptides as a :py:class:`pandas.Series`."""
+        return self[self._peptide_column]
 
     @property
     def scores(self):
@@ -96,25 +123,57 @@ class PsmDataset:
     @property
     def targets(self):
         """An array indicating whether each PSM is a target"""
-        return self[self.target_column].values
+        return self[self._target_column].values
+
+    @property
+    def peptide_pairing(self):
+        """A dictionary containing target/decoy peptide pairs"""
+        return self._peptide_pairing
 
     def __getitem__(self, column):
         """Return the specified column"""
         return self._data.loc[:, column]
 
     def assign_confidence(
-        self, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
+        self,
+        score_column=None,
+        desc=None,
+        eval_fdr=0.01,
+        method="tdc",
     ):
-        """Assign confidences estimates to this collection of PSMs.
+        """Assign confidence estimates to this collection of peptide-spectrum matches.
 
+        Parameters
+        ----------
+        score_column : str, optional
+            The score by which to rank the PSMs for confidence estimation. If
+            :code:`None`, the score that yields the most PSMs at the specified
+            false discovery rate threshold (`eval_fdr`), will be used.
+        desc : bool, optional
+            True if higher scores better, False if lower scores are better.
+            If None, crema will try both and use the
+            choice that yields the most PSMs at the specified false discovery
+            rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
+            this parameter is ignored.
+        eval_fdr : float, optional
+            The false discovery rate threshold used to evaluate the best
+            `score_column` and `desc` to choose. This should range from 0 to 1.
+        method : {"tdc"}, optional
+            The method for crema to use when calculating the confidence estimates.
 
+        Returns
+        -------
+        Confidence object
+            The confidence estimates for this PsmDataset.
         """
-        methods = {
-            "tdc": TdcConfidence,
-        }
+        if score_column is None:
+            score_column, _, desc = self.find_best_score(eval_fdr)
 
-        conf = methods[method](
-            psms=self, score_column=score_column, desc=desc, eval_fdr=eval_fdr,
+        conf = self.methods[method](
+            psms=self,
+            score_column=score_column,
+            desc=desc,
+            eval_fdr=eval_fdr,
         )
 
         return conf
@@ -138,7 +197,7 @@ class PsmDataset:
         n_passing : int
             The number of PSMs that meet the specified FDR threshold.
         desc : bool
-            Are higher scores better for the best score?
+            True if higher scores better, False if lower scores are better.
         """
         best_score = None
         best_passing = 0

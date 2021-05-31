@@ -19,7 +19,7 @@ def main():
     args = Params()
 
     # Set up logging files
-    log_file = "crema.log"
+    log_file = "crema.log.txt"
     if args.file_root is not None:
         log_file = args.file_root + "." + log_file
     if args.output_dir is None:
@@ -54,7 +54,9 @@ def main():
         psms = read_mztab(args.psm_files)
 
     conf = psms.assign_confidence(
-        score_column=args.score, eval_fdr=args.eval_fdr, method=args.method,
+        score_column=args.score,
+        eval_fdr=args.eval_fdr,
+        method=args.method,
     )
 
     # Write result to file

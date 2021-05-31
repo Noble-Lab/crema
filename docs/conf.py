@@ -55,7 +55,7 @@ autosummary_generate = True
 autodoc_default_options = {
     "members": True,
     "inherited-members": True,
-    "member-order": "bysource",
+    "member-order": "groupwise",
 }
 
 numpydoc_show_class_members = True

@@ -4,9 +4,8 @@ These are unit tests for the PSM Dataset Class:
 import pytest
 import numpy as np
 import pandas as pd
-from crema import PsmDataset
 
-from ..fixtures import *
+from crema import PsmDataset
 
 
 @pytest.fixture
@@ -40,9 +39,9 @@ def test_properties(simple_df):
     )
 
     pd.testing.assert_frame_equal(psms.data, simple_df, check_like=True)
-    assert psms.spectrum_columns == ["scan", "spectrum precursor m/z"]
+    assert list(psms.spectra.columns) == ["scan", "spectrum precursor m/z"]
     assert psms.score_columns == ["combined p-value", "x"]
-    assert psms.peptide_column == "sequence"
+    assert psms.peptides.name == "sequence"
     pd.testing.assert_frame_equal(
         psms.scores, simple_df.loc[:, ["combined p-value", "x"]]
     )
@@ -63,7 +62,8 @@ def test_getitem(simple_df):
 
     pd.testing.assert_series_equal(psms["scan"], simple_df["scan"])
     pd.testing.assert_series_equal(
-        psms["combined p-value"], simple_df["combined p-value"],
+        psms["combined p-value"],
+        simple_df["combined p-value"],
     )
 
 

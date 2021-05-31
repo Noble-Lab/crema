@@ -8,12 +8,15 @@ Command Line Interface
 
 Output
 ---------
-There will be two output files:
+There will be three output files:
 
-#. A csv file named "crema.psm_results.txt" containing two columns (False Discovery Rate and Q-Value appended to the columns specified from the input file.
-#. A csv file named "crema.logfile.log" containing the logging information from using crema at the CLI.
+#. A txt file named "crema.psms.txt" containing an additional column (crema q-value) of psm level confidence estimate results appended to the spectrum, peptide, and score columns from the input file.
+
+#. A txt file named "crema.peptides.txt" containing an additional column (crema q-value) of peptide level confidence estimate results appended to the spectrum, peptide, and score columns from the input file.
+
+#. A txt file named "crema.log.txt" containing the logging information from using crema.
 
 Note that the program writes to the current working directory by default:
 
 * The name of the output directory can be specified using the ---output_dir argument.
-* A prefix can be added to the output file name be using the ---file_root argument.
+* A prefix can be added to the output file names be using the ---file_root argument.

@@ -1,18 +1,22 @@
-"""The :py:class:`Result` class is used to define a collection of
-peptide-spectrum matches with calculated False Discovery Rates and Q-Values.
+"""The :py:class:`Confidence` class is used to define a collection of
+peptide-spectrum matches with calculated false discovery rates (FDR) and q-values.
 """
 import logging
 from abc import ABC, abstractmethod
 
 from . import qvalues
-from .utils import listify
+from . import utils
 from .writers.txt import to_txt
 
 LOGGER = logging.getLogger(__name__)
 
 
 def assign_confidence(
-    psms, score_column=None, desc=None, eval_fdr=0.01, method="tdc",
+    psms,
+    score_column=None,
+    desc=None,
+    eval_fdr=0.01,
+    method="tdc",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -25,7 +29,8 @@ def assign_confidence(
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        Are higher scores better? If None, crema will try both and use the
+        True if higher scores better, False if lower scores are better.
+        If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
         this parameter is ignored.
@@ -33,14 +38,14 @@ def assign_confidence(
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
     method : {"tdc"}, optional
-        The method for crema to use when calculating the confidence estiamtes.
+        The method for crema to use when calculating the confidence estimates.
 
     Returns
     -------
     Confidence object or List of Confidence objects
         The confidence estimates for each PsmDataset.
     """
-    psms = listify(psms)
+    psms = utils.listify(psms)
     confs = []
     for dset in psms:
         conf = dset.assign_confidence(
@@ -72,7 +77,8 @@ class Confidence(ABC):
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        Are higher scores better? If None, crema will try both and use the
+        True if higher scores better, False if lower scores are better.
+        If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
         this parameter is ignored.
@@ -103,7 +109,7 @@ class Confidence(ABC):
     }
 
     @abstractmethod
-    def assign_confidence(self):
+    def _assign_confidence(self):
         """How should confidence estimates be assigned?
 
         Each method will have its own way of doing this. The results
@@ -112,14 +118,12 @@ class Confidence(ABC):
         """
         pass
 
-    def __init__(self, psms, score_column=None, desc=None, eval_fdr=0.01):
+    def __init__(self, psms, score_column, desc=None, eval_fdr=0.01):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
             raise ValueError("'eval_fdr' should be between 0 and 1.")
 
-        if score_column is None:
-            score_column, _, desc = psms.find_best_score(eval_fdr)
-        elif desc is None:
+        if desc is None:
             scores, targ = psms[score_column], psms.targets
             t_pass = (qvalues.tdc(scores, targ, desc=True) <= eval_fdr).sum()
             f_pass = (qvalues.tdc(scores, targ, desc=False) <= eval_fdr).sum()
@@ -132,14 +136,14 @@ class Confidence(ABC):
         self._eval_fdr = eval_fdr
         self._levels = ("psms", "peptides")
         self._level_columns = (
-            self.dataset.spectrum_columns,
-            self.dataset.peptide_column,
+            self.dataset._spectrum_columns,
+            self.dataset._peptide_column,
         )
         self.confidence_estimates = {}
         self.decoy_confidence_estimates = {}
 
         # Assign confidence estimates
-        self.assign_confidence()
+        self._assign_confidence()
 
         # Clean up tables
         self._prettify_tables()
@@ -162,16 +166,16 @@ class Confidence(ABC):
     def _prettify_tables(self):
         """Reorder the columns of the result tables for consistency"""
         cols = [
-            *self.dataset.spectrum_columns,
-            self.dataset.peptide_column,
+            *self.dataset._spectrum_columns,
+            self.dataset._peptide_column,
             self._score_column,
             "crema q-value",
         ]
         for level, df in self.confidence_estimates.items():
-            self.confidence_estimates[level] = df[cols]
+            self.confidence_estimates[level] = df.loc[:, cols]
 
         for level, df in self.decoy_confidence_estimates.items():
-            self.decoy_confidence_estimates[level] = df[cols]
+            self.decoy_confidence_estimates[level] = df.loc[:, cols]
 
     def _compete(self, df, group_columns):
         """Perform target-decoy competition
@@ -198,10 +202,11 @@ class Confidence(ABC):
         else:
             keep = "first"
 
-        group_columns = listify(group_columns)
+        group_columns = utils.listify(group_columns)
+        # Shuffle dataframe so ties are broken randomly.
         out_df = (
-            df.sample(frac=1)  # This is so ties are broken randomly.
-            .sort_values(group_columns + [self._score_column])
+            df.sample(frac=1)
+            .sort_values([self._score_column] + group_columns)
             .drop_duplicates(group_columns, keep=keep)
         )
         return out_df
@@ -254,16 +259,16 @@ class TdcConfidence(Confidence):
     target and decoy PSMs meeting a specified score threshold, the false
     discovery rate (FDR) is estimated as:
 
-    ...math:
-        FDR = \frac{Decoys + 1}{Targets}
+    .. math::
+        FDR = \\frac{Decoys + 1}{Targets}
 
     More formally, let the scores of target and decoy PSMs be indicated as
     :math:`f_1, f_2, ..., f_{m_f}` and :math:`d_1, d_2, ..., d_{m_d}`,
     respectively. For a score threshold :math:`t`, the false discovery
     rate is estimated as:
 
-    ...math:
-        E\\{FDR(t)\\} = \frac{|\\{d_i > t; i=1, ..., m_d\\}| + 1}
+    .. math::
+        E\\{FDR(t)\\} = \\frac{|\\{d_i > t; i=1, ..., m_d\\}| + 1}
         {\\{|f_i > t; i=1, ..., m_f|\\}}
 
     The reported q-value for each PSM is the minimum FDR at which that
@@ -278,7 +283,8 @@ class TdcConfidence(Confidence):
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
     desc : bool, optional
-        Are higher scores better? If None, crema will try both and use the
+        True if higher scores better, False if lower scores are better.
+        If None, crema will try both and use the
         choice that yields the most PSMs at the specified false discovery
         rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
         this parameter is ignored.
@@ -297,7 +303,6 @@ class TdcConfidence(Confidence):
     decoy_confidence_estimates : Dict
         A dictionary containing the confidence estimates for the decoy hits at
         each level, each as a :py:class:`pandas.DataFrame`
-
     """
 
     def __init__(self, psms, score_column=None, desc=None, eval_fdr=0.01):
@@ -310,17 +315,26 @@ class TdcConfidence(Confidence):
             psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr
         )
 
-    def assign_confidence(self):
+    def _assign_confidence(self):
         """Assign confidence estimates using target-decoy competition"""
         df = self.data
+        pairing = self.dataset.peptide_pairing
+        pair_col = utils.new_column("pairing", df)
         for level, group_cols in zip(self.levels, self._level_columns):
             # First perform the competition step
+            if level == "peptides" and pairing is not None:
+                df[pair_col] = df["sequence"].map(lambda x: pairing.get(x, x))
+                group_cols = utils.listify(group_cols) + [pair_col]
+                group_cols.remove("sequence")
+
             df = self._compete(df, group_cols)
-            targets = df[self.dataset.target_column]
+            targets = df[self.dataset._target_column]
 
             # Now calculate q-values:
             df["crema q-value"] = qvalues.tdc(
-                scores=df[self._score_column], target=targets, desc=self._desc,
+                scores=df[self._score_column],
+                target=targets,
+                desc=self._desc,
             )
 
             LOGGER.info(
