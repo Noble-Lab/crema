@@ -6,7 +6,7 @@ Confidence Estimation for Mass Spectrometry Proteomics
 
 **crema** is a Python package that implements various methods to estimate false discovery rates (FDR)
 in mass spectrometry proteomics experiments. crema focuses on
-methods that rely on the concept of "target-decoy competition." The sole purposes of crema is to do decoy-based FDR
+methods that rely on the concept of "target-decoy competition." The sole purpose of crema is to do decoy-based FDR
 estimation, and to do it well. As a result, crema is lightweight and flexible. It has minimal dependencies and
 supports a wide range of input and output formats. On top of that, it is extremely simple to use.
 
