@@ -12,7 +12,7 @@
    self
    cli.rst
    api/index.rst
-   Changelog <changelog.rst>
+   Changelog <CHANGELOG.md>
 
 
 Getting Started

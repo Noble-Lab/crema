@@ -47,6 +47,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinxarg.ext",
     "nbsphinx",
+    "myst_parser",
 ]
 
 nbsphinx_execute = "never"
