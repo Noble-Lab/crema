@@ -166,8 +166,8 @@ def _create_pairing(pairing_data):
     targets[seq] = targets["sequence"].str.replace(r"\[.*?\]", "", regex=True)
 
     # Add an 'ord' column to disambiguate multiple matches per peptide:
-    targets["ord"] = targets.groupby([seq, "mods"]).rank("first")
-    decoys["ord"] = decoys.groupby([seq, "mods"]).rank("first")
+    targets["ord"] = targets.groupby([seq, "mods"])["sequence"].rank("first")
+    decoys["ord"] = decoys.groupby([seq, "mods"])["sequence"].rank("first")
 
     # Inner join the DataFrames to induce a pairing.
     # Targets with a missing decoy will be dropped.
