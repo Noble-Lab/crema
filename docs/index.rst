@@ -108,8 +108,8 @@ Here is a simple demonstration of how to use crema as an API:
     >>> import crema
     >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
     >>> psms = crema.read_crux(input_files)
-    >>> results =  psms.assign_confidence(score_column="combined p-value", desc=True, eval_fdr=0.01, method="tdc")
-    >>> results.to_txt(ouput_dir="example_output_dir", file_root="test", sep="\t", decoys=False)
+    >>> results =  psms.assign_confidence(score_column="combined p-value", desc=False, eval_fdr=0.01, method="tdc")
+    >>> results.to_txt(output_dir="example_output_dir", file_root="test", sep="\t", decoys=False)
 
 Let's break this down and see what's really happening.
 
