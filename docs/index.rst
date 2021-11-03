@@ -56,6 +56,7 @@ crema also depends on several Python packages:
 - `numba <http://numba.pydata.org/>`_
 - `numpy <https://numpy.org/>`_
 - `pandas <https://pandas.pydata.org/>`_
+- `lxml <https://lxml.de/>`_
 - `pyteomics <https://pyteomics.readthedocs.io/en/latest/>`_
 
 
@@ -141,7 +142,7 @@ This operation will return a :doc:`confidence <api/confidence>` object that we w
 
 .. code-block:: Python
 
-   >>> results =  psms.assign_confidence(score_column="combined p-value", desc=True, eval_fdr=0.01, method="tdc")
+   >>> results =  psms.assign_confidence(score_column="combined p-value", desc=False, eval_fdr=0.01, method="tdc")
 
 Note: The parameters passed here are optional and are only specified here for
 demonstration. Further details can be found in the documentation for the :doc:`dataset <api/dataset>` class.
@@ -154,7 +155,7 @@ These files will contain an additional column ("crema q-value") that is appended
 
 .. code-block:: Python
 
-   >>> results.to_txt(ouput_dir="example_output_dir", file_root=None, sep="\t", decoys=False)
+   >>> results.to_txt(output_dir="example_output_dir", file_root=None, sep="\t", decoys=False)
 
 Note: The parameters passed here are optional and are only specified here for
 demonstration. Further details can be found in the documentation for the :doc:`confidence <api/confidence>` class.

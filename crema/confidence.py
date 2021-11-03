@@ -17,6 +17,7 @@ def assign_confidence(
     desc=None,
     eval_fdr=0.01,
     method="tdc",
+	pep_fdr_type="classic"
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -39,6 +40,9 @@ def assign_confidence(
         `score_column` and `desc` to choose. This should range from 0 to 1.
     method : {"tdc"}, optional
         The method for crema to use when calculating the confidence estimates.
+    pep_fdr_type : {"classic","peptide-only",psm-peptide"}, optional
+        The method for crema to use when calculating peptide level confidence
+        estimates.
 
     Returns
     -------
@@ -53,6 +57,7 @@ def assign_confidence(
             desc=desc,
             eval_fdr=eval_fdr,
             method=method,
+            pep_fdr_type=pep_fdr_type
         )
         confs.append(conf)
 
@@ -118,7 +123,8 @@ class Confidence(ABC):
         """
         pass
 
-    def __init__(self, psms, score_column, desc=None, eval_fdr=0.01):
+    def __init__(self, psms, score_column, desc=None, eval_fdr=0.01, \
+                 pep_fdr_type="classic"):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
             raise ValueError("'eval_fdr' should be between 0 and 1.")
@@ -139,6 +145,7 @@ class Confidence(ABC):
             self.dataset._spectrum_columns,
             self.dataset._peptide_column,
         )
+        self._pep_fdr_type = pep_fdr_type
         self.confidence_estimates = {}
         self.decoy_confidence_estimates = {}
 
@@ -291,6 +298,9 @@ class TdcConfidence(Confidence):
     eval_fdr : float, optional
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
+    pep_fdr_type : {"classic","peptide-only",psm-peptide"}, optional
+        The method for crema to use when calculating peptide level confidence
+        estimates.
 
     Attributes
     ----------
@@ -305,14 +315,16 @@ class TdcConfidence(Confidence):
         each level, each as a :py:class:`pandas.DataFrame`
     """
 
-    def __init__(self, psms, score_column=None, desc=None, eval_fdr=0.01):
+    def __init__(self, psms, score_column=None, desc=None, \
+                 eval_fdr=0.01, pep_fdr_type="classic"):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
             "Assigning confidence estimates using target-decoy competition..."
         )
 
         super().__init__(
-            psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr
+            psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr, \
+            pep_fdr_type=pep_fdr_type
         )
 
     def _assign_confidence(self):
@@ -321,14 +333,32 @@ class TdcConfidence(Confidence):
         pairing = self.dataset.peptide_pairing
         pair_col = utils.new_column("pairing", df)
         for level, group_cols in zip(self.levels, self._level_columns):
+            print("delete: " + level) #TODO delete when done
+            print(self._pep_fdr_type)
             # First perform the competition step
-            if level == "peptides" and pairing is not None:
-                df[pair_col] = df["sequence"].map(lambda x: pairing.get(x, x))
-                group_cols = utils.listify(group_cols) + [pair_col]
-                group_cols.remove("sequence")
+            if level == "peptides":
+                if self._pep_fdr_type == "classic":
+                    group_cols = self.dataset._spectrum_columns + utils.listify(group_cols)
+                elif self._pep_fdr_type == "peptide-only" or \
+                     self._pep_fdr_type == "psm-peptide":
+                    if pairing == None:
+                      raise ValueError("Must provide paired target decoy infomation")
+
+                    if self._pep_fdr_type == "psm-peptide":
+                      group_cols = self.dataset._spectrum_columns + utils.listify(group_cols)
+
+                    # replace sequence with pairing
+                    df[pair_col] = df["sequence"].map(lambda x: pairing.get(x, x))
+                    group_cols = utils.listify(group_cols) + [pair_col]
+                    group_cols.remove("sequence")
+            print(group_cols)
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
+
+			#TODO DELETE
+			# note to self. I believe peptide level does 
+			# #2 from Bill's list. Look at 21 Oct 2021 thread
 
             # Now calculate q-values:
             df["crema q-value"] = qvalues.tdc(

@@ -140,6 +140,7 @@ class PsmDataset:
         desc=None,
         eval_fdr=0.01,
         method="tdc",
+		pep_fdr_type="classic"
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
@@ -160,6 +161,9 @@ class PsmDataset:
             `score_column` and `desc` to choose. This should range from 0 to 1.
         method : {"tdc"}, optional
             The method for crema to use when calculating the confidence estimates.
+        pep_fdr_type : {"classic","peptide-only",psm-peptide"}, optional
+            The method for crema to use when calculating peptide level confidence
+            estimates.
 
         Returns
         -------
@@ -174,6 +178,7 @@ class PsmDataset:
             score_column=score_column,
             desc=desc,
             eval_fdr=eval_fdr,
+            pep_fdr_type=pep_fdr_type
         )
 
         return conf

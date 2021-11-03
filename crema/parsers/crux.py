@@ -10,18 +10,13 @@ from .. import utils
 LOGGER = logging.getLogger(__name__)
 
 
-def read_crux(txt_files, peptide_tdc=False, copy_data=True):
+def read_crux(txt_files, copy_data=True):
     """Read peptide-spectrum matches (PSMs) from Crux tab-delimited files.
 
     Parameters
     ----------
     txt_files : str, pandas.DataFrame or tuple of str
         One or more collection of PSMs in the Crux tab-delimited format.
-    peptide_tdc : bool, optional
-        Perform an additional step of target-decoy competition at the
-        peptide-level. Peptides are mapped to the decoys that generated them
-        and only the higher scoring of a pair are retained. This additional
-        step yields additional statistical power to detect peptides.
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
@@ -85,8 +80,9 @@ def read_crux(txt_files, peptide_tdc=False, copy_data=True):
         sep="\t",
         copy_data=False,
     )
-    if peptide_tdc:
-        psms._peptide_pairing = _create_pairing(data)
+
+    # always pair target and decoys for Crux
+    psms._peptide_pairing = _create_pairing(data)
 
     return psms
 

@@ -14,7 +14,7 @@ There will be three output files:
 
 #. A txt file named "crema.peptides.txt" containing an additional column (crema q-value) of peptide level confidence estimate results appended to the spectrum, peptide, and score columns from the input file.
 
-#. A txt file named "crema.log.txt" containing the logging information from using crema.
+#. A txt file named "crema.log.txt" containing the logging information from using crema. Note that this file is only created when running Crema through via the command line.
 
 Note that the program writes to the current working directory by default:
 
