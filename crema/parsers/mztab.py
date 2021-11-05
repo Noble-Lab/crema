@@ -45,8 +45,8 @@ def read_mztab(mztab_files):
 
     if sequence_col not in psms.columns or mod_col not in psms.columns:
         raise KeyError(
-            "The mzTab file does not the columns to specify peptide sequence "
-            "and modifications."
+            "The mzTab file does not contain the columns to specify "
+            "peptide sequence and modifications."
         )
 
     if target_col not in psms.columns:

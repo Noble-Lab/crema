@@ -332,6 +332,10 @@ class TdcConfidence(Confidence):
         df = self.data
         pairing = self.dataset.peptide_pairing
         pair_col = utils.new_column("pairing", df)
+
+        if pairing == None and self._pep_fdr_type != "classic":
+            raise ValueError("Must provide paired target decoy peptide infomation")
+
         for level, group_cols in zip(self.levels, self._level_columns):
             print("delete: " + level) #TODO delete when done
             print(self._pep_fdr_type)
@@ -341,11 +345,8 @@ class TdcConfidence(Confidence):
                     group_cols = self.dataset._spectrum_columns + utils.listify(group_cols)
                 elif self._pep_fdr_type == "peptide-only" or \
                      self._pep_fdr_type == "psm-peptide":
-                    if pairing == None:
-                      raise ValueError("Must provide paired target decoy infomation")
-
                     if self._pep_fdr_type == "psm-peptide":
-                      group_cols = self.dataset._spectrum_columns + utils.listify(group_cols)
+                        group_cols = self.dataset._spectrum_columns + utils.listify(group_cols)
 
                     # replace sequence with pairing
                     df[pair_col] = df["sequence"].map(lambda x: pairing.get(x, x))
@@ -355,10 +356,6 @@ class TdcConfidence(Confidence):
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
-
-			#TODO DELETE
-			# note to self. I believe peptide level does 
-			# #2 from Bill's list. Look at 21 Oct 2021 thread
 
             # Now calculate q-values:
             df["crema q-value"] = qvalues.tdc(
