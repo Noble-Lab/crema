@@ -2,11 +2,15 @@
 peptide-spectrum matches with calculated false discovery rates (FDR) and q-values.
 """
 import logging
+import pandas as pd
+import numpy as np
 from abc import ABC, abstractmethod
 
 from . import qvalues
 from . import utils
 from .writers.txt import to_txt
+
+np.random.seed(0)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,7 +21,7 @@ def assign_confidence(
     desc=None,
     eval_fdr=0.01,
     method="tdc",
-	pep_fdr_type="classic"
+    pep_fdr_type="classic"
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -329,30 +333,38 @@ class TdcConfidence(Confidence):
 
     def _assign_confidence(self):
         """Assign confidence estimates using target-decoy competition"""
-        df = self.data
         pairing = self.dataset.peptide_pairing
-        pair_col = utils.new_column("pairing", df)
 
         if pairing == None and self._pep_fdr_type != "classic":
             raise ValueError("Must provide paired target decoy peptide infomation")
 
         for level, group_cols in zip(self.levels, self._level_columns):
-            print("delete: " + level) #TODO delete when done
-            print(self._pep_fdr_type)
+            df = self.data
+            pair_col = utils.new_column("pairing", df)
+#            print(level) #TODO delete when done
+#            print(self._pep_fdr_type)
             # First perform the competition step
             if level == "peptides":
                 if self._pep_fdr_type == "classic":
-                    group_cols = self.dataset._spectrum_columns + utils.listify(group_cols)
+                    group_cols = utils.listify(group_cols)
                 elif self._pep_fdr_type == "peptide-only" or \
                      self._pep_fdr_type == "psm-peptide":
                     if self._pep_fdr_type == "psm-peptide":
-                        group_cols = self.dataset._spectrum_columns + utils.listify(group_cols)
+                        df = self._compete(df, self.dataset._spectrum_columns)
+                        group_cols = utils.listify(group_cols)
 
                     # replace sequence with pairing
+                    pair_col = utils.new_column("pairing", df)
                     df[pair_col] = df["sequence"].map(lambda x: pairing.get(x, x))
                     group_cols = utils.listify(group_cols) + [pair_col]
                     group_cols.remove("sequence")
-            print(group_cols)
+                else:
+                    raise ValueError(
+                        f"'{self._pep_fdr_type}' is not a valid value for "
+                        "pep_fdr_type "
+                    )
+#            print(group_cols)
+#            print()
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
@@ -373,3 +385,144 @@ class TdcConfidence(Confidence):
 
             self.confidence_estimates[level] = df.loc[targets, :]
             self.decoy_confidence_estimates[level] = df.loc[~targets, :]
+
+
+class MixmaxConfidence(Confidence):
+    """Assign confidence estimates using mix-max competition.
+
+    #TODO. Maybe just cite paper
+    Estimates qvalues using the mix-max competition method. For a set
+    of ..., the false discover rate (FDR) is estimated.
+
+    Parameters
+    ----------
+    psms : a PsmDataset object
+        A collection of PSMs
+    score_column : str, optional
+        The score by which to rank the PSMs for confidence estimation. If
+        :code:`None`, the score that yields the most PSMs at the specified
+        false discovery rate threshold (`eval_fdr`), will be used.
+    desc : bool, optional
+        True if higher scores better, False if lower scores are better.
+        If None, crema will try both and use the
+        choice that yields the most PSMs at the specified false discovery
+        rate threshold (`eval_fdr`). If `score_column` is :code:`None`,
+        this parameter is ignored.
+    eval_fdr : float, optional
+        The false discovery rate threshold used to evaluate the best
+        `score_column` and `desc` to choose. This should range from 0 to 1.
+    pep_fdr_type : {"classic","peptide-only",psm-peptide"}, optional
+        The method for crema to use when calculating peptide level confidence
+        estimates.
+
+    Attributes
+    ----------
+    data : pandas.DataFrame
+    dataset : crema.PsmDataset
+    levels : list of str
+    confidence_estimates : Dict
+        A dictionary containing the confidence estimates at each level, each
+        as a :py:class:`pandas.DataFrame`.
+    decoy_confidence_estimates : Dict
+        A dictionary containing the confidence estimates for the decoy hits at
+        each level, each as a :py:class:`pandas.DataFrame`
+    """
+
+    def __init__(self, psms, score_column=None, desc=None, \
+                 eval_fdr=0.01, pep_fdr_type="classic"):
+        """Initialize a TdcConfidence object."""
+        LOGGER.info(
+            "Assigning confidence estimates using mix-max competition..."
+        )
+
+        super().__init__(
+            psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr, \
+            pep_fdr_type=pep_fdr_type
+        )
+
+    def _assign_confidence(self):
+        """Assign confidence estimates using target-decoy competition"""
+
+        #TODO check if separate target-decoy search is done
+        for level, group_cols in zip(self.levels, self._level_columns):
+            if level == 'peptides':
+                continue
+
+            df = self.data
+            group_cols = utils.listify(group_cols)
+            print(group_cols)
+
+            targets = df[df[self.dataset._target_column]]
+            decoys = df[~df[self.dataset._target_column]]
+
+            # TOOO add following warning ""The mix-max procedure is not well behaved when # targets (%d) != # of decoys (%d).","
+
+            if self._desc:
+                keep = "last"
+            else:
+                keep = "first"
+
+            # sort targets by score column and keep top rank
+            targets_sorted = (
+                targets.sample(frac=1)
+                .sort_values([self._score_column] + group_cols)
+                .drop_duplicates(group_cols, keep=keep, ignore_index=True)
+            )
+            target_scores = targets_sorted[self._score_column]
+
+            # sort decoys by score column and keep top rank
+            decoys_sorted = (
+                decoys.sample(frac=1)
+                .sort_values([self._score_column] + group_cols)
+                .drop_duplicates(group_cols, keep=keep, ignore_index=True)
+            )
+            decoy_scores = decoys_sorted[self._score_column]
+
+            # combine top ranked target and decoy into one dataframe
+            combined = pd.concat([targets_sorted,decoys_sorted])
+            combined_sorted = (
+                combined.sample(frac=1)
+                .sort_values([self._score_column], ascending=~self._desc,
+                ignore_index=True)
+            )
+
+            # qvalues.py::calculate_mixmax_qval expects target scores
+            # and decoy scores to be sorted from worst to best
+            # qvalues.py::mixmax expected combined_sorted scores
+            # to be sorted from best to worst
+            if self._desc: # larger score is better
+                combined_sorted = combined_sorted[::-1]
+            else: # smaller score is better
+                targets_sorted[self._score_column] = targets_sorted[self._score_column] * -1.0
+                decoys_sorted[self._score_column] = decoys_sorted[self._score_column] * -1.0
+                target_scores = target_scores[::-1]
+                decoy_scores = decoy_scores[::-1]
+
+            # Now calculate q-values:
+            pi0,targets_sorted['crema q-value'] = qvalues.mixmax(
+                target_scores = target_scores,
+                decoy_scores = decoy_scores,
+                combined_score = combined_sorted[self._score_column],
+                combined_score_target = combined_sorted[self.dataset._target_column],
+                desc=self._desc
+            )
+
+            LOGGER.info(
+                "  - Estimated pi_zero = %f.",
+                pi0
+            )
+
+            LOGGER.info(
+                "  - Found %i %s at q<=%g.",
+                (targets_sorted["crema q-value"] <= self._eval_fdr).sum(),
+                self._level_labs[level],
+                self._eval_fdr,
+            )
+
+            # reverse rows so that best score is at top
+            targets_sorted = targets_sorted[::-1]
+
+            # undo previous multipliation by -1.0
+            if self._desc == False:
+                targets_sorted[self._score_column] = targets_sorted[self._score_column] * -1.0
+            self.confidence_estimates[level] = targets_sorted

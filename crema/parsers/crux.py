@@ -37,7 +37,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     """
     target = "target/decoy"
     peptide = "sequence"
-    spectrum = ["scan", "spectrum precursor m/z"]
+    spectrum = ["file", "scan"]
     pairing = "original target sequence"
 
     # Possible score columns output by Crux.

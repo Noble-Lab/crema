@@ -68,3 +68,13 @@ def test_read_txt(basic_crux_csv):
 def test_read_mztab(real_mztab):
     with pytest.raises(ValueError):
         psms = crema.read_mztab(real_mztab)
+
+
+def test_read_pepxml(real_pepxml):
+    with pytest.raises(ValueError):
+        psms = crema.read_pepxml(real_pepxml,"decoy_")
+
+
+def test_read_mzid(real_mzid):
+    with pytest.raises(ValueError):
+        psms = crema.read_mzid(real_mzid)

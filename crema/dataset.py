@@ -4,6 +4,7 @@ peptide-spectrum matches.
 import logging
 
 from .confidence import TdcConfidence
+from .confidence import MixmaxConfidence
 from .qvalues import tdc
 from .utils import listify
 
@@ -53,6 +54,7 @@ class PsmDataset:
 
     methods = {
         "tdc": TdcConfidence,
+        "mixmax": MixmaxConfidence
     }
 
     def __init__(
