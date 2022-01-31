@@ -435,6 +435,12 @@ class MixmaxConfidence(Confidence):
             "Assigning confidence estimates using mix-max competition..."
         )
 
+        #TODO maybe better way to do this
+        # can not infer desc value as the wrong value will
+        # result in a divide by zero error
+        if desc==None:
+            raise ValueError("'desc' has to be set for mix-max.")
+
         super().__init__(
             psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr, \
             pep_fdr_type=pep_fdr_type
@@ -468,7 +474,6 @@ class MixmaxConfidence(Confidence):
                 .sort_values([self._score_column] + group_cols)
                 .drop_duplicates(group_cols, keep=keep, ignore_index=True)
             )
-            target_scores = targets_sorted[self._score_column]
 
             # sort decoys by score column and keep top rank
             decoys_sorted = (
@@ -476,7 +481,6 @@ class MixmaxConfidence(Confidence):
                 .sort_values([self._score_column] + group_cols)
                 .drop_duplicates(group_cols, keep=keep, ignore_index=True)
             )
-            decoy_scores = decoys_sorted[self._score_column]
 
             # combine top ranked target and decoy into one dataframe
             combined = pd.concat([targets_sorted,decoys_sorted])
@@ -495,16 +499,15 @@ class MixmaxConfidence(Confidence):
             else: # smaller score is better
                 targets_sorted[self._score_column] = targets_sorted[self._score_column] * -1.0
                 decoys_sorted[self._score_column] = decoys_sorted[self._score_column] * -1.0
-                target_scores = target_scores[::-1]
-                decoy_scores = decoy_scores[::-1]
+                targets_sorted = targets_sorted[::-1]
+                decoys_sorted = decoys_sorted[::-1]
 
             # Now calculate q-values:
             pi0,targets_sorted['crema q-value'] = qvalues.mixmax(
-                target_scores = target_scores,
-                decoy_scores = decoy_scores,
+                target_scores = targets_sorted[self._score_column],
+                decoy_scores = decoys_sorted[self._score_column],
                 combined_score = combined_sorted[self._score_column],
-                combined_score_target = combined_sorted[self.dataset._target_column],
-                desc=self._desc
+                combined_score_target = combined_sorted[self.dataset._target_column]
             )
 
             LOGGER.info(

@@ -50,6 +50,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         "refactored xcorr",
         "res-ev p-value",
         "combined p-value",
+        "tailor score"
     }
 
     # Keep only crux scores that exist in all of the files.

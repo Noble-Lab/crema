@@ -134,8 +134,7 @@ def _fdr2qvalue(scores, fdr):
     return qvals
 
 
-def mixmax(target_scores, decoy_scores, combined_score, 
-           combined_score_target, desc=True):
+def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
     """
     Estimate q-values using mix-max competition.
 
@@ -151,9 +150,8 @@ def mixmax(target_scores, decoy_scores, combined_score,
     combined_score : pandas.DataFrame
        A :py:class:`pandas.DataFram` of PSMs. Dataframe includes
        best ranked target and decoy per spectrum.
-    desc : bool
-        Are higher scores better? `True` indicates that they are,
-        `False` indicates that they are not.
+    combined_score_target: numpy.ndarray of float
+       The target/deoy column from the combined_score dataframe
 
     Returns
     ----------
@@ -162,8 +160,8 @@ def mixmax(target_scores, decoy_scores, combined_score,
     fdrmod : numpy.ndarray
         Array of calculated q-values.
     """
-
     # TODO try except and some error checking
+
     num_targets = target_scores.shape[0]
     num_decoys = decoy_scores.shape[0]
 
@@ -192,7 +190,7 @@ def mixmax(target_scores, decoy_scores, combined_score,
 
     # calculate pi0
     pi0 = estimate_pi0(pValList)
-    fdrmod = calculate_mixmax_qval(np.array(target_scores), np.array(decoy_scores), pi0, desc)
+    fdrmod = calculate_mixmax_qval(np.array(target_scores), np.array(decoy_scores), pi0)
     return(pi0,fdrmod)
 
 
@@ -259,7 +257,7 @@ def estimate_pi0(pval_list):
     return(pi0) 
 
 @nb.njit
-def calculate_mixmax_qval(target_scores, decoy_scores, pi0, desc):
+def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     """
     """
     num_targets = target_scores.shape[0]
