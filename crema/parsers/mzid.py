@@ -33,17 +33,20 @@ def read_mzid(mzid_files):
     # Determine which database search engine generated the mzID file.
     if "MS-GF:SpecEValue" in psms.columns:
         # Initialize column names from MSGF+ specifications
-        spectrum_col = ["scan number(s)","calculatedMassToCharge"]
-        score_col = [c for c in psms.columns if "MS-GF:" in c and 
-                     "QValue" not in c]
+        spectrum_col = ["scan number(s)", "calculatedMassToCharge"]
+        score_col = [
+            c for c in psms.columns if "MS-GF:" in c and "QValue" not in c
+        ]
     elif "Amanda:AmandaScore" in psms.columns:
         # Initialize column names from MSAmanda specifications
-        spectrum_col = ["name","calculatedMassToCharge"]
+        spectrum_col = ["name", "calculatedMassToCharge"]
         score_col = [c for c in psms.columns if "Amanda:AmandaScore" in c]
     else:
-        raise ValueError("Unsupported database search engine "
-                         "generated mzid file. Please reach out to "
-                         "Crema team to add support.")
+        raise ValueError(
+            "Unsupported database search engine "
+            "generated mzid file. Please reach out to "
+            "Crema team to add support."
+        )
 
     target_col = "isDecoy"
     sequence_col = "PeptideSequence"
@@ -77,7 +80,7 @@ def read_mzid(mzid_files):
     psms["peptide"] = psms[sequence_col] + mod_col
 
     # Keep only the relevant columns
-    columns = spectrum_col + score_col + ["peptide",target_col]
+    columns = spectrum_col + score_col + ["peptide", target_col]
     psms = psms.loc[:, columns]
 
     return PsmDataset(

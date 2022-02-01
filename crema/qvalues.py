@@ -138,8 +138,8 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
     """
     Estimate q-values using mix-max competition.
 
-    TODO 
-    Estimates q-values using... 
+    TODO
+    Estimates q-values using...
 
     Parameters
     ----------
@@ -166,11 +166,12 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
     num_decoys = decoy_scores.shape[0]
 
     # calculate p-values from scores
-    nDecoys = 1; posSame = 0; negSame = 0
+    nDecoys = 1
+    posSame = 0
+    negSame = 0
     pValList = []
     curScore = None
-    for score, target in zip(combined_score,
-                             combined_score_target):
+    for score, target in zip(combined_score, combined_score_target):
         if target:
             posSame += 1
         else:
@@ -179,19 +180,21 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
         # TODO Unclear if need if statement. This appears in Percolator code
         # however, adding it makes Crema and Percolator pValList different length
         # if curScore != score:
-        for ix in range(0,posSame):
+        for ix in range(0, posSame):
             pValList.append(nDecoys + (negSame * (ix + 1)) / (posSame + 1))
 
         nDecoys += negSame
         negSame = 0
         posSame = 0
         curScore = score
-    pValList = np.array(pValList)/nDecoys
+    pValList = np.array(pValList) / nDecoys
 
     # calculate pi0
     pi0 = estimate_pi0(pValList)
-    fdrmod = calculate_mixmax_qval(np.array(target_scores), np.array(decoy_scores), pi0)
-    return(pi0,fdrmod)
+    fdrmod = calculate_mixmax_qval(
+        np.array(target_scores), np.array(decoy_scores), pi0
+    )
+    return (pi0, fdrmod)
 
 
 @nb.njit
@@ -216,12 +219,12 @@ def estimate_pi0(pval_list):
     n_pval = pval_list.size
     lambda_list = []
     pi0s_list = []
-    for idx in range(0,numLambda):
+    for idx in range(0, numLambda):
         cur_lambda = ((idx + 1) / numLambda) * maxLambda
 
         # Find the index of the first element in pValList
         # that is > lambda.
-        start = np.searchsorted(pval_list,cur_lambda)
+        start = np.searchsorted(pval_list, cur_lambda)
         W1 = n_pval - start
         pi0 = W1 / n_pval / (1.0 - cur_lambda)
 
@@ -229,17 +232,19 @@ def estimate_pi0(pval_list):
             lambda_list.append(cur_lambda)
             pi0s_list.append(pi0)
 
-    assert len(pi0s_list) != 0, "Error in the input data: " \
-           "too good separation between target and decoy PSMs."
+    assert len(pi0s_list) != 0, (
+        "Error in the input data: "
+        "too good separation between target and decoy PSMs."
+    )
 
     minPi0 = min(pi0s_list)
 
     mse_list = np.zeros(len(pi0s_list))
     max_size = 1000
     # Examine which lambda level that is most stable under bootstrap
-    for i in range(0,numBoot):
+    for i in range(0, numBoot):
         # Create an array of bootstrapped p-values, and sort in ascending order.
-        num_draw = min(n_pval,max_size)
+        num_draw = min(n_pval, max_size)
         pBoot_list = np.random.choice(pval_list, size=num_draw, replace=True)
         pBoot_list.sort()
 
@@ -254,21 +259,25 @@ def estimate_pi0(pval_list):
     # Which index did the iterator go?
     minIdx = np.argmin(mse_list)
     pi0 = max(min(pi0s_list[minIdx], 1.0), 0.0)
-    return(pi0) 
+    return pi0
+
 
 @nb.njit
 def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
-    """
-    """
+    """ """
     num_targets = target_scores.shape[0]
     num_decoys = decoy_scores.shape[0]
 
-    h_w_le_z = np.zeros(num_decoys + 1) # histogram for N_{w<=z}
-    h_z_le_z = np.zeros(num_decoys + 1) # histogram for N_{z<=z}
+    h_w_le_z = np.zeros(num_decoys + 1)  # histogram for N_{w<=z}
+    h_z_le_z = np.zeros(num_decoys + 1)  # histogram for N_{z<=z}
 
     for i in range(0, num_decoys):
-        h_w_le_z[i] = np.searchsorted(target_scores, decoy_scores[i], side='right')
-        h_z_le_z[i] = np.searchsorted(decoy_scores, decoy_scores[i], side='right')
+        h_w_le_z[i] = np.searchsorted(
+            target_scores, decoy_scores[i], side="right"
+        )
+        h_z_le_z[i] = np.searchsorted(
+            decoy_scores, decoy_scores[i], side="right"
+        )
 
     h_w_le_z[num_decoys] = num_targets
     h_z_le_z[num_decoys] = num_decoys
@@ -283,11 +292,11 @@ def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     prev_fdr = -1
 
     for i in range(num_targets - 1, -1, -1):
-        while (j >= 0 and decoy_scores[j] >= target_scores[i]):
+        while j >= 0 and decoy_scores[j] >= target_scores[i]:
             cnt_w = h_w_le_z[j + 1]
             cnt_z = h_z_le_z[j + 1]
 
-            estPx_lt_zj = (cnt_w - pi0*cnt_z) / ((1.0 - pi0)*cnt_z)
+            estPx_lt_zj = (cnt_w - pi0 * cnt_z) / ((1.0 - pi0) * cnt_z)
             if estPx_lt_zj > 1:
                 estPx_lt_zj == 1.0
             elif estPx_lt_zj < 0:
@@ -308,7 +317,7 @@ def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
 
         # convert qvalues to fdr
         if prev_fdr > fdrmod[i]:
-          fdrmod[i] = prev_fdr;
-        prev_fdr = fdrmod[i];
+            fdrmod[i] = prev_fdr
+        prev_fdr = fdrmod[i]
 
-    return(fdrmod)
+    return fdrmod

@@ -52,10 +52,7 @@ class PsmDataset:
     peptide_pairing : dict
     """
 
-    methods = {
-        "tdc": TdcConfidence,
-        "mixmax": MixmaxConfidence
-    }
+    methods = {"tdc": TdcConfidence, "mixmax": MixmaxConfidence}
 
     def __init__(
         self,
@@ -142,7 +139,7 @@ class PsmDataset:
         desc=None,
         eval_fdr=0.01,
         method="tdc",
-		pep_fdr_type="classic"
+        pep_fdr_type="classic",
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
@@ -180,7 +177,7 @@ class PsmDataset:
             score_column=score_column,
             desc=desc,
             eval_fdr=eval_fdr,
-            pep_fdr_type=pep_fdr_type
+            pep_fdr_type=pep_fdr_type,
         )
 
         return conf

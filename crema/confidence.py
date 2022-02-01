@@ -21,7 +21,7 @@ def assign_confidence(
     desc=None,
     eval_fdr=0.01,
     method="tdc",
-    pep_fdr_type="classic"
+    pep_fdr_type="classic",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -61,7 +61,7 @@ def assign_confidence(
             desc=desc,
             eval_fdr=eval_fdr,
             method=method,
-            pep_fdr_type=pep_fdr_type
+            pep_fdr_type=pep_fdr_type,
         )
         confs.append(conf)
 
@@ -127,8 +127,14 @@ class Confidence(ABC):
         """
         pass
 
-    def __init__(self, psms, score_column, desc=None, eval_fdr=0.01, \
-                 pep_fdr_type="classic"):
+    def __init__(
+        self,
+        psms,
+        score_column,
+        desc=None,
+        eval_fdr=0.01,
+        pep_fdr_type="classic",
+    ):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
             raise ValueError("'eval_fdr' should be between 0 and 1.")
@@ -319,16 +325,25 @@ class TdcConfidence(Confidence):
         each level, each as a :py:class:`pandas.DataFrame`
     """
 
-    def __init__(self, psms, score_column=None, desc=None, \
-                 eval_fdr=0.01, pep_fdr_type="classic"):
+    def __init__(
+        self,
+        psms,
+        score_column=None,
+        desc=None,
+        eval_fdr=0.01,
+        pep_fdr_type="classic",
+    ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
             "Assigning confidence estimates using target-decoy competition..."
         )
 
         super().__init__(
-            psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr, \
-            pep_fdr_type=pep_fdr_type
+            psms=psms,
+            score_column=score_column,
+            desc=desc,
+            eval_fdr=eval_fdr,
+            pep_fdr_type=pep_fdr_type,
         )
 
     def _assign_confidence(self):
@@ -336,26 +351,32 @@ class TdcConfidence(Confidence):
         pairing = self.dataset.peptide_pairing
 
         if pairing == None and self._pep_fdr_type != "classic":
-            raise ValueError("Must provide paired target decoy peptide infomation")
+            raise ValueError(
+                "Must provide paired target decoy peptide infomation"
+            )
 
         for level, group_cols in zip(self.levels, self._level_columns):
             df = self.data
             pair_col = utils.new_column("pairing", df)
-#            print(level) #TODO delete when done
-#            print(self._pep_fdr_type)
+            #            print(level) #TODO delete when done
+            #            print(self._pep_fdr_type)
             # First perform the competition step
             if level == "peptides":
                 if self._pep_fdr_type == "classic":
                     group_cols = utils.listify(group_cols)
-                elif self._pep_fdr_type == "peptide-only" or \
-                     self._pep_fdr_type == "psm-peptide":
+                elif (
+                    self._pep_fdr_type == "peptide-only"
+                    or self._pep_fdr_type == "psm-peptide"
+                ):
                     if self._pep_fdr_type == "psm-peptide":
                         df = self._compete(df, self.dataset._spectrum_columns)
                         group_cols = utils.listify(group_cols)
 
                     # replace sequence with pairing
                     pair_col = utils.new_column("pairing", df)
-                    df[pair_col] = df["sequence"].map(lambda x: pairing.get(x, x))
+                    df[pair_col] = df["sequence"].map(
+                        lambda x: pairing.get(x, x)
+                    )
                     group_cols = utils.listify(group_cols) + [pair_col]
                     group_cols.remove("sequence")
                 else:
@@ -363,8 +384,8 @@ class TdcConfidence(Confidence):
                         f"'{self._pep_fdr_type}' is not a valid value for "
                         "pep_fdr_type "
                     )
-#            print(group_cols)
-#            print()
+            #            print(group_cols)
+            #            print()
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
@@ -428,30 +449,39 @@ class MixmaxConfidence(Confidence):
         each level, each as a :py:class:`pandas.DataFrame`
     """
 
-    def __init__(self, psms, score_column=None, desc=None, \
-                 eval_fdr=0.01, pep_fdr_type="classic"):
+    def __init__(
+        self,
+        psms,
+        score_column=None,
+        desc=None,
+        eval_fdr=0.01,
+        pep_fdr_type="classic",
+    ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
             "Assigning confidence estimates using mix-max competition..."
         )
 
-        #TODO maybe better way to do this
+        # TODO maybe better way to do this
         # can not infer desc value as the wrong value will
         # result in a divide by zero error
-        if desc==None:
+        if desc == None:
             raise ValueError("'desc' has to be set for mix-max.")
 
         super().__init__(
-            psms=psms, score_column=score_column, desc=desc, eval_fdr=eval_fdr, \
-            pep_fdr_type=pep_fdr_type
+            psms=psms,
+            score_column=score_column,
+            desc=desc,
+            eval_fdr=eval_fdr,
+            pep_fdr_type=pep_fdr_type,
         )
 
     def _assign_confidence(self):
         """Assign confidence estimates using target-decoy competition"""
 
-        #TODO check if separate target-decoy search is done
+        # TODO check if separate target-decoy search is done
         for level, group_cols in zip(self.levels, self._level_columns):
-            if level == 'peptides':
+            if level == "peptides":
                 continue
 
             df = self.data
@@ -483,37 +513,38 @@ class MixmaxConfidence(Confidence):
             )
 
             # combine top ranked target and decoy into one dataframe
-            combined = pd.concat([targets_sorted,decoys_sorted])
-            combined_sorted = (
-                combined.sample(frac=1)
-                .sort_values([self._score_column], ascending=~self._desc,
-                ignore_index=True)
+            combined = pd.concat([targets_sorted, decoys_sorted])
+            combined_sorted = combined.sample(frac=1).sort_values(
+                [self._score_column], ascending=~self._desc, ignore_index=True
             )
 
             # qvalues.py::calculate_mixmax_qval expects target scores
             # and decoy scores to be sorted from worst to best
             # qvalues.py::mixmax expected combined_sorted scores
             # to be sorted from best to worst
-            if self._desc: # larger score is better
+            if self._desc:  # larger score is better
                 combined_sorted = combined_sorted[::-1]
-            else: # smaller score is better
-                targets_sorted[self._score_column] = targets_sorted[self._score_column] * -1.0
-                decoys_sorted[self._score_column] = decoys_sorted[self._score_column] * -1.0
+            else:  # smaller score is better
+                targets_sorted[self._score_column] = (
+                    targets_sorted[self._score_column] * -1.0
+                )
+                decoys_sorted[self._score_column] = (
+                    decoys_sorted[self._score_column] * -1.0
+                )
                 targets_sorted = targets_sorted[::-1]
                 decoys_sorted = decoys_sorted[::-1]
 
             # Now calculate q-values:
-            pi0,targets_sorted['crema q-value'] = qvalues.mixmax(
-                target_scores = targets_sorted[self._score_column],
-                decoy_scores = decoys_sorted[self._score_column],
-                combined_score = combined_sorted[self._score_column],
-                combined_score_target = combined_sorted[self.dataset._target_column]
+            pi0, targets_sorted["crema q-value"] = qvalues.mixmax(
+                target_scores=targets_sorted[self._score_column],
+                decoy_scores=decoys_sorted[self._score_column],
+                combined_score=combined_sorted[self._score_column],
+                combined_score_target=combined_sorted[
+                    self.dataset._target_column
+                ],
             )
 
-            LOGGER.info(
-                "  - Estimated pi_zero = %f.",
-                pi0
-            )
+            LOGGER.info("  - Estimated pi_zero = %f.", pi0)
 
             LOGGER.info(
                 "  - Found %i %s at q<=%g.",
@@ -527,5 +558,7 @@ class MixmaxConfidence(Confidence):
 
             # undo previous multipliation by -1.0
             if self._desc == False:
-                targets_sorted[self._score_column] = targets_sorted[self._score_column] * -1.0
+                targets_sorted[self._score_column] = (
+                    targets_sorted[self._score_column] * -1.0
+                )
             self.confidence_estimates[level] = targets_sorted

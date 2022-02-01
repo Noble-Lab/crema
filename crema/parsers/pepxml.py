@@ -15,7 +15,7 @@ from ..dataset import PsmDataset
 LOGGER = logging.getLogger(__name__)
 
 
-def read_pepxml(pepxml_files,decoy_prefix):
+def read_pepxml(pepxml_files, decoy_prefix):
     """Read peptide-spectrum matches (PSMs) from pepXML files.
 
     Parameters
@@ -35,10 +35,10 @@ def read_pepxml(pepxml_files,decoy_prefix):
     pepxml_files = listify(pepxml_files)
 
     # Create a dataframe from the PSMs in the pepXML files.
-    psms = pd.concat([_parse_pepxml(f,decoy_prefix) for f in pepxml_files])
+    psms = pd.concat([_parse_pepxml(f, decoy_prefix) for f in pepxml_files])
 
     # Initialize column names
-    spectrum_col = ["scan","calc_mass"]
+    spectrum_col = ["scan", "calc_mass"]
     score_col = [c for c in psms.columns if "search_engine_score" in c]
     target_col = "label"
     sequence_col = "peptide"
@@ -61,7 +61,7 @@ def read_pepxml(pepxml_files,decoy_prefix):
         )
 
     # Keep only the relevant columns
-    columns = spectrum_col + score_col + ["peptide",target_col]
+    columns = spectrum_col + score_col + ["peptide", target_col]
     psms = psms.loc[:, columns]
 
     return PsmDataset(
@@ -74,7 +74,7 @@ def read_pepxml(pepxml_files,decoy_prefix):
     )
 
 
-def _parse_pepxml(pepxml_file,decoy_prefix):
+def _parse_pepxml(pepxml_file, decoy_prefix):
     """Parse a single pepXML file using lxml into a DataFrame
 
     Parameters
@@ -105,7 +105,7 @@ def _parse_pepxml(pepxml_file,decoy_prefix):
     return df
 
 
-def _parse_msms_run(msms_run,decoy_prefix):
+def _parse_msms_run(msms_run, decoy_prefix):
     """Parse a single MS/MS run.
 
     Each of these corresponds to a raw MS data file.
@@ -133,6 +133,7 @@ def _parse_msms_run(msms_run,decoy_prefix):
     run_info = {"ms_data_file": ms_data_file}
     for spectrum in msms_run.iter("{*}spectrum_query"):
         yield _parse_spectrum(spectrum, run_info, decoy_prefix)
+
 
 def _parse_spectrum(spectrum, run_info, decoy_prefix):
     """Parse the PSMs for a single mass spectrum
@@ -202,7 +203,9 @@ def _parse_psm(psm_info, spec_info, decoy_prefix):
                 psm["label"] = not psm["proteins"][-1].startswith(decoy_prefix)
 
         else:
-            psm["search_engine_score:"+element.get("name")] = element.get("value")
+            psm["search_engine_score:" + element.get("name")] = element.get(
+                "value"
+            )
 
     psm["proteins"] = "\t".join(psm["proteins"])
     return psm

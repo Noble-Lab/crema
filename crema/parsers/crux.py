@@ -50,7 +50,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         "refactored xcorr",
         "res-ev p-value",
         "combined p-value",
-        "tailor score"
+        "tailor score",
     }
 
     # Keep only crux scores that exist in all of the files.
@@ -89,9 +89,9 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     )
 
     # always pair target and decoys for Crux
-    if pairing_file_name == None: # implicit pairing
+    if pairing_file_name == None:  # implicit pairing
         psms._peptide_pairing = _create_pairing(data)
-    else: # explicit pairing
+    else:  # explicit pairing
         psms._peptide_pairing = _create_pairing_from_file(pairing_file_name)
 
     return psms
@@ -208,7 +208,7 @@ def _create_pairing_from_file(pairing_file_name):
         missing decoys will not be included among the keys.
 
     """
-    pairing_file = pd.read_csv(pairing_file_name,sep='\t')
+    pairing_file = pd.read_csv(pairing_file_name, sep="\t")
 
     # ensure pairing_file dataframe contains all necessary columns
     req_fields = [
@@ -223,5 +223,5 @@ def _create_pairing_from_file(pairing_file_name):
         )
 
     # drop targets that do not have corresponding decoys
-    pairing_file = pairing_file[pairing_file['decoy'] != ""]
+    pairing_file = pairing_file[pairing_file["decoy"] != ""]
     return dict(zip(pairing_file.target, pairing_file.decoy))
