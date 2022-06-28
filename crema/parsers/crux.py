@@ -39,6 +39,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     peptide = "sequence"
     spectrum = ["file", "scan"]
     pairing = "original target sequence"
+    protein = "protein id"
 
     # Possible score columns output by Crux.
     scores = {
@@ -72,7 +73,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     scores = list(scores)
 
     # Read in the files:
-    fields = spectrum + [peptide] + [target] + scores + [pairing]
+    fields = spectrum + [peptide] + [target] + scores + [pairing] + [protein]
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
@@ -84,6 +85,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         spectrum_columns=spectrum,
         score_columns=scores,
         peptide_column=peptide,
+        protein_column=protein,
         sep="\t",
         copy_data=False,
     )
@@ -94,6 +96,14 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     else:  # explicit pairing
         psms._peptide_pairing = _create_pairing_from_file(pairing_file_name)
 
+    # Remove the start position of peptide in protein if present
+    # This looks like "protName(XX)" where XX is position
+    # TODO probably needs error check to see if "(" exists elsewhere in name
+    protein_column = psms.data[protein]
+    new_protein_column = protein_column.str.replace("\([^()]*\)", '', regex=True)
+    new_protein_column = new_protein_column.str.replace("decoy_", '', regex=True)
+    psms.set_protein_column(new_protein_column)
+    
     return psms
 
 

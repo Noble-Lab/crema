@@ -31,6 +31,8 @@ class PsmDataset:
         indicated either in square brackets :code:`[]` or parentheses
         :code:`()`. The exact modification format within these entities does
         not matter, so long as it is consistent.
+    protein_columns : str
+        The column that defines a unique protein.
     peptide_pairing: dict
         A map of target and decoy peptide sequence pairings to be used for TDC.
         This should be in the form {key=target_sequence:value=decoy_sequence}
@@ -48,6 +50,7 @@ class PsmDataset:
     score_columns : list of str
     target_column : str
     peptide_column : str
+    protein_column : str
     methods : dict
     peptide_pairing : dict
     """
@@ -61,6 +64,7 @@ class PsmDataset:
         spectrum_columns,
         score_columns,
         peptide_column,
+        protein_column,
         peptide_pairing=None,
         copy_data=True,
     ):
@@ -69,6 +73,7 @@ class PsmDataset:
         self._spectrum_columns = listify(spectrum_columns)
         self._target_column = target_column
         self._peptide_column = peptide_column
+        self._protein_column = protein_column
         self._peptide_pairing = peptide_pairing
 
         fields = sum(
@@ -77,6 +82,7 @@ class PsmDataset:
                 self.score_columns,
                 [self._target_column],
                 [self._peptide_column],
+                [self._protein_column],
             ],
             [],
         )
@@ -113,6 +119,11 @@ class PsmDataset:
     def peptides(self):
         """The peptides as a :py:class:`pandas.Series`."""
         return self[self._peptide_column]
+
+    @property
+    def proteins(self):
+        """The proteins as a :py:class:`pandas.Series`."""
+        return self[self._protein_column]
 
     @property
     def scores(self):
@@ -219,3 +230,20 @@ class PsmDataset:
             raise RuntimeError("No PSMs were found below the 'eval_fdr'.")
 
         return best_score, best_passing, best_desc
+
+    def set_protein_column(
+        self,
+        new_protein_column
+    ):
+        """Replaces current protein column with input protein column
+
+        Parameters
+        ----------
+        new_protein_column : pandas.Series
+
+        Returns
+        -------
+        
+        """
+        self._data[self._protein_column] = new_protein_column
+        return

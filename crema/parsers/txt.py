@@ -14,6 +14,7 @@ def read_txt(
     spectrum_columns,
     score_columns,
     peptide_column,
+    protein_column,
     sep="\t",
     copy_data=True,
 ):
@@ -34,6 +35,8 @@ def read_txt(
         indicated either in square brackets :code:`[]` or parentheses
         :code:`()`. The exact modification format within these entities does
         not matter, so long as it is consistent.
+    protein_column : str
+        The column that defines a unique protein.
     sep : str, optional
         The delimiter to use.
     copy_data : bool, optional
@@ -49,7 +52,7 @@ def read_txt(
         PSMs.
     """
     # Store column names in a list to be used by read_csv function
-    fields = [target_column, peptide_column]
+    fields = [target_column, peptide_column, protein_column]
 
     # Verify some arguments are lists:
     spectrum_columns = listify(spectrum_columns)
@@ -71,6 +74,7 @@ def read_txt(
         spectrum_columns=spectrum_columns,
         score_columns=score_columns,
         peptide_column=peptide_column,
+        protein_column=protein_column,
         copy_data=False,
     )
 

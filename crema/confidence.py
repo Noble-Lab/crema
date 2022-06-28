@@ -150,10 +150,11 @@ class Confidence(ABC):
         self._score_column = score_column
         self._desc = desc
         self._eval_fdr = eval_fdr
-        self._levels = ("psms", "peptides")
+        self._levels = ("psms", "peptides", "proteins")
         self._level_columns = (
             self.dataset._spectrum_columns,
             self.dataset._peptide_column,
+            self.dataset._protein_column,
         )
         self._pep_fdr_type = pep_fdr_type
         self.confidence_estimates = {}
@@ -188,11 +189,23 @@ class Confidence(ABC):
             self._score_column,
             "crema q-value",
         ]
+        prot_cols = [ 
+            self.dataset._protein_column,
+            self._score_column,
+            "crema q-value",
+        ]
+
         for level, df in self.confidence_estimates.items():
-            self.confidence_estimates[level] = df.loc[:, cols]
+            if level != 'proteins':
+                self.confidence_estimates[level] = df.loc[:, cols]
+            elif level == 'proteins':
+                self.confidence_estimates[level] = df.loc[:, prot_cols]
 
         for level, df in self.decoy_confidence_estimates.items():
-            self.decoy_confidence_estimates[level] = df.loc[:, cols]
+            if level != 'proteins':
+                self.decoy_confidence_estimates[level] = df.loc[:, cols]
+            elif level == 'proteins':
+                self.decoy_confidence_estimates[level] = df.loc[:, prot_cols]
 
     def _compete(self, df, group_columns):
         """Perform target-decoy competition
@@ -356,17 +369,15 @@ class TdcConfidence(Confidence):
             )
 
         for level, group_cols in zip(self.levels, self._level_columns):
-            df = self.data
+            df = self.data #TODO this can be removed if classic and Pepides only methods are removed
             pair_col = utils.new_column("pairing", df)
-            #            print(level) #TODO delete when done
-            #            print(self._pep_fdr_type)
-            # First perform the competition step
+
             if level == "peptides":
                 if self._pep_fdr_type == "classic":
                     group_cols = utils.listify(group_cols)
                 elif (
-                    self._pep_fdr_type == "peptide-only"
-                    or self._pep_fdr_type == "psm-peptide"
+                    self._pep_fdr_type == "peptide-only" or
+                    self._pep_fdr_type == "psm-peptide"
                 ):
                     if self._pep_fdr_type == "psm-peptide":
                         df = self._compete(df, self.dataset._spectrum_columns)
@@ -374,18 +385,38 @@ class TdcConfidence(Confidence):
 
                     # replace sequence with pairing
                     pair_col = utils.new_column("pairing", df)
-                    df[pair_col] = df["sequence"].map(
+                    df[pair_col] = df[self.dataset._peptide_column].map(
                         lambda x: pairing.get(x, x)
                     )
                     group_cols = utils.listify(group_cols) + [pair_col]
-                    group_cols.remove("sequence")
+                    group_cols.remove(self.dataset._peptide_column)
                 else:
                     raise ValueError(
                         f"'{self._pep_fdr_type}' is not a valid value for "
                         "pep_fdr_type "
                     )
-            #            print(group_cols)
-            #            print()
+            elif level == 'proteins':
+                # Perform PSM level FDR
+                df = self._compete(df, self.dataset._spectrum_columns)
+
+                # Remove peptides found in multiple proteins
+                # TODO need to account for other protein delimiters
+                df = df[~df[self.dataset._protein_column].str.contains(",")]
+
+                #print(df)
+                #print(df.columns)
+                #print(df['protein id'])
+                #for tar,prot in zip(df['target/decoy'],df['protein id']):
+                #    print(tar,prot)
+
+                df.to_csv("file1.txt",sep='\t',index=False)
+                # Sum scores of all unique peptides in a protein
+                # TODO how to aggregate p-value scores?
+                df2 = df.groupby([self.dataset._protein_column, self.dataset._target_column]).agg({self._score_column: ['sum']})
+                df2 = df2.reset_index()
+                df2.columns = [self.dataset._protein_column, self.dataset._target_column, self._score_column]
+                df = df2
+                df.to_csv("file2.txt",sep='\t',index=False)
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]

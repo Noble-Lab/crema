@@ -72,7 +72,7 @@ def test_read_mztab(real_mztab):
 
 def test_read_pepxml(real_pepxml):
     with pytest.raises(ValueError):
-        psms = crema.read_pepxml(real_pepxml,"decoy_")
+        psms = crema.read_pepxml(real_pepxml, "decoy_")
 
 
 def test_read_mzid(real_mzid):
