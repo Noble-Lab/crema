@@ -403,20 +403,12 @@ class TdcConfidence(Confidence):
                 # TODO need to account for other protein delimiters
                 df = df[~df[self.dataset._protein_column].str.contains(",")]
 
-                #print(df)
-                #print(df.columns)
-                #print(df['protein id'])
-                #for tar,prot in zip(df['target/decoy'],df['protein id']):
-                #    print(tar,prot)
-
-                df.to_csv("file1.txt",sep='\t',index=False)
                 # Sum scores of all unique peptides in a protein
                 # TODO how to aggregate p-value scores?
                 df2 = df.groupby([self.dataset._protein_column, self.dataset._target_column]).agg({self._score_column: ['sum']})
                 df2 = df2.reset_index()
                 df2.columns = [self.dataset._protein_column, self.dataset._target_column, self._score_column]
                 df = df2
-                df.to_csv("file2.txt",sep='\t',index=False)
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]

@@ -29,6 +29,8 @@ def read_mzid(mzid_files):
     # Create a dataframe from the PSMs in the mzID files.
     psms = pd.concat([_parse_psms(f) for f in mzid_files])
     print(psms.columns)
+    print(psms)
+    psms.to_csv("asdf.txt",sep='\t',index=False)
 
     # Determine which database search engine generated the mzID file.
     if "MS-GF:SpecEValue" in psms.columns:
@@ -41,6 +43,7 @@ def read_mzid(mzid_files):
         # Initialize column names from MSAmanda specifications
         spectrum_col = ["name", "calculatedMassToCharge"]
         score_col = [c for c in psms.columns if "Amanda:AmandaScore" in c]
+        prot_col = "accession"
     else:
         raise ValueError(
             "Unsupported database search engine "
@@ -80,7 +83,7 @@ def read_mzid(mzid_files):
     psms["peptide"] = psms[sequence_col] + mod_col
 
     # Keep only the relevant columns
-    columns = spectrum_col + score_col + ["peptide", target_col]
+    columns = spectrum_col + score_col + ["peptide", target_col, prot_col]
     psms = psms.loc[:, columns]
 
     return PsmDataset(
@@ -89,6 +92,7 @@ def read_mzid(mzid_files):
         spectrum_columns=spectrum_col,
         score_columns=score_col,
         peptide_column="peptide",
+        protein_column=prot_col,
         copy_data=False,
     )
 
