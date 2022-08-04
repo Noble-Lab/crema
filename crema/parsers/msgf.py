@@ -10,13 +10,13 @@ from .. import utils
 LOGGER = logging.getLogger(__name__)
 
 
-def read_crux(txt_files, pairing_file_name=None, copy_data=True):
-    """Read peptide-spectrum matches (PSMs) from Crux tab-delimited files.
+def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
+    """Read peptide-spectrum matches (PSMs) from MSGF+ tab-delimited files.
 
     Parameters
     ----------
     txt_files : str, pandas.DataFrame or tuple of str
-        One or more collection of PSMs in the Crux tab-delimited format.
+        One or more collection of PSMs in the MSGF+ tab-delimited format.
     pairing_file_name : str, optional
         A tab-delimited file that explicity pairs target and decoy peptide
         sequences. Requires one column labled 'target' that contains target
@@ -36,23 +36,19 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         PSMs.
     """
     target = "target/decoy"
-    peptide = "sequence"
-    spectrum = ["file", "scan"]
-    pairing = "original target sequence"
-    protein = "protein id"
-    protein_delim = ','
+    peptide = "Peptide"
+    spectrum = ["#SpecFile", "ScanNum"]
+    pairing = ""
+    protein = "Protein"
+    #TODO need to test case where protein are in diff row
+    protein_delim = ';'
 
     # Possible score columns output by Crux.
     scores = {
-        "sp score",
-        "delta_cn",
-        "delta_lcn",
-        "xcorr score",
-        "exact p-value",
-        "refactored xcorr",
-        "res-ev p-value",
-        "combined p-value",
-        "tailor score",
+        "DeNovoSCore",
+        "MSGFScore",
+        "SpecEValue",
+        "Evalue",
     }
 
     # Keep only crux scores that exist in all of the files.
@@ -80,6 +76,8 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     else:
         data = pd.concat([_parse_psms(f, fields) for f in txt_files])
 
+    data['target/decoy'] = ~data[protein].str.contains("XXX_")
+
     psms = read_txt(
         data,
         target_column=target,
@@ -92,18 +90,18 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         copy_data=False,
     )
 
-    # always pair target and decoys for Crux
-    if pairing_file_name == None:  # implicit pairing
-        psms._peptide_pairing = _create_pairing(data)
-    else:  # explicit pairing
-        psms._peptide_pairing = _create_pairing_from_file(pairing_file_name)
+    # pairing with MSGF+ not possible at this time
+    #if pairing_file_name == None:  # implicit pairing
+    #    psms._peptide_pairing = _create_pairing(data)
+    #else:  # explicit pairing
+    #    psms._peptide_pairing = _create_pairing_from_file(pairing_file_name)
 
-    # Remove the start position of peptide in protein if present
-    # This looks like "protName(XX)"
+    # Remove pre/post from protein ID
+    # This looks like "sp|P0AC43|SDHA_ECO57(pre=R,post=G)"
     # Remove decoy prefix from protein ID
     protein_column = psms.data[protein]
     new_protein_column = protein_column.str.replace("\([^()]*\)", '', regex=True)
-    new_protein_column = new_protein_column.str.replace("decoy_", '', regex=True)
+    new_protein_column = new_protein_column.str.replace("XXX_", '', regex=True)
     psms.set_protein_column(new_protein_column)
     
     return psms

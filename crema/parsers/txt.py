@@ -15,6 +15,7 @@ def read_txt(
     score_columns,
     peptide_column,
     protein_column,
+    protein_delim,
     sep="\t",
     copy_data=True,
 ):
@@ -37,6 +38,8 @@ def read_txt(
         not matter, so long as it is consistent.
     protein_column : str
         The column that defines a unique protein.
+    protein_delim : str
+        The delimiter to separate protein IDs.
     sep : str, optional
         The delimiter to use.
     copy_data : bool, optional
@@ -75,6 +78,7 @@ def read_txt(
         score_columns=score_columns,
         peptide_column=peptide_column,
         protein_column=protein_column,
+        protein_delim=protein_delim,
         copy_data=False,
     )
 

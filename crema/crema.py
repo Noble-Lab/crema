@@ -7,6 +7,7 @@ import time
 import logging
 
 from .parsers.crux import read_crux
+from .parsers.msgf import read_msgf
 from .parsers.mztab import read_mztab
 from .parsers.mzid import read_mzid
 from .parsers.pepxml import read_pepxml

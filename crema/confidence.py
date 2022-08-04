@@ -186,6 +186,7 @@ class Confidence(ABC):
         cols = [
             *self.dataset._spectrum_columns,
             self.dataset._peptide_column,
+            self.dataset._protein_column,
             self._score_column,
             "crema q-value",
         ]
@@ -400,8 +401,7 @@ class TdcConfidence(Confidence):
                 df = self._compete(df, self.dataset._spectrum_columns)
 
                 # Remove peptides found in multiple proteins
-                # TODO need to account for other protein delimiters
-                df = df[~df[self.dataset._protein_column].str.contains(",")]
+                df = df[~df[self.dataset._protein_column].str.contains(self.dataset._protein_delim)]
 
                 # Sum scores of all unique peptides in a protein
                 # TODO how to aggregate p-value scores?
@@ -509,7 +509,6 @@ class MixmaxConfidence(Confidence):
 
             df = self.data
             group_cols = utils.listify(group_cols)
-            print(group_cols)
 
             targets = df[df[self.dataset._target_column]]
             decoys = df[~df[self.dataset._target_column]]

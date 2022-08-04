@@ -65,6 +65,7 @@ class PsmDataset:
         score_columns,
         peptide_column,
         protein_column,
+        protein_delim,
         peptide_pairing=None,
         copy_data=True,
     ):
@@ -74,6 +75,7 @@ class PsmDataset:
         self._target_column = target_column
         self._peptide_column = peptide_column
         self._protein_column = protein_column
+        self._protein_delim = protein_delim
         self._peptide_pairing = peptide_pairing
 
         fields = sum(
@@ -124,6 +126,11 @@ class PsmDataset:
     def proteins(self):
         """The proteins as a :py:class:`pandas.Series`."""
         return self[self._protein_column]
+
+    @property
+    def protein_delim(self):
+        """The delimiter to split protein IDs as a string."""
+        return self[self._protein_delim]
 
     @property
     def scores(self):

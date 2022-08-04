@@ -18,6 +18,7 @@ except ImportError:
 # Here is where we can export public functions and classes.
 from crema.dataset import PsmDataset
 from crema.parsers.crux import read_crux
+from crema.parsers.msgf import read_msgf
 from crema.parsers.txt import read_txt
 from crema.parsers.mztab import read_mztab
 from crema.parsers.mzid import read_mzid
