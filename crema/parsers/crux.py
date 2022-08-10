@@ -40,7 +40,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     spectrum = ["file", "scan"]
     pairing = "original target sequence"
     protein = "protein id"
-    protein_delim = ','
+    protein_delim = ","
 
     # Possible score columns output by Crux.
     scores = {
@@ -102,10 +102,14 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     # This looks like "protName(XX)"
     # Remove decoy prefix from protein ID
     protein_column = psms.data[protein]
-    new_protein_column = protein_column.str.replace("\([^()]*\)", '', regex=True)
-    new_protein_column = new_protein_column.str.replace("decoy_", '', regex=True)
+    new_protein_column = protein_column.str.replace(
+        "\([^()]*\)", "", regex=True
+    )
+    new_protein_column = new_protein_column.str.replace(
+        "decoy_", "", regex=True
+    )
     psms.set_protein_column(new_protein_column)
-    
+
     return psms
 
 

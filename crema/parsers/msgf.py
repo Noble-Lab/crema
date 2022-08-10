@@ -40,8 +40,8 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     spectrum = ["#SpecFile", "ScanNum"]
     pairing = ""
     protein = "Protein"
-    #TODO need to test case where protein are in diff row
-    protein_delim = ';'
+    # TODO need to test case where protein are in diff row
+    protein_delim = ";"
 
     # Possible score columns output by MSGF+.
     scores = {
@@ -76,7 +76,7 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     else:
         data = pd.concat([_parse_psms(f, fields) for f in txt_files])
 
-    data['target/decoy'] = ~data[protein].str.contains("XXX_")
+    data["target/decoy"] = ~data[protein].str.contains("XXX_")
 
     psms = read_txt(
         data,
@@ -91,19 +91,21 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     )
 
     # pairing with MSGF+ not possible at this time
-    #if pairing_file_name == None:  # implicit pairing
+    # if pairing_file_name == None:  # implicit pairing
     #    psms._peptide_pairing = _create_pairing(data)
-    #else:  # explicit pairing
+    # else:  # explicit pairing
     #    psms._peptide_pairing = _create_pairing_from_file(pairing_file_name)
 
     # Remove pre/post from protein ID
     # This looks like "sp|P0AC43|SDHA_ECO57(pre=R,post=G)"
     # Remove decoy prefix from protein ID
     protein_column = psms.data[protein]
-    new_protein_column = protein_column.str.replace("\([^()]*\)", '', regex=True)
-    new_protein_column = new_protein_column.str.replace("XXX_", '', regex=True)
+    new_protein_column = protein_column.str.replace(
+        "\([^()]*\)", "", regex=True
+    )
+    new_protein_column = new_protein_column.str.replace("XXX_", "", regex=True)
     psms.set_protein_column(new_protein_column)
-    
+
     return psms
 
 

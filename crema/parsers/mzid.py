@@ -30,7 +30,7 @@ def read_mzid(mzid_files):
     psms = pd.concat([_parse_psms(f) for f in mzid_files])
     print(psms.columns)
     print(psms)
-    psms.to_csv("asdf.txt",sep='\t',index=False)
+    psms.to_csv("asdf.txt", sep="\t", index=False)
 
     # Determine which database search engine generated the mzID file.
     if "MS-GF:SpecEValue" in psms.columns:
