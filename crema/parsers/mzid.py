@@ -15,7 +15,7 @@ def read_mzid(mzid_files):
 
     Parameters
     ----------
-    mziz_files : str or tuple of str
+    mzid_files : str or tuple of str
         One or more collections of PSMs in the mzID format.
 
     Returns
