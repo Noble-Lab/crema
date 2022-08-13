@@ -190,22 +190,22 @@ class Confidence(ABC):
             self._score_column,
             "crema q-value",
         ]
-        prot_cols = [ 
+        prot_cols = [
             self.dataset._protein_column,
             self._score_column,
             "crema q-value",
         ]
 
         for level, df in self.confidence_estimates.items():
-            if level != 'proteins':
+            if level != "proteins":
                 self.confidence_estimates[level] = df.loc[:, cols]
-            elif level == 'proteins':
+            elif level == "proteins":
                 self.confidence_estimates[level] = df.loc[:, prot_cols]
 
         for level, df in self.decoy_confidence_estimates.items():
-            if level != 'proteins':
+            if level != "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, cols]
-            elif level == 'proteins':
+            elif level == "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, prot_cols]
 
     def _compete(self, df, group_columns):
@@ -370,15 +370,17 @@ class TdcConfidence(Confidence):
             )
 
         for level, group_cols in zip(self.levels, self._level_columns):
-            df = self.data #TODO this can be removed if classic and Pepides only methods are removed
+            df = (
+                self.data
+            )  # TODO this can be removed if classic and Pepides only methods are removed
             pair_col = utils.new_column("pairing", df)
 
             if level == "peptides":
                 if self._pep_fdr_type == "classic":
                     group_cols = utils.listify(group_cols)
                 elif (
-                    self._pep_fdr_type == "peptide-only" or
-                    self._pep_fdr_type == "psm-peptide"
+                    self._pep_fdr_type == "peptide-only"
+                    or self._pep_fdr_type == "psm-peptide"
                 ):
                     if self._pep_fdr_type == "psm-peptide":
                         df = self._compete(df, self.dataset._spectrum_columns)
@@ -396,18 +398,28 @@ class TdcConfidence(Confidence):
                         f"'{self._pep_fdr_type}' is not a valid value for "
                         "pep_fdr_type "
                     )
-            elif level == 'proteins':
+            elif level == "proteins":
                 # Perform PSM level FDR
                 df = self._compete(df, self.dataset._spectrum_columns)
 
                 # Remove peptides found in multiple proteins
-                df = df[~df[self.dataset._protein_column].str.contains(self.dataset._protein_delim)]
+                df = df[
+                    ~df[self.dataset._protein_column].str.contains(
+                        self.dataset._protein_delim
+                    )
+                ]
 
                 # Sum scores of all unique peptides in a protein
                 # TODO how to aggregate p-value scores?
-                df2 = df.groupby([self.dataset._protein_column, self.dataset._target_column]).agg({self._score_column: ['sum']})
+                df2 = df.groupby(
+                    [self.dataset._protein_column, self.dataset._target_column]
+                ).agg({self._score_column: ["sum"]})
                 df2 = df2.reset_index()
-                df2.columns = [self.dataset._protein_column, self.dataset._target_column, self._score_column]
+                df2.columns = [
+                    self.dataset._protein_column,
+                    self.dataset._target_column,
+                    self._score_column,
+                ]
                 df = df2
 
             df = self._compete(df, group_cols)

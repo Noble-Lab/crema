@@ -1,5 +1,5 @@
 """
-This module contains the parser for PSMs in mzID format.
+This module contains the parser for PSMs in pepXML format.
 This code is heavily based on Will Fondrie's Mokapot pepxml parser code
 """
 import logging
@@ -8,6 +8,7 @@ from functools import partial
 
 import pandas as pd
 import itertools
+import re
 
 from ..utils import listify
 from ..dataset import PsmDataset
@@ -21,7 +22,7 @@ def read_pepxml(pepxml_files, decoy_prefix):
     Parameters
     ----------
     pepxml_files : str or tuple of str
-        One or more collections of PSMs in the mzID format.
+       One or more collections of PSMs in the pepXML format.
     decoy_prefix : str
        The prefix used to indicate a decoy protein in the
        description lines of the FASTA file.
@@ -37,11 +38,13 @@ def read_pepxml(pepxml_files, decoy_prefix):
     # Create a dataframe from the PSMs in the pepXML files.
     psms = pd.concat([_parse_pepxml(f, decoy_prefix) for f in pepxml_files])
 
-    # Initialize column names
-    spectrum_col = ["scan", "calc_mass"]
+    # Initialize column names from pepXML standard specifications
+    spectrum_col = ["ms_data_file", "scan"]
     score_col = [c for c in psms.columns if "search_engine_score" in c]
     target_col = "label"
     sequence_col = "peptide"
+    protein_col = "proteins"
+    protein_delim = ","
 
     # Check that all column headers are valid, otherwise, throw error
     if len(set(spectrum_col) & set(psms.columns)) < len(spectrum_col):
@@ -52,24 +55,42 @@ def read_pepxml(pepxml_files, decoy_prefix):
 
     if sequence_col not in psms.columns:
         raise KeyError(
-            "The pepXML file does not the columns to specify peptide sequence "
+            "The pepXML file does not contain the columns to specify "
+            "peptide sequence."
+        )
+
+    if target_col not in psms.columns:
+        raise KeyError(
+            "The pepXML file does not contain the column that specifies "
+            f"whether a PSM is a target or decoy, {target_col}"
         )
 
     if not score_col:
         raise ValueError(
-            "No columns containing search engine scores were detected."
+            "No columns containing search engine scores were detected. These "
+            "start with 'search_engine_score*'."
         )
 
-    # Keep only the relevant columns
-    columns = spectrum_col + score_col + ["peptide", target_col]
-    psms = psms.loc[:, columns]
+    if not protein_col:
+        raise ValueError(
+            "The pepXML file does not contain the columns to specify "
+            "protein sequence."
+        )
+
+    # Remove "search_engine_score:" from column name and score_col
+    # and convert scores to float
+    psms.columns = psms.columns.str.replace("search_engine_score:", "")
+    score_col = [re.sub("search_engine_score:", "", c) for c in score_col]
+    psms[score_col] = psms[score_col].astype(float)
 
     return PsmDataset(
         psms=psms,
         target_column=target_col,
         spectrum_columns=spectrum_col,
         score_columns=score_col,
-        peptide_column="peptide",
+        peptide_column=sequence_col,
+        protein_column=protein_col,
+        protein_delim=protein_delim,
         copy_data=False,
     )
 
@@ -176,7 +197,6 @@ def _parse_psm(psm_info, spec_info, decoy_prefix):
     """
     psm = spec_info.copy()
     psm["peptide"] = psm_info.get("peptide")
-    psm["calc_mass"] = float(psm_info.get("calc_neutral_pep_mass"))
     psm["proteins"] = [psm_info.get("protein").split(" ")[0]]
     psm["label"] = not psm["proteins"][0].startswith(decoy_prefix)
 
@@ -207,5 +227,5 @@ def _parse_psm(psm_info, spec_info, decoy_prefix):
                 "value"
             )
 
-    psm["proteins"] = "\t".join(psm["proteins"])
+    psm["proteins"] = ",".join(psm["proteins"])
     return psm

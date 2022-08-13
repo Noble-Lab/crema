@@ -16,7 +16,7 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
     Parameters
     ----------
     txt_files : str, pandas.DataFrame or tuple of str
-        One or more collection of PSMs in the MSAmanda comma-delimited format.
+        One or more collection of PSMs in the MSAmanda tab-delimited format.
     pairing_file_name : str, optional
         A tab-delimited file that explicity pairs target and decoy peptide
         sequences. Requires one column labled 'target' that contains target

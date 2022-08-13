@@ -238,10 +238,7 @@ class PsmDataset:
 
         return best_score, best_passing, best_desc
 
-    def set_protein_column(
-        self,
-        new_protein_column
-    ):
+    def set_protein_column(self, new_protein_column):
         """Replaces current protein column with input protein column
 
         Parameters
@@ -250,7 +247,7 @@ class PsmDataset:
 
         Returns
         -------
-        
+
         """
         self._data[self._protein_column] = new_protein_column
         return
