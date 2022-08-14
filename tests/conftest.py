@@ -217,3 +217,9 @@ def real_crux_txt():
 def real_mztab():
     """Return a real mzTab file"""
     return Path("data/MSV000085729.mzTab")
+
+
+@pytest.fixture
+def real_pepxml():
+    """Return a real pepXML file"""
+    return Path("data/tide-search.pep.xml")
