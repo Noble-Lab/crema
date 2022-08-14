@@ -24,6 +24,8 @@ def test_create_object(simple_df):
         spectrum_columns=["scan", "spectrum precursor m/z"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
+        protein_column = "protein id",
+        protein_delim = ","
     )
     assert isinstance(psms, PsmDataset)
 
@@ -36,12 +38,16 @@ def test_properties(simple_df):
         spectrum_columns=["scan", "spectrum precursor m/z"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
+        protein_column = "protein id",
+        protein_delim = ","
     )
 
     pd.testing.assert_frame_equal(psms.data, simple_df, check_like=True)
     assert list(psms.spectra.columns) == ["scan", "spectrum precursor m/z"]
     assert psms.score_columns == ["combined p-value", "x"]
     assert psms.peptides.name == "sequence"
+    assert psms.protein_column == "protein id"
+    assert psms.protein_delim == ","
     pd.testing.assert_frame_equal(
         psms.scores, simple_df.loc[:, ["combined p-value", "x"]]
     )
@@ -58,6 +64,8 @@ def test_getitem(simple_df):
         spectrum_columns=["scan", "spectrum precursor m/z"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=","
     )
 
     pd.testing.assert_series_equal(psms["scan"], simple_df["scan"])
@@ -75,6 +83,8 @@ def test_find_best_score(simple_df):
         spectrum_columns=["scan", "spectrum precursor m/z"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=","
     )
 
     score, npass, desc = psms.find_best_score(eval_fdr=0.4)

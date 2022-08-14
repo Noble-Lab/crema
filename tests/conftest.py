@@ -10,24 +10,26 @@ def basic_crux_df():
     """A simple crux-like dataframe"""
     df = pd.DataFrame(
         [
-            [1, 10, 0.7, "A", "target", 0.7],
-            [2, 20, 0.4, "B", "decoy", 0.1],
-            [3, 30, 0.1, "C", "target", 0.2],
-            [4, 40, 0.55, "D", "target", 0.8],
-            [5, 50, 0.25, "E", "target", 0.25],
-            [1, 10, 0.6, "F", "target", 0.6],
-            [2, 20, 0.2, "G", "decoy", 0.2],
-            [3, 30, 0.7, "H", "decoy", 0.4],
-            [4, 40, 0.56, "I", "target", 0.56],
-            [5, 50, 0.3, "J", "decoy", 0.3],
+            ["file1", 1, 10, 0.7, "A", "target", 0.7, "prot1"],
+            ["file1", 2, 20, 0.4, "B", "decoy", 0.1, "prot2"],
+            ["file1", 3, 30, 0.1, "C", "target", 0.2, "prot3"],
+            ["file1", 4, 40, 0.55, "D", "target", 0.8, "prot4"],
+            ["file1", 5, 50, 0.25, "E", "target", 0.25, "prot5"],
+            ["file1", 1, 10, 0.6, "F", "target", 0.6, "prot6"],
+            ["file1", 2, 20, 0.2, "G", "decoy", 0.2, "prot7"],
+            ["file1", 3, 30, 0.7, "H", "decoy", 0.4, "prot8"],
+            ["file1", 4, 40, 0.56, "I", "target", 0.56, "prot9"],
+            ["file1", 5, 50, 0.3, "J", "decoy", 0.3, "prot10"],
         ],
         columns=[
+            "file",
             "scan",
             "spectrum precursor m/z",
             "combined p-value",
             "sequence",
             "target/decoy",
             "x",
+            "protein id",
         ],
     )
     return df
@@ -38,24 +40,26 @@ def target_crux_df():
     """A crux-like dataframe of target psms"""
     df = pd.DataFrame(
         [
-            [1, 10, 101, 0.5, "APPLE", "target"],
-            [2, 20, 102, 0.4, "BANANA", "target"],
-            [3, 30, 103, 0.1, "CHERRY", "target"],
-            [4, 40, 104, 0.55, "DURIAN", "target"],
-            [5, 50, 105, 0.25, "EGGPLANT", "target"],
-            [6, 60, 106, 0.6, "APPLE", "target"],
-            [7, 70, 107, 0.2, "BANANA", "target"],
-            [8, 80, 108, 0.7, "CHERRY", "target"],
-            [9, 90, 109, 0.56, "DURIAN", "target"],
-            [10, 100, 110, 0.3, "EGGPLANT", "target"],
+            ["file1", 1, 10, 101, 0.5, "APPLE", "target", "prot1"],
+            ["file1", 2, 20, 102, 0.4, "BANANA", "target", "prot2"],
+            ["file1", 3, 30, 103, 0.1, "CHERRY", "target", "prot3"],
+            ["file1", 4, 40, 104, 0.55, "DURIAN", "target", "prot4"],
+            ["file1", 5, 50, 105, 0.25, "EGGPLANT", "target", "prot5"],
+            ["file1", 6, 60, 106, 0.6, "APPLE", "target", "prot6"],
+            ["file1", 7, 70, 107, 0.2, "BANANA", "target", "prot7"],
+            ["file1", 8, 80, 108, 0.7, "CHERRY", "target", "prot8"],
+            ["file1", 9, 90, 109, 0.56, "DURIAN", "target", "prot9"],
+            ["file1", 10, 100, 110, 0.3, "EGGPLANT", "target", "prot10"],
         ],
         columns=[
+            "file",
             "scan",
             "spectrum precursor m/z",
             "peptide mass",
             "combined p-value",
             "sequence",
             "target/decoy",
+            "protein id",
         ],
     )
     return df
@@ -66,18 +70,19 @@ def decoy_crux_df():
     """A crux-like dataframe of decoy psms"""
     df = pd.DataFrame(
         [
-            [1, 10, 101, 0.7, "APLPE", "decoy", "APPLE"],
-            [2, 20, 102, 0.45, "ANANAB", "decoy", "BANANA"],
-            [3, 30, 103, 0.3, "CHRREY", "decoy", "CHERRY"],
-            [4, 40, 104, 0.6, "DRIUAN", "decoy", "DURIAN"],
-            [5, 50, 105, 0.9, "EGPGLATN", "decoy", "EGGPLANT"],
-            [6, 60, 106, 0.75, "APLPE", "decoy", "APPLE"],
-            [7, 70, 107, 0.25, "ANANAB", "decoy", "BANANA"],
-            [8, 80, 108, 0.9, "CHRREY", "decoy", "CHERRY"],
-            [9, 90, 109, 0.5, "DRIUAN", "decoy", "DURIAN"],
-            [10, 100, 110, 0.8, "EGPGLATN", "decoy", "EGGPLANT"],
+            ["file1", 1, 10, 101, 0.7, "APLPE", "decoy", "APPLE", "prot1"],
+            ["file1", 2, 20, 102, 0.45, "ANANAB", "decoy", "BANANA", "prot2"],
+            ["file1", 3, 30, 103, 0.3, "CHRREY", "decoy", "CHERRY", "prot3"],
+            ["file1", 4, 40, 104, 0.6, "DRIUAN", "decoy", "DURIAN", "prot4"],
+            ["file1", 5, 50, 105, 0.9, "EGPGLATN", "decoy", "EGGPLANT", "prot5"],
+            ["file1", 6, 60, 106, 0.75, "APLPE", "decoy", "APPLE", "prot6"],
+            ["file1", 7, 70, 107, 0.25, "ANANAB", "decoy", "BANANA", "prot7"],
+            ["file1", 8, 80, 108, 0.9, "CHRREY", "decoy", "CHERRY", "prot8"],
+            ["file1", 9, 90, 109, 0.5, "DRIUAN", "decoy", "DURIAN", "prot9"],
+            ["file1", 10, 100, 110, 0.8, "EGPGLATN", "decoy", "EGGPLANT", "prot10"],
         ],
         columns=[
+            "file",
             "scan",
             "spectrum precursor m/z",
             "peptide mass",
@@ -85,6 +90,7 @@ def decoy_crux_df():
             "sequence",
             "target/decoy",
             "original target sequence",
+            "protein id",
         ],
     )
     return df
@@ -95,24 +101,26 @@ def mod_target_crux_df():
     """A crux-like dataframe of target psms"""
     df = pd.DataFrame(
         [
-            [1, 10, 101, 0.1, "ALLSLR", "target"],
-            [2, 20, 102, 0.2, "AILSIR", "target"],
-            [3, 30, 103, 0.3, "LAVITR", "target"],
-            [4, 40, 104, 0.4, "QTPPAR", "target"],
-            [5, 50, 105, 0.5, "IPLVNL", "target"],
-            [6, 60, 106, 0.6, "SRGPPR", "target"],
-            [7, 70, 107, 0.7, "GEVPN[0.98]R", "target"],
-            [8, 80, 108, 0.8, "GGHMDR", "target"],
-            [9, 90, 109, 0.9, "NPANRT", "target"],
-            [10, 100, 110, 0.99, "SADAGPR", "target"],
+            ["file1", 1, 10, 101, 0.1, "ALLSLR", "target", "prot1"],
+            ["file1", 2, 20, 102, 0.2, "AILSIR", "target", "prot2"],
+            ["file1", 3, 30, 103, 0.3, "LAVITR", "target", "prot3"],
+            ["file1", 4, 40, 104, 0.4, "QTPPAR", "target", "prot4"],
+            ["file1", 5, 50, 105, 0.5, "IPLVNL", "target", "prot5"],
+            ["file1", 6, 60, 106, 0.6, "SRGPPR", "target", "prot6"],
+            ["file1", 7, 70, 107, 0.7, "GEVPN[0.98]R", "target", "prot7"],
+            ["file1", 8, 80, 108, 0.8, "GGHMDR", "target", "prot8"],
+            ["file1", 9, 90, 109, 0.9, "NPANRT", "target", "prot9"],
+            ["file1", 10, 100, 110, 0.99, "SADAGPR", "target", "prot10"],
         ],
         columns=[
+            "file",
             "scan",
             "spectrum precursor m/z",
             "peptide mass",
             "combined p-value",
             "sequence",
             "target/decoy",
+            "protein id",
         ],
     )
     return df
@@ -123,18 +131,19 @@ def mod_decoy_crux_df():
     """A crux-like dataframe of target psms with peptide modifications"""
     df = pd.DataFrame(
         [
-            [1, 10, 101, 0.1, "ALLLSR", "decoy", "ALLSLR"],
-            [2, 20, 102, 0.3, "ALLISR", "decoy", "ASLILR"],
-            [3, 30, 103, 0.2, "LATVIR", "decoy", "LIVATR"],
-            [4, 40, 104, 0.6, "QTAPPR", "decoy", "QTPPAR"],
-            [5, 50, 105, 0.5, "IVLN[0.98]PL", "decoy", "IPLVNL"],
-            [6, 60, 106, 0.9, "RGSPPR", "decoy", "RSGPPR"],
-            [7, 70, 107, 0.4, "GN[0.98]PEVR", "decoy", "GEVPNR"],
-            [8, 80, 108, 0.7, "GDMGHR", "decoy", "GGHMDR"],
-            [9, 90, 109, 0.8, "N[0.98]NPTAR", "decoy", "NPANTR"],
-            [10, 100, 110, 0.55, "SGDAPAR", "decoy", "SAADGPR"],
+            ["file1", 1, 10, 101, 0.1, "ALLLSR", "decoy", "ALLSLR", "prot1"],
+            ["file1", 2, 20, 102, 0.3, "ALLISR", "decoy", "ASLILR", "prot2"],
+            ["file1", 3, 30, 103, 0.2, "LATVIR", "decoy", "LIVATR", "prot3"],
+            ["file1", 4, 40, 104, 0.6, "QTAPPR", "decoy", "QTPPAR", "prot4"],
+            ["file1", 5, 50, 105, 0.5, "IVLN[0.98]PL", "decoy", "IPLVNL", "prot5"],
+            ["file1", 6, 60, 106, 0.9, "RGSPPR", "decoy", "RSGPPR", "prot6"],
+            ["file1", 7, 70, 107, 0.4, "GN[0.98]PEVR", "decoy", "GEVPNR", "prot7"],
+            ["file1", 8, 80, 108, 0.7, "GDMGHR", "decoy", "GGHMDR", "prot8"],
+            ["file1", 9, 90, 109, 0.8, "N[0.98]NPTAR", "decoy", "NPANTR", "prot9"],
+            ["file1", 10, 100, 110, 0.55, "SGDAPAR", "decoy", "SAADGPR", "prot10"],
         ],
         columns=[
+            "file",
             "scan",
             "spectrum precursor m/z",
             "peptide mass",
@@ -142,6 +151,7 @@ def mod_decoy_crux_df():
             "sequence",
             "target/decoy",
             "original target sequence",
+            "protein id",
         ],
     )
     return df

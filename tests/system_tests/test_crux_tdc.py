@@ -74,7 +74,7 @@ def test_crux_tdc(target_crux_txt, decoy_crux_txt, tmp_path):
         ],
     )
 
-    psms = read_crux([target_crux_txt, decoy_crux_txt], peptide_tdc=True)
+    psms = read_crux([target_crux_txt, decoy_crux_txt])
     conf = psms.assign_confidence(score_column="combined p-value", desc=False)
 
     unittest.TestCase().assertDictEqual(

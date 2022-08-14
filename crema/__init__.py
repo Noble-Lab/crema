@@ -24,7 +24,6 @@ from crema.parsers.msfragger import read_msfragger
 from crema.parsers.txt import read_txt
 from crema.parsers.pepxml import read_pepxml
 from crema.parsers.mztab import read_mztab
-from crema.parsers.mzid import read_mzid
 from crema.parsers.pepxml import read_pepxml
 from crema.confidence import TdcConfidence, assign_confidence
 from crema.writers.txt import to_txt

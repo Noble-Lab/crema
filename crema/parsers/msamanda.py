@@ -89,14 +89,8 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
         copy_data=False,
     )
 
-    # pairing with MSGF+ not possible at this time
-    # if pairing_file_name == None:  # implicit pairing
-    #    psms._peptide_pairing = _create_pairing(data)
-    # else:  # explicit pairing
-    #    psms._peptide_pairing = _create_pairing_from_file(pairing_file_name)
+    # pairing with MSAmanda not possible at this time
 
-    # Remove pre/post from protein ID
-    # This looks like "sp|P0AC43|SDHA_ECO57(pre=R,post=G)"
     # Remove decoy prefix from protein ID
     protein_column = psms.data[protein]
     new_protein_column = protein_column.str.replace("REV_", "", regex=True)

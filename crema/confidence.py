@@ -21,7 +21,7 @@ def assign_confidence(
     desc=None,
     eval_fdr=0.01,
     method="tdc",
-    pep_fdr_type="classic",
+    pep_fdr_type="psm-only",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -44,7 +44,7 @@ def assign_confidence(
         `score_column` and `desc` to choose. This should range from 0 to 1.
     method : {"tdc"}, optional
         The method for crema to use when calculating the confidence estimates.
-    pep_fdr_type : {"classic","peptide-only",psm-peptide"}, optional
+    pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates.
 
@@ -133,7 +133,7 @@ class Confidence(ABC):
         score_column,
         desc=None,
         eval_fdr=0.01,
-        pep_fdr_type="classic",
+        pep_fdr_type="psm-only",
     ):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
@@ -322,7 +322,7 @@ class TdcConfidence(Confidence):
     eval_fdr : float, optional
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
-    pep_fdr_type : {"classic","peptide-only",psm-peptide"}, optional
+    pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates.
 
@@ -345,7 +345,7 @@ class TdcConfidence(Confidence):
         score_column=None,
         desc=None,
         eval_fdr=0.01,
-        pep_fdr_type="classic",
+        pep_fdr_type="psm-only",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
@@ -364,19 +364,18 @@ class TdcConfidence(Confidence):
         """Assign confidence estimates using target-decoy competition"""
         pairing = self.dataset.peptide_pairing
 
-        if pairing == None and self._pep_fdr_type != "classic":
+        if pairing == None and self._pep_fdr_type != "psm-only":
             raise ValueError(
                 "Must provide paired target decoy peptide infomation"
             )
 
         for level, group_cols in zip(self.levels, self._level_columns):
-            df = (
-                self.data
-            )  # TODO this can be removed if classic and Pepides only methods are removed
+            # NOTE line below can removed if psm-only and peptide-only methods are removed
+            df = self.data
             pair_col = utils.new_column("pairing", df)
 
             if level == "peptides":
-                if self._pep_fdr_type == "classic":
+                if self._pep_fdr_type == "psm-only":
                     group_cols = utils.listify(group_cols)
                 elif (
                     self._pep_fdr_type == "peptide-only"
@@ -467,7 +466,7 @@ class MixmaxConfidence(Confidence):
     eval_fdr : float, optional
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
-    pep_fdr_type : {"classic","peptide-only",psm-peptide"}, optional
+    pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates.
 
@@ -490,7 +489,7 @@ class MixmaxConfidence(Confidence):
         score_column=None,
         desc=None,
         eval_fdr=0.01,
-        pep_fdr_type="classic",
+        pep_fdr_type="psm-only",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
