@@ -44,6 +44,10 @@ Parsers
     :nosignatures:
 
     read_crux
+    read_msamanda
+    read_msfragger
+    read_msgf
+    read_pepxml
     read_mztab
     read_txt
 
@@ -63,7 +67,7 @@ Dataset
     PsmDataset
 
 Confidence
----------
+----------
 .. currentmodule:: crema.confidence
 .. autosummary::
     :nosignatures:
