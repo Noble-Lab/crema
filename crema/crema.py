@@ -52,25 +52,31 @@ def main():
     logging.info("=================")
 
     # Create dataset object
-    try:
-        psms = read_crux(args.psm_files)
-    except:
-        pass
+    # TODO Is this the best way to do this?
+    while True:
+        try:
+            psms = read_crux(args.psm_files)
+            break
+        except:
+            pass
 
-    try:
-        psms = read_msgf(args.psm_files)
-    except:
-        pass
+        try:
+            psms = read_msgf(args.psm_files)
+            break
+        except:
+            pass
 
-    try:
-        psms = read_msamanda(args.psm_files)
-    except:
-        pass
+        try:
+            psms = read_msamanda(args.psm_files)
+            break
+        except:
+            pass
 
-    try:
-        psms = read_msfragger(args.psm_files)
-    except:
-        psms = read_mztab(args.psm_files)
+        try:
+            psms = read_msfragger(args.psm_files)
+            break
+        except:
+            psms = read_mztab(args.psm_files)
 
     conf = psms.assign_confidence(
         score_column=args.score,

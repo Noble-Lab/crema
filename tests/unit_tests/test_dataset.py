@@ -21,7 +21,7 @@ def test_create_object(simple_df):
     psms = PsmDataset(
         psms=simple_df,
         target_column="target",
-        spectrum_columns=["scan", "spectrum precursor m/z"],
+        spectrum_columns=["file", "scan"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
         protein_column = "protein id",
@@ -35,19 +35,22 @@ def test_properties(simple_df):
     psms = PsmDataset(
         psms=simple_df,
         target_column="target",
-        spectrum_columns=["scan", "spectrum precursor m/z"],
+        spectrum_columns=["file", "scan"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
         protein_column = "protein id",
         protein_delim = ","
     )
 
-    pd.testing.assert_frame_equal(psms.data, simple_df, check_like=True)
-    assert list(psms.spectra.columns) == ["scan", "spectrum precursor m/z"]
+    # TODO remove after Will code review
+    # This is not true anymore because columns are used as input that
+    # are not found in output (namely "original target sequence).
+    #pd.testing.assert_frame_equal(psms.data, simple_df, check_like=True)
+    assert list(psms.spectra.columns) == ["file", "scan"]
     assert psms.score_columns == ["combined p-value", "x"]
     assert psms.peptides.name == "sequence"
-    assert psms.protein_column == "protein id"
-    assert psms.protein_delim == ","
+    assert psms.proteins.name == "protein id"
+    assert psms._protein_delim == ","
     pd.testing.assert_frame_equal(
         psms.scores, simple_df.loc[:, ["combined p-value", "x"]]
     )
@@ -61,7 +64,7 @@ def test_getitem(simple_df):
     psms = PsmDataset(
         psms=simple_df,
         target_column="target",
-        spectrum_columns=["scan", "spectrum precursor m/z"],
+        spectrum_columns=["file", "scan"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
         protein_column="protein id",
