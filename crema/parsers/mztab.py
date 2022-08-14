@@ -34,6 +34,8 @@ def read_mztab(mztab_files):
     score_col = [c for c in psms.columns if "search_engine_score" in c]
     target_col = "opt_global_cv_MS:1002217_decoy_peptide"
     sequence_col = "sequence"
+    protein_col = "accession" # TODO check if correct
+    delim_col = ";" # TODO check if correct
     mod_col = "modifications"
 
     # Check that all column headers are valid, otherwise, throw error
@@ -66,7 +68,7 @@ def read_mztab(mztab_files):
     psms["target"] = ~psms[target_col].astype(bool)
 
     # Keep only the relevant columns
-    columns = spectrum_col + score_col + ["peptide", "target"]
+    columns = spectrum_col + score_col + ["peptide", "target"] + [protein_col]
     psms = psms.loc[:, columns]
 
     return PsmDataset(
@@ -75,6 +77,8 @@ def read_mztab(mztab_files):
         spectrum_columns=spectrum_col,
         score_columns=score_col,
         peptide_column="peptide",
+        protein_column=protein_col,
+        protein_delim=delim_col,
         copy_data=False,
     )
 
