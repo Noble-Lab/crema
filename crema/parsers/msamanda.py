@@ -88,7 +88,10 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
         copy_data=False,
     )
 
-    # pairing with MSAmanda not possible at this time
+    if pairing_file_name != None:
+        psms._peptide_pairing = utils.create_pairing_from_file(
+            pairing_file_name
+        )
 
     # Remove decoy prefix from protein ID
     protein_column = psms.data[protein]

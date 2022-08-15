@@ -75,6 +75,11 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
     else:
         data = _parse_psms(txt_files, decoy_prefix)
 
+    if pairing_file_name != None:
+        psms._peptide_pairing = utils.create_pairing_from_file(
+            pairing_file_name
+        )
+
     return data
 
 
