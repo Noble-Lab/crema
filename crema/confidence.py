@@ -366,7 +366,7 @@ class TdcConfidence(Confidence):
 
         if pairing == None and self._pep_fdr_type != "psm-only":
             raise ValueError(
-                "Must provide paired target decoy peptide infomation"
+                "Must provide paired target decoy peptide infomation."
             )
 
         for level, group_cols in zip(self.levels, self._level_columns):

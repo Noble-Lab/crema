@@ -52,8 +52,8 @@ def test_read_txt(basic_crux_csv):
         spectrum_columns="scan",
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
-        protein_column='protein id',
-        protein_delim=',',
+        protein_column="protein id",
+        protein_delim=",",
         sep=",",
     )
     assert isinstance(psms.data, pd.DataFrame)

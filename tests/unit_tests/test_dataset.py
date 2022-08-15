@@ -24,8 +24,8 @@ def test_create_object(simple_df):
         spectrum_columns=["file", "scan"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
-        protein_column = "protein id",
-        protein_delim = ","
+        protein_column="protein id",
+        protein_delim=",",
     )
     assert isinstance(psms, PsmDataset)
 
@@ -38,14 +38,14 @@ def test_properties(simple_df):
         spectrum_columns=["file", "scan"],
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
-        protein_column = "protein id",
-        protein_delim = ","
+        protein_column="protein id",
+        protein_delim=",",
     )
 
     # TODO remove after Will code review
     # This is not true anymore because columns are used as input that
     # are not found in output (namely "original target sequence).
-    #pd.testing.assert_frame_equal(psms.data, simple_df, check_like=True)
+    # pd.testing.assert_frame_equal(psms.data, simple_df, check_like=True)
     assert list(psms.spectra.columns) == ["file", "scan"]
     assert psms.score_columns == ["combined p-value", "x"]
     assert psms.peptides.name == "sequence"
@@ -68,7 +68,7 @@ def test_getitem(simple_df):
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
         protein_column="protein id",
-        protein_delim=","
+        protein_delim=",",
     )
 
     pd.testing.assert_series_equal(psms["scan"], simple_df["scan"])
@@ -87,7 +87,7 @@ def test_find_best_score(simple_df):
         score_columns=["combined p-value", "x"],
         peptide_column="sequence",
         protein_column="protein id",
-        protein_delim=","
+        protein_delim=",",
     )
 
     score, npass, desc = psms.find_best_score(eval_fdr=0.4)
