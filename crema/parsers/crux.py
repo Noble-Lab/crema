@@ -105,7 +105,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     # Remove decoy prefix from protein ID
     protein_column = psms.data[protein]
     new_protein_column = protein_column.str.replace(
-        "\([^()]*\)", "", regex=True
+        "\\([^()]*\\)", "", regex=True
     )
     new_protein_column = new_protein_column.str.replace(
         "decoy_", "", regex=True
