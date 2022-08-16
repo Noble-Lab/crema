@@ -107,6 +107,15 @@ def _configure_parser():
         choices=["tdc"],
         help="The confidence estimation method to use.",
     )
+
+    parser.add_argument(
+        "-p",
+        "--pep_fdr",
+        type=str,
+        default="psm-only",
+        choices=["psm-only", "peptide-only", "psm-peptide"],
+        help="The peptide-level FDR estimation method to use.",
+    )
     return parser
 
 
