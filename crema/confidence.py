@@ -515,7 +515,7 @@ class MixmaxConfidence(Confidence):
 
         # TODO check if separate target-decoy search is done
         for level, group_cols in zip(self.levels, self._level_columns):
-            if level == "peptides":
+            if level == "peptides" or level == "proteins":
                 continue
 
             df = self.data
