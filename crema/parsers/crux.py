@@ -111,7 +111,6 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         "decoy_", "", regex=True
     )
     psms.set_protein_column(new_protein_column)
-    print(psms)
 
     return psms
 
