@@ -46,6 +46,7 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
         "Amanda Score",
         "Weighted Probability",
     }
+    scores_all = scores
 
     # Keep only crux scores that exist in all of the files.
     if isinstance(txt_files, pd.DataFrame):
@@ -62,7 +63,7 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
     if not scores:
         raise ValueError(
             "Could not find any of the MSAmanda score columns in all of the files."
-            f"The columns crema looks for are {', '.join(list(scores))}"
+            f"The columns Crema looks for are {', '.join(list(scores_all))}"
         )
 
     scores = list(scores)
@@ -94,7 +95,7 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
         )
 
     # Remove decoy prefix from protein ID
-    protein_column = psms.data[protein]
+    protein_column = psms.proteins
     new_protein_column = protein_column.str.replace("REV_", "", regex=True)
     psms.set_protein_column(new_protein_column)
 

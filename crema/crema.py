@@ -10,6 +10,7 @@ from .parsers.crux import read_crux
 from .parsers.msamanda import read_msamanda
 from .parsers.msfragger import read_msfragger
 from .parsers.msgf import read_msgf
+from .parsers.comet import read_comet
 from .parsers.mztab import read_mztab
 from .parsers.pepxml import read_pepxml
 from .params import Params
@@ -68,6 +69,12 @@ def main():
 
         try:
             psms = read_msamanda(args.psm_files)
+            break
+        except:
+            pass
+
+        try:
+            psms = read_comet(args.psm_files)
             break
         except:
             pass

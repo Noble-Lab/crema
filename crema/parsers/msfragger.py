@@ -49,6 +49,7 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
         "nextscore",
         "expect",
     }
+    # scores_all = scores
 
     # TODO need to figure out how to for this
     # Keep only crux scores that exist in all of the files.
@@ -64,7 +65,7 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
     # if not scores:
     #    raise ValueError(
     #        "Could not find any of the MSFragger score columns in all of the files."
-    #        f"The columns crema looks for are {', '.join(list(scores))}"
+    #        f"The columns crema looks for are {', '.join(list(scores_all))}"
     #    )
 
     scores = list(scores)

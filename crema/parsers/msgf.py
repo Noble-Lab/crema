@@ -49,6 +49,7 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
         "SpecEValue",
         "Evalue",
     }
+    scores_all = scores
 
     # Keep only MSGF+ scores that exist in all of the files.
     if isinstance(txt_files, pd.DataFrame):
@@ -63,7 +64,7 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     if not scores:
         raise ValueError(
             "Could not find any of the MSGF+ score columns in all of the files."
-            f"The columns crema looks for are {', '.join(list(scores))}"
+            f"The columns Crema looks for are {', '.join(list(scores_all))}"
         )
 
     scores = list(scores)
@@ -97,7 +98,7 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     # Remove pre/post from protein ID
     # This looks like "sp|P0AC43|SDHA_ECO57(pre=R,post=G)"
     # Remove decoy prefix from protein ID
-    protein_column = psms.data[protein]
+    protein_column = psms.proteins
     new_protein_column = protein_column.str.replace(
         "\\([^()]*\\)", "", regex=True
     )

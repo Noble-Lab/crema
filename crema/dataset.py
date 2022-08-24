@@ -251,3 +251,17 @@ class PsmDataset:
         """
         self._data[self._protein_column] = new_protein_column
         return
+
+    def set_peptide_column(self, new_peptide_column):
+        """Replaces current peptide column with input peptide column
+
+        Parameters
+        ----------
+        new_peptide_column : pandas.Series
+
+        Returns
+        -------
+
+        """
+        self._data[self._peptide_column] = new_peptide_column
+        return

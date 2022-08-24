@@ -1,4 +1,4 @@
-"""A parser for the crux tab-delimited format"""
+"""A parser for Comet output"""
 import re
 import logging
 
@@ -10,8 +10,9 @@ from .. import utils
 LOGGER = logging.getLogger(__name__)
 
 
-def read_crux(txt_files, pairing_file_name=None, copy_data=True):
-    """Read peptide-spectrum matches (PSMs) from Crux tab-delimited files.
+def read_comet(txt_files, pairing_file_name=None, copy_data=True):
+    """Read peptide-spectrum matches (PSMs) from Comet output.
+    Can parse tab-delimited files.
 
     Parameters
     ----------
@@ -36,50 +37,57 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         PSMs.
     """
     target = "target/decoy"
-    peptide = "sequence"
-    spectrum = ["file", "scan"]
-    pairing = "original target sequence"
-    protein = "protein id"
+    peptide = "modified_peptide"
+    spectrum = ["scan", "exp_neutral_mass"]  # No file col to use
+    pairing = "plain_peptide"
+    protein = "protein"
     protein_delim = ","
+    other = "modifications"
 
-    # Possible score columns output by Crux.
+    # Possible score columns output by Comet.
     scores = {
-        "sp score",
-        "delta_cn",
-        "delta_lcn",
-        "xcorr score",
-        "exact p-value",
-        "refactored xcorr",
-        "res-ev p-value",
-        "combined p-value",
-        "tailor score",
+        "e-value",
+        "xcorr",
+        "sp_score",
     }
     scores_all = scores
 
-    # Keep only Crux scores that exist in all of the files.
+    # Keep only crux scores that exist in all of the files.
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))
     else:
         txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
             with open(txt_file) as txt_ref:
+                # First line of Comet output consists only of version
+                skipLine = txt_ref.readline()
                 cols = txt_ref.readline().rstrip().split("\t")
                 scores = scores.intersection(set(cols))
 
     if not scores:
         raise ValueError(
-            "Could not find any of the Crux score columns in all of the files."
-            f" The columns Crema looks for are {', '.join(list(scores_all))}"
+            "Could not find any of the Comet score columns in all of the files."
+            f"The columns Crema looks for are {', '.join(list(scores_all))}"
         )
 
     scores = list(scores)
 
     # Read in the files:
-    fields = spectrum + [peptide] + [target] + scores + [pairing] + [protein]
+    fields = (
+        spectrum
+        + [peptide]
+        + [target]
+        + scores
+        + [pairing]
+        + [protein]
+        + [other]
+    )
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
         data = pd.concat([_parse_psms(f, fields) for f in txt_files])
+
+    data["target/decoy"] = ~data[protein].str.contains("DECOY_")
 
     psms = read_txt(
         data,
@@ -93,24 +101,24 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
         copy_data=False,
     )
 
-    # always pair target and decoys for Crux
-    if pairing_file_name == None:  # implicit pairing
+    # Remove first and last amino acid from sequence
+    # Looks like "R.WVNEK.Y"
+    peptide_column = psms.peptides
+    new_peptide_column = peptide_column.str[2:-2]
+    psms.set_peptide_column(new_peptide_column)
+
+    # always pair target and decoys for Comet
+    if pairing_file_name == None:
+        # implicit pairing based off fact that Comet reverses peptides
         psms._peptide_pairing = _create_pairing(data)
     else:  # explicit pairing
         psms._peptide_pairing = utils.create_pairing_from_file(
             pairing_file_name
         )
 
-    # Remove the start position of peptide in protein if present
-    # This looks like "protName(XX)"
     # Remove decoy prefix from protein ID
     protein_column = psms.proteins
-    new_protein_column = protein_column.str.replace(
-        "\\([^()]*\\)", "", regex=True
-    )
-    new_protein_column = new_protein_column.str.replace(
-        "decoy_", "", regex=True
-    )
+    new_protein_column = protein_column.str.replace("DECOY_", "", regex=True)
     psms.set_protein_column(new_protein_column)
 
     return psms
@@ -133,19 +141,20 @@ def _parse_psms(txt_file, cols, log=True):
     """
     if log:
         LOGGER.info("Reading PSMs from %s...", txt_file)
-    return pd.read_csv(txt_file, sep="\t", usecols=lambda c: c in cols)
+    return pd.read_csv(
+        txt_file, sep="\t", skiprows=1, usecols=lambda c: c in cols
+    )
 
 
 def _create_pairing(pairing_data):
-    """Parse a single Crux dataframe to implicity pair target and
+    """Parse a single Comet dataframe to implicity pair target and
     decoy sequences.
 
     Parameters
     ----------
     pairing_data : pandas.DataFrame
         A collection of PSMs with the necessary columns to create a
-        target/decoy peptide pairing. Required columns are "peptide mass",
-        "sequence", "target/decoy", "original target sequence"
+        target/decoy peptide pairing. Required columns are "sequence".
 
     Returns
     -------
@@ -154,13 +163,9 @@ def _create_pairing(pairing_data):
         missing decoys will not be included among the keys.
 
     """
+    # TODO create test for this function
     # ensure pairing_data dataframe contains all necessary columns
-    seq = "original target sequence"
-    req_fields = [
-        "sequence",
-        "target/decoy",
-        "original target sequence",
-    ]
+    req_fields = ["modified_peptide", "protein", "modifications"]
 
     if not set(req_fields).issubset(pairing_data.columns):
         miss = ", ".join(set(req_fields) - set(pairing_data.columns))
@@ -169,41 +174,29 @@ def _create_pairing(pairing_data):
         )
 
     pairing_data = pairing_data.loc[:, req_fields]
-    pairing_data = (
-        pairing_data.sample(frac=1)
-        .drop_duplicates(["sequence"])
-        .reset_index(drop=False)
+    pairing_data["modified_peptide"] = pairing_data["modified_peptide"].str[
+        2:-2
+    ]
+    pairing_data["target/decoy"] = ~pairing_data["protein"].str.contains(
+        "DECOY_"
     )
 
-    # Add a column of the sorted peptide:
-    pairing_data["mods"] = (
-        pairing_data["sequence"]
-        .str.split("(?=[A-Z])")
-        .apply(lambda x: "".join(sorted(x)))
-    )
+    reverse_peptide_list = []
+    for seq in list(pairing_data["modified_peptide"]):
+        # NOTE regex is not quite right
+        seq_sp = re.split(r"([A-Z]\[\d+\.\d+\])?", seq)
+        seq_sp = list(filter(lambda item: item != None, seq_sp))
+        seq_sp = list(filter(lambda item: item != "", seq_sp))
 
-    # Split targets and decoys:
-    is_decoy = pairing_data["target/decoy"] == "decoy"
-    pairing_data = pairing_data.drop("target/decoy", axis=1)
-    targets = pairing_data.loc[~is_decoy, :].copy()
-    decoys = pairing_data.loc[is_decoy, :].copy()
+        peptide_rev = "".join([seq_sp[0], *reversed(seq_sp[1:-1]), seq_sp[-1]])
+        reverse_peptide_list.append(peptide_rev)
 
-    # Strip the target sequence modifications:
-    targets[seq] = targets["sequence"].str.replace(r"\[.*?\]", "", regex=True)
+    pairing_data["reverse_peptide"] = reverse_peptide_list
 
-    # Add an 'ord' column to disambiguate multiple matches per peptide:
-    targets["ord"] = targets.groupby([seq, "mods"])["sequence"].rank("first")
-    decoys["ord"] = decoys.groupby([seq, "mods"])["sequence"].rank("first")
+    targets = pairing_data[pairing_data["target/decoy"]]
+    decoys = pairing_data[~pairing_data["target/decoy"]]
 
-    # Inner join the DataFrames to induce a pairing.
-    # Targets with a missing decoy will be dropped.
-    # Decoys with a missing target will be dropped.
-    merged = pd.merge(
-        targets,
-        decoys,
-        how="inner",
-        on=[seq, "mods", "ord"],
-        suffixes=["_t", "_d"],
-    )
+    dic1 = dict(zip(targets["modified_peptide"], targets["reverse_peptide"]))
+    dic2 = dict(zip(decoys["reverse_peptide"], targets["modified_peptide"]))
 
-    return merged.set_index("sequence_t").loc[:, "sequence_d"].to_dict()
+    return dic2.update(dic1)
