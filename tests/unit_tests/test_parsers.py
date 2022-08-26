@@ -44,6 +44,26 @@ def test_read_crux_peptide_pairing(mod_target_crux_txt, mod_decoy_crux_txt):
     assert expected_peptide_pairing == psms.peptide_pairing
 
 
+def test_read_comet_peptide_pariring(mod_comet_txt):
+    """Test that peptide paiing is correctly create when parsing comet file"""
+    expected_peptide_pairing = {
+        "A[15.9949]PPLE": "A[15.9949]LPPE",
+        "BANANA": "BNANAA",
+        "CH[15.9949]E[15.9949]RRY": "CRRE[15.9949]H[15.9949]Y",
+        "DURIAN": "DAIRUN",
+        "EGGPLANT": "ENALPGGT",
+        "FIGS": "FGIS",
+        "GRAPE": "GPARE",
+        "H[15.9949]ONEYDE[15.9949]W": "H[15.9949]E[15.9949]DYENOW",
+        "IC[15.9949]ES": "IEC[15.9949]S",
+        "JAMS": "JMAS",
+    }
+    psms = crema.read_comet(mod_comet_txt)
+    for key in expected_peptide_pairing:
+        print(key, expected_peptide_pairing[key], psms.peptide_pairing[key])
+    assert expected_peptide_pairing == psms.peptide_pairing
+
+
 def test_read_txt(basic_crux_csv):
     """Test that we can read generic delimited files"""
     psms = crema.read_txt(

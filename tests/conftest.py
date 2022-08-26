@@ -281,6 +281,33 @@ def mod_decoy_crux_df():
 
 
 @pytest.fixture
+def basic_comet_df():
+    """A simple comet-like dataframe"""
+    df = pd.DataFrame(
+        [
+            [1, 10, 0.7, "K.A[15.9949]PPLE.A", "prot1"],
+            [2, 20, 0.4, "K.BNANAA.A", "DECOY_prot2"],
+            [3, 30, 0.1, "K.CH[15.9949]E[15.9949]RRY.A", "prot3"],
+            [4, 40, 0.55, "K.DURIAN.A", "prot4"],
+            [5, 50, 0.25, "K.EGGPLANT.A", "prot5"],
+            [1, 10, 0.6, "K.FIGS.A", "prot6"],
+            [2, 20, 0.2, "K.GPARE.A", "DECOY_prot7"],
+            [3, 30, 0.7, "K.H[15.9949]E[15.9949]DYENOW.A", "DECOY_prot8"],
+            [4, 40, 0.56, "K.IC[15.9949]ES.A", "prot9"],
+            [5, 50, 0.3, "K.JMAS.A", "DECOY_prot10"],
+        ],
+        columns=[
+            "scan",
+            "exp_neutral_mass",
+            "e-value",
+            "modified_peptide",
+            "protein",
+        ],
+    )
+    return df
+
+
+@pytest.fixture
 def basic_crux_txt(basic_crux_df, tmp_path):
     """A simple crux-like txt file"""
     out_file = tmp_path / "crux.txt"
@@ -346,3 +373,11 @@ def real_mztab():
 def real_pepxml():
     """Return a real pepXML file"""
     return Path("data/tide-search.pep.xml")
+
+
+@pytest.fixture
+def mod_comet_txt(basic_comet_df, tmp_path):
+    """A crux-like txt file of target psms"""
+    out_file = tmp_path / "mod_comet.txt"
+    basic_comet_df.to_csv(out_file, sep="\t", index=False)
+    return out_file

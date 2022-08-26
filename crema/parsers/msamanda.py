@@ -49,6 +49,7 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
     scores_all = scores
 
     # Keep only crux scores that exist in all of the files.
+    skip_first_row = False
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))
     else:
@@ -56,8 +57,12 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
         for txt_file in txt_files:
             with open(txt_file) as txt_ref:
                 # First line of MSAmanda output consists only of version line
-                skipLine = txt_ref.readline()
-                cols = txt_ref.readline().rstrip().split("\t")
+                # If statement below in case first line is removed
+                line = txt_ref.readline().rstrip()
+                if line.startswith("#version"):
+                    line = txt_ref.readline().rstrip()
+                    skip_first_row = True
+                cols = line.split("\t")
                 scores = scores.intersection(set(cols))
 
     if not scores:
@@ -73,7 +78,9 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
-        data = pd.concat([_parse_psms(f, fields) for f in txt_files])
+        data = pd.concat(
+            [_parse_psms(f, fields, skip_first_row) for f in txt_files]
+        )
 
     data["target/decoy"] = ~data[protein].str.contains("REV_")
 
@@ -102,7 +109,7 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
     return psms
 
 
-def _parse_psms(txt_file, cols, log=True):
+def _parse_psms(txt_file, cols, skip_line, log=True):
     """Parse a single MSAmanda tab-delimited file
 
     Parameters
@@ -111,6 +118,8 @@ def _parse_psms(txt_file, cols, log=True):
         The MSAmanda tab-delimited file to read.
     cols : list of str
         The columns to parse.
+    skip_line : bool
+        If true, then skip first row. If false, then read first row.
 
     Returns
     -------
@@ -119,6 +128,9 @@ def _parse_psms(txt_file, cols, log=True):
     """
     if log:
         LOGGER.info("Reading PSMs from %s...", txt_file)
-    return pd.read_csv(
-        txt_file, sep="\t", skiprows=1, usecols=lambda c: c in cols
-    )
+    if skip_line:
+        return pd.read_csv(
+            txt_file, sep="\t", skiprows=1, usecols=lambda c: c in cols
+        )
+    else:
+        return pd.read_csv(txt_file, sep="\t", usecols=lambda c: c in cols)

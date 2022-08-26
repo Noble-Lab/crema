@@ -39,10 +39,9 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     target = "target/decoy"
     peptide = "modified_peptide"
     spectrum = ["scan", "exp_neutral_mass"]  # No file col to use
-    pairing = "plain_peptide"
+    pairing = ""
     protein = "protein"
     protein_delim = ","
-    other = "modifications"
 
     # Possible score columns output by Comet.
     scores = {
@@ -52,7 +51,8 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     }
     scores_all = scores
 
-    # Keep only crux scores that exist in all of the files.
+    # Keep only Comet scores that exist in all of the files.
+    skip_first_line = False
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))
     else:
@@ -60,8 +60,12 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
         for txt_file in txt_files:
             with open(txt_file) as txt_ref:
                 # First line of Comet output consists only of version
-                skipLine = txt_ref.readline()
-                cols = txt_ref.readline().rstrip().split("\t")
+                # If statement below in case first line is removed
+                line = txt_ref.readline().rstrip()
+                if line.startswith("CometVersion"):
+                    line = txt_ref.readline().rstrip()
+                    skip_first_line = True
+                cols = line.split("\t")
                 scores = scores.intersection(set(cols))
 
     if not scores:
@@ -73,19 +77,13 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     scores = list(scores)
 
     # Read in the files:
-    fields = (
-        spectrum
-        + [peptide]
-        + [target]
-        + scores
-        + [pairing]
-        + [protein]
-        + [other]
-    )
+    fields = spectrum + [peptide] + [target] + scores + [pairing] + [protein]
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
-        data = pd.concat([_parse_psms(f, fields) for f in txt_files])
+        data = pd.concat(
+            [_parse_psms(f, fields, skip_first_line) for f in txt_files]
+        )
 
     data["target/decoy"] = ~data[protein].str.contains("DECOY_")
 
@@ -124,15 +122,17 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     return psms
 
 
-def _parse_psms(txt_file, cols, log=True):
+def _parse_psms(txt_file, cols, skip_line, log=True):
     """Parse a single Crux tab-delimited file
 
     Parameters
     ----------
     txt_file : str
-        The crux tab-delimited file to read.
+        The comet tab-delimited file to read.
     cols : list of str
         The columns to parse.
+    skip_line : bool
+        If true, then skip first row. If false, then read first row.
 
     Returns
     -------
@@ -141,9 +141,13 @@ def _parse_psms(txt_file, cols, log=True):
     """
     if log:
         LOGGER.info("Reading PSMs from %s...", txt_file)
-    return pd.read_csv(
-        txt_file, sep="\t", skiprows=1, usecols=lambda c: c in cols
-    )
+
+    if skip_line:
+        return pd.read_csv(
+            txt_file, sep="\t", skiprows=1, usecols=lambda c: c in cols
+        )
+    else:
+        return pd.read_csv(txt_file, sep="\t", usecols=lambda c: c in cols)
 
 
 def _create_pairing(pairing_data):
@@ -163,9 +167,8 @@ def _create_pairing(pairing_data):
         missing decoys will not be included among the keys.
 
     """
-    # TODO create test for this function
     # ensure pairing_data dataframe contains all necessary columns
-    req_fields = ["modified_peptide", "protein", "modifications"]
+    req_fields = ["modified_peptide", "protein"]
 
     if not set(req_fields).issubset(pairing_data.columns):
         miss = ", ".join(set(req_fields) - set(pairing_data.columns))
@@ -197,6 +200,7 @@ def _create_pairing(pairing_data):
     decoys = pairing_data[~pairing_data["target/decoy"]]
 
     dic1 = dict(zip(targets["modified_peptide"], targets["reverse_peptide"]))
-    dic2 = dict(zip(decoys["reverse_peptide"], targets["modified_peptide"]))
+    dic2 = dict(zip(decoys["reverse_peptide"], decoys["modified_peptide"]))
 
-    return dic2.update(dic1)
+    dic2.update(dic1)
+    return dic2
