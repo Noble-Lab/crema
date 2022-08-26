@@ -21,7 +21,7 @@ def assign_confidence(
     desc=None,
     eval_fdr=0.01,
     method="tdc",
-    pep_fdr_type="psm-only",
+    pep_fdr_type="psm-peptide",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -133,7 +133,7 @@ class Confidence(ABC):
         score_column,
         desc=None,
         eval_fdr=0.01,
-        pep_fdr_type="psm-only",
+        pep_fdr_type="psm-peptide",
     ):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
@@ -345,7 +345,7 @@ class TdcConfidence(Confidence):
         score_column=None,
         desc=None,
         eval_fdr=0.01,
-        pep_fdr_type="psm-only",
+        pep_fdr_type="psm-peptide",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
@@ -489,7 +489,7 @@ class MixmaxConfidence(Confidence):
         score_column=None,
         desc=None,
         eval_fdr=0.01,
-        pep_fdr_type="psm-only",
+        pep_fdr_type="psm-peptide",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
