@@ -33,6 +33,9 @@ class PsmDataset:
         not matter, so long as it is consistent.
     protein_columns : str
         The column that defines a unique protein.
+    protein_delim : str
+        The string delimiter that is needed to separate multiple proteins found
+        in the protein column.
     peptide_pairing: dict
         A map of target and decoy peptide sequence pairings to be used for TDC.
         This should be in the form {key=target_sequence:value=decoy_sequence}
@@ -51,6 +54,7 @@ class PsmDataset:
     target_column : str
     peptide_column : str
     protein_column : str
+    protein_delim : str
     methods : dict
     peptide_pairing : dict
     """
@@ -157,7 +161,7 @@ class PsmDataset:
         desc=None,
         eval_fdr=0.01,
         method="tdc",
-        pep_fdr_type="psm-only",
+        pep_fdr_type="psm-peptide",
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
