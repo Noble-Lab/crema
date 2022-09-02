@@ -48,6 +48,7 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
         "hyperscore",
         "nextscore",
         "expect",
+        "expectscore",
     }
     # scores_all = scores
 
