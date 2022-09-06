@@ -37,6 +37,7 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
     """
     target = "label"
     peptide = "peptide"
+    # TODO well annoying the column names for pepXML and tsv output are different
     spectrum = ["Filename", "start scan"]
     pairing = ""
     protein = "protein"

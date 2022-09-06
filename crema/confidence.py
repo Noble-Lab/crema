@@ -409,10 +409,21 @@ class TdcConfidence(Confidence):
                 ]
 
                 # Sum scores of all unique peptides in a protein
-                # TODO how to aggregate p-value scores?
-                df2 = df.groupby(
-                    [self.dataset._protein_column, self.dataset._target_column]
-                ).agg({self._score_column: ["sum"]})
+                if self._desc == True:  # higher score is better
+                    df2 = df.groupby(
+                        [
+                            self.dataset._protein_column,
+                            self.dataset._target_column,
+                        ]
+                    ).agg({self._score_column: ["sum"]})
+                else:
+                    df2 = df.groupby(
+                        [
+                            self.dataset._protein_column,
+                            self.dataset._target_column,
+                        ]
+                    ).agg({self._score_column: ["prod"]})
+
                 df2 = df2.reset_index()
                 df2.columns = [
                     self.dataset._protein_column,
