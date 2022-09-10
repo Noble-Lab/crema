@@ -507,12 +507,6 @@ class MixmaxConfidence(Confidence):
             "Assigning confidence estimates using mix-max competition..."
         )
 
-        # TODO maybe better way to do this
-        # can not infer desc value as the wrong value will
-        # result in a divide by zero error
-        if desc == None:
-            raise ValueError("'desc' has to be set for mix-max.")
-
         super().__init__(
             psms=psms,
             score_column=score_column,
@@ -523,6 +517,11 @@ class MixmaxConfidence(Confidence):
 
     def _assign_confidence(self):
         """Assign confidence estimates using target-decoy competition"""
+        # TODO maybe better way to do this
+        # can not infer desc value as the wrong value will
+        # result in a divide by zero error
+        if self._desc == None:
+            raise ValueError("'desc' has to be set for mix-max.")
 
         # TODO check if separate target-decoy search is done
         for level, group_cols in zip(self.levels, self._level_columns):
@@ -535,7 +534,7 @@ class MixmaxConfidence(Confidence):
             targets = df[df[self.dataset._target_column]]
             decoys = df[~df[self.dataset._target_column]]
 
-            # TOOO add following warning ""The mix-max procedure is not well behaved when # targets (%d) != # of decoys (%d).","
+            # TODO add following warning ""The mix-max procedure is not well behaved when # targets (%d) != # of decoys (%d).","
 
             if self._desc:
                 keep = "last"

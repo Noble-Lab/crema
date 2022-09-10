@@ -48,7 +48,7 @@ def read_msamanda(txt_files, pairing_file_name=None, copy_data=True):
     }
     scores_all = scores
 
-    # Keep only crux scores that exist in all of the files.
+    # Keep only MSAmanda scores that exist in all of the files.
     skip_first_row = False
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))

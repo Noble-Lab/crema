@@ -71,7 +71,7 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     if not scores:
         raise ValueError(
             "Could not find any of the Comet score columns in all of the files."
-            f"The columns Crema looks for are {', '.join(list(scores_all))}"
+            f" The columns Crema looks for are {', '.join(list(scores_all))}"
         )
 
     scores = list(scores)
