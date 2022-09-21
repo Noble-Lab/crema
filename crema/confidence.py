@@ -2,8 +2,8 @@
 peptide-spectrum matches with calculated false discovery rates (FDR) and q-values.
 """
 import logging
-import pandas as pd
 import numpy as np
+import pandas as pd
 from abc import ABC, abstractmethod
 
 from . import qvalues
@@ -456,9 +456,14 @@ class TdcConfidence(Confidence):
 class MixmaxConfidence(Confidence):
     """Assign confidence estimates using mix-max competition.
 
-    #TODO. Maybe just cite paper
+    #TODO
     Estimates qvalues using the mix-max competition method. For a set
-    of ..., the false discover rate (FDR) is estimated.
+    of ..., the false discovery rate (FDR) is estimated.
+
+    Additional details can be found in this manuscript.
+    U. Keich, A. Kertesz-Farkas, and W. S. Noble. Improved false
+    discovery rate estimation procedure for shotgun proteomics.
+    Journal of Proteome Research, 14(8):3148-3161, 2015.
 
     Parameters
     ----------

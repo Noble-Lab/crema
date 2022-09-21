@@ -53,37 +53,21 @@ def main():
     logging.info("=================")
 
     # Create dataset object
-    # TODO Is this the best way to do this?
-    while True:
-        try:
-            psms = read_crux(args.psm_files)
-            break
-        except:
-            pass
+    readers = [
+        read_crux,
+        read_msgf,
+        read_msamanda,
+        read_comet,
+        read_msfragger,
+        read_mztab,
+    ]
 
+    for read_fn in readers:
         try:
-            psms = read_msgf(args.psm_files)
+            psms = read_fn(args.psm_files)
             break
         except:
-            pass
-
-        try:
-            psms = read_msamanda(args.psm_files)
-            break
-        except:
-            pass
-
-        try:
-            psms = read_comet(args.psm_files)
-            break
-        except:
-            pass
-
-        try:
-            psms = read_msfragger(args.psm_files)
-            break
-        except:
-            psms = read_mztab(args.psm_files)
+            raise ValueError("Unrecognized file type.")
 
     conf = psms.assign_confidence(
         score_column=args.score,
