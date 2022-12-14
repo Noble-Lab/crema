@@ -456,9 +456,11 @@ class TdcConfidence(Confidence):
 class MixmaxConfidence(Confidence):
     """Assign confidence estimates using mix-max competition.
 
-    #TODO
-    Estimates qvalues using the mix-max competition method. For a set
-    of ..., the false discovery rate (FDR) is estimated.
+    Estimates qvalues using the mix-max competition method. To use this
+    method a separate target and decoy database search using a calibrated
+    score function must be used. 
+
+    # TODO Describe how mixmax works here
 
     Additional details can be found in this manuscript.
     U. Keich, A. Kertesz-Farkas, and W. S. Noble. Improved false
