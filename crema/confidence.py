@@ -458,7 +458,7 @@ class MixmaxConfidence(Confidence):
 
     Estimates qvalues using the mix-max competition method. To use this
     method a separate target and decoy database search using a calibrated
-    score function must be used. 
+    score function must be used.
 
     # TODO Describe how mixmax works here
 
