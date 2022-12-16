@@ -191,9 +191,18 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
 
     # calculate pi0
     pi0 = estimate_pi0(pValList)
-    fdrmod = calculate_mixmax_qval(
-        np.array(target_scores), np.array(decoy_scores), pi0
-    )
+
+    if pi0 == 1:
+        # All targets are assumed to be incorrect! Algorithm 1, line 5-6
+        fdrmod = np.array(num_targets)
+        fdrmod.fill(1.0)  # all q-values are 1
+    elif pi0 < 0 or pi0 >= 1 or not np.isfinite(pi0):
+        raise ValueError(f"Invalid pi0 estimate ({pi0}); unable to proceed FDR estimation!")
+    else:
+        fdrmod = calculate_mixmax_qval(
+            np.array(target_scores), np.array(decoy_scores), pi0
+        )
+
     return (pi0, fdrmod)
 
 
@@ -265,6 +274,8 @@ def estimate_pi0(pval_list):
 @nb.njit
 def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     """ """
+    assert pi0 >= 0 and pi0 < 1, f"Invalid pi0: {pi0}"
+
     num_targets = target_scores.shape[0]
     num_decoys = decoy_scores.shape[0]
 
