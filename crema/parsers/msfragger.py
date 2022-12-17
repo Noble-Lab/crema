@@ -86,7 +86,7 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
     return data
 
 
-def _parse_psms(txt_file, decoy_prefix, log=True):
+def _parse_psms(txt_file, decoy_prefix):
     """Parse a single MSFragger pepXML file
 
     Parameters
@@ -102,6 +102,5 @@ def _parse_psms(txt_file, decoy_prefix, log=True):
     pandas.DataFrame
         A :py:class:`pandas.DataFrame` containing the parsed PSMs
     """
-    if log:
-        LOGGER.info("Reading PSMs from %s...", txt_file)
+    LOGGER.info("Reading PSMs from %s...", txt_file)
     return read_pepxml(txt_file, "rev_")

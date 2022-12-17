@@ -82,7 +82,10 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
         data = pd.concat(
-            [_parse_psms(f, fields, skip_first_line) for f in txt_files]
+            [
+                utils.parse_psms_txt(f, fields, skip_first_line)
+                for f in txt_files
+            ]
         )
 
     data["target/decoy"] = ~data[protein].str.contains("DECOY_")
@@ -120,34 +123,6 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     psms.set_protein_column(new_protein_column)
 
     return psms
-
-
-def _parse_psms(txt_file, cols, skip_line, log=True):
-    """Parse a single Crux tab-delimited file
-
-    Parameters
-    ----------
-    txt_file : str
-        The comet tab-delimited file to read.
-    cols : list of str
-        The columns to parse.
-    skip_line : bool
-        If true, then skip first row. If false, then read first row.
-
-    Returns
-    -------
-    pandas.DataFrame
-        A :py:class:`pandas.DataFrame` containing the parsed PSMs
-    """
-    if log:
-        LOGGER.info("Reading PSMs from %s...", txt_file)
-
-    if skip_line:
-        return pd.read_csv(
-            txt_file, sep="\t", skiprows=1, usecols=lambda c: c in cols
-        )
-    else:
-        return pd.read_csv(txt_file, sep="\t", usecols=lambda c: c in cols)
 
 
 def _create_pairing(pairing_data):

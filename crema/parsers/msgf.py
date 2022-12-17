@@ -74,7 +74,9 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
-        data = pd.concat([_parse_psms(f, fields) for f in txt_files])
+        data = pd.concat(
+            [utils.parse_psms_txt(f, fields, False) for f in txt_files]
+        )
 
     data["target/decoy"] = ~data[protein].str.contains("XXX_")
 
@@ -106,23 +108,3 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     psms.set_protein_column(new_protein_column)
 
     return psms
-
-
-def _parse_psms(txt_file, cols, log=True):
-    """Parse a single MSGF+ tab-delimited file
-
-    Parameters
-    ----------
-    txt_file : str
-        The MSGF+ tab-delimited file to read.
-    cols : list of str
-        The columns to parse.
-
-    Returns
-    -------
-    pandas.DataFrame
-        A :py:class:`pandas.DataFrame` containing the parsed PSMs
-    """
-    if log:
-        LOGGER.info("Reading PSMs from %s...", txt_file)
-    return pd.read_csv(txt_file, sep="\t", usecols=lambda c: c in cols)

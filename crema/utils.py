@@ -1,5 +1,8 @@
 """Utility functions that are used in multiple modules"""
 import pandas as pd
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 
 def listify(obj):
@@ -61,3 +64,31 @@ def create_pairing_from_file(pairing_file_name):
     # drop targets that do not have corresponding decoys
     pairing_file = pairing_file[pairing_file["decoy"] != ""]
     return dict(zip(pairing_file.target, pairing_file.decoy))
+
+
+def parse_psms_txt(txt_file, cols, skip_line):
+    """Parse a single tab-delimited file
+
+    Parameters
+    ----------
+    txt_file : str
+        The tab-delimited file of PSMs to read.
+    cols : list of str
+        The columns to parse.
+    skip_line : bool
+        If true, skip reading the first line.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A :py:class:`pandas.DataFrame` containing the parsed PSMs
+    """
+    LOGGER.info("Reading PSMs from %s...", txt_file)
+
+    # Because skip_line is a boolean:
+    return pd.read_csv(
+        txt_file,
+        sep="\t",
+        skiprows=int(skip_line),
+        usecols=lambda c: c in cols,
+    )
