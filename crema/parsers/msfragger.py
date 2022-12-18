@@ -58,10 +58,11 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
         "expect",
         "expectscore",
     }
+    scores_all = scores
 
     # Read in the files:
     if isinstance(txt_files, pd.DataFrame):
-        data = txt_files.copy(deep=copy_data).loc[:, fields]
+        scores = scores.intersection(set(txt_files.columns))
     else:
         txt_files = utils.listify(txt_files)
         data_list = [_parse_pepxml(f, decoy_prefix) for f in txt_files]
