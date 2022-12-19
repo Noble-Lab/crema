@@ -45,3 +45,18 @@ def test_mixmax_confidence(simple_psms: PsmDataset):
 
     assert isinstance(conf, MixmaxConfidence), f"Unexpected result type: {conf}"
     # TODO: assertions
+
+
+def test_mixmax_confidence_desc(simple_psms: PsmDataset):
+    """Test that we can compute confidence with `TdcConfidence`"""
+    simple_psms.data["x"] = -1.0 * simple_psms.data["x"]
+
+    conf = simple_psms.assign_confidence(
+        score_column="x",
+        method="mixmax",
+        pep_fdr_type="psm-only",
+        desc=True,
+    )
+
+    assert isinstance(conf, MixmaxConfidence), f"Unexpected result type: {conf}"
+    # TODO: assertions

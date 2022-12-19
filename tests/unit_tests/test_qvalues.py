@@ -80,41 +80,45 @@ def test_tdc_diff_len():
 
 def do_mixmax(scores, target, desc):
     """Compute the necessary inputs for `mixmax()`"""
-    tgt = np.array(sorted(scores[target.astype(bool)], reverse=desc))
-    dec = np.array(sorted(scores[~target.astype(bool)], reverse=desc))
-    all_scores = sorted(zip(scores, target), reverse=desc)
+    tgt = np.array(sorted(scores[target.astype(bool)], reverse=~desc))
+    dec = np.array(sorted(scores[~target.astype(bool)], reverse=~desc))
+    all_scores = sorted(zip(scores, target), reverse=~desc)
     return mixmax(
         tgt,
         dec,
         np.array([s for s, _ in all_scores]),
         np.array([t for _, t in all_scores]),
         # **kwargs,
-    )
+    )[1]
 
 
-@pytest.mark.skip  # TODO
-def test_amixmax_descending(desc_scores):
+def test_mixmax_descending(desc_scores):
     """Test that q-values are correct for descending scores"""
     scores, target, true_qvals = desc_scores
+
+    tgt_qvals = [q for q, t in zip(true_qvals, target) if t]
+
     dtypes = [np.float64, np.uint8, np.int8, np.float32]
     for dtype in dtypes:
-        qvals = do_mixmax(scores.astype(dtype), target, desc=True)[1]
-        print(np.vstack([qvals, true_qvals]).T)
-        np.testing.assert_array_equal(qvals, true_qvals)
+        qvals = do_mixmax(scores.astype(dtype), target, desc=True)
+        print(np.vstack([qvals, tgt_qvals]).T)
+        np.testing.assert_array_equal(qvals, tgt_qvals)
 
-        qvals = do_mixmax(scores, target.astype(dtype), desc=True)[1]
-        np.testing.assert_array_equal(qvals, true_qvals)
+        qvals = do_mixmax(scores, target.astype(dtype), desc=True)
+        np.testing.assert_array_equal(qvals, tgt_qvals)
 
 
-@pytest.mark.skip  # TODO
 def test_mixmax_ascending(desc_scores):
     """Test that q-values are correct for ascending scores"""
     scores, target, true_qvals = desc_scores
+
+    tgt_qvals = [q for q, t in zip(true_qvals, target) if t]
+
     scores = -scores
     dtypes = [np.float64, np.uint8, np.int8, np.float32]
     for dtype in dtypes:
-        qvals = do_mixmax(scores.astype(dtype), target, desc=False)[1]
-        np.testing.assert_array_equal(qvals, true_qvals)
+        qvals = do_mixmax(scores.astype(dtype), target, desc=False)
+        np.testing.assert_array_equal(qvals, tgt_qvals)
 
-        qvals = do_mixmax(scores, target.astype(dtype), desc=False)[1]
-        np.testing.assert_array_equal(qvals, true_qvals)
+        qvals = do_mixmax(scores, target.astype(dtype), desc=False)
+        np.testing.assert_array_equal(qvals, tgt_qvals)

@@ -206,7 +206,7 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
     return (pi0, fdrmod)
 
 
-@nb.njit
+# @nb.njit
 def estimate_pi0(pval_list):
     """
     Estimates pi0. Add description. TODO
@@ -271,7 +271,7 @@ def estimate_pi0(pval_list):
     return pi0
 
 
-@nb.njit
+# @nb.njit
 def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     """ """
     assert pi0 >= 0 and pi0 < 1, f"Invalid pi0: {pi0}"
