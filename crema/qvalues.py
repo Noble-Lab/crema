@@ -321,9 +321,9 @@ def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
 
             estPx_lt_zj = (cnt_w - pi0 * cnt_z) / ((1.0 - pi0) * cnt_z)
             if estPx_lt_zj > 1:
-                estPx_lt_zj == 1.0
+                estPx_lt_zj = 1.0
             elif estPx_lt_zj < 0:
-                estPx_lt_zj == 0.0
+                estPx_lt_zj = 0.0
 
             E_f1_mod_run_tot += estPx_lt_zj * (1.0 - pi0)
             n_z_ge_w += 1
