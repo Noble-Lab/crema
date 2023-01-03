@@ -43,7 +43,9 @@ def test_mixmax_confidence(simple_psms: PsmDataset):
         pep_fdr_type="psm-only",
     )
 
-    assert isinstance(conf, MixmaxConfidence), f"Unexpected result type: {conf}"
+    assert isinstance(
+        conf, MixmaxConfidence
+    ), f"Unexpected result type: {conf}"
     # TODO: assertions
 
 
@@ -58,5 +60,7 @@ def test_mixmax_confidence_desc(simple_psms: PsmDataset):
         desc=True,
     )
 
-    assert isinstance(conf, MixmaxConfidence), f"Unexpected result type: {conf}"
+    assert isinstance(
+        conf, MixmaxConfidence
+    ), f"Unexpected result type: {conf}"
     # TODO: assertions

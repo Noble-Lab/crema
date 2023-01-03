@@ -158,11 +158,11 @@ def mixmax_scores():
     """Increasing score/target arrays with enough depth for mixmax to estimate _q_-values"""
     N = 32
     tgt = 10 + 2 * np.random.randn(N)
-    dec = 7  + 2 * np.random.randn(N)
+    dec = 7 + 2 * np.random.randn(N)
 
     return (
         np.concatenate([tgt, dec]),
-        np.array([True] * len(tgt) + [False] * len(dec))
+        np.array([True] * len(tgt) + [False] * len(dec)),
     )
 
 

@@ -201,7 +201,9 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
         LOGGER.debug("FALLBACK: pi0==1.0; all q-values will be 1.0")
         fdrmod = np.full(num_targets, 1.0)  # all q-values are 1
     elif pi0 < 0 or pi0 >= 1 or not np.isfinite(pi0):
-        raise ValueError(f"Invalid pi0 estimate ({pi0}); unable to proceed FDR estimation!")
+        raise ValueError(
+            f"Invalid pi0 estimate ({pi0}); unable to proceed FDR estimation!"
+        )
     else:
         fdrmod = calculate_mixmax_qval(
             np.array(target_scores), np.array(decoy_scores), pi0
