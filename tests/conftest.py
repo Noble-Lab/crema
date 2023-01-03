@@ -238,7 +238,7 @@ def real_crux_txt():
     """Return real crux txt files"""
     targets = Path("data/example_psms_target.txt")
     decoys = Path("data/example_psms_decoy.txt")
-    return targets, decoys
+    return [targets, decoys]
 
 
 @pytest.fixture
