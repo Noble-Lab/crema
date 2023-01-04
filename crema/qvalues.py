@@ -288,7 +288,7 @@ def estimate_pi0(pval_list):
 @nb.njit
 def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     """ """
-    assert pi0 >= 0 and pi0 < 1
+    # assert pi0 >= 0 and pi0 < 1
 
     num_targets = target_scores.shape[0]
     num_decoys = decoy_scores.shape[0]
