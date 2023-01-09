@@ -44,7 +44,6 @@ def test_tdc_descending(desc_scores):
     dtypes = [np.float64, np.uint8, np.int8, np.float32]
     for dtype in dtypes:
         qvals = tdc(scores.astype(dtype), target, desc=True)
-        print(np.vstack([qvals, true_qvals]).T)
         np.testing.assert_array_equal(qvals, true_qvals)
 
         qvals = tdc(scores, target.astype(dtype), desc=True)
@@ -98,7 +97,7 @@ def mixmax_scores():
 def desc_scores_mixmax():
     """Create a series of descending scores and their q-values"""
     scores = np.sort([10, 10, 9, 8, 7, 7, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1])
-    target = np.array([1,  1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0])
+    target = np.array([1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0])
     qvals = np.array(
         [
             0,
@@ -117,7 +116,7 @@ def desc_scores_mixmax():
             np.nan,
             np.nan,
             np.nan,
-            ]
+        ]
     )
     return scores, target, qvals
 
@@ -131,10 +130,6 @@ def do_mixmax(scores, target, desc):
     tgt = np.array(sorted(scores[target.astype(bool)], reverse=desc))
     dec = np.array(sorted(scores[~target.astype(bool)], reverse=desc))
     all_scores = sorted(zip(scores, target), reverse=not desc)
-
-    # print(np.vstack([tgt, dec]).T)
-    # print(all_scores)
-    # print("DESC" if desc else "ASC")
 
     # Target/decoy score arrays must always be increasing, so invert if necessary
     if desc:
@@ -163,7 +158,6 @@ def test_mixmax_descending(desc_scores_mixmax):
     dtypes = [np.float64, np.uint8, np.int8, np.float32]
     for dtype in dtypes:
         qvals = do_mixmax(scores.astype(dtype), target, desc=True)[1]
-        print(np.vstack([scores[target.astype(bool)], qvals, tgt_qvals]).T)
         assert np.allclose(qvals, tgt_qvals, atol=1e-5)
 
         qvals = do_mixmax(scores, target.astype(dtype), desc=True)[1]
@@ -180,7 +174,6 @@ def test_mixmax_ascending(desc_scores_mixmax):
     dtypes = [np.float64, np.uint8, np.int8, np.float32]
     for dtype in dtypes:
         qvals = do_mixmax(scores.astype(dtype), target, desc=False)[1]
-        print(np.vstack([scores[target.astype(bool)], qvals, tgt_qvals]).T)
         assert np.allclose(qvals, tgt_qvals, atol=1e-5)
 
         qvals = do_mixmax(scores, target.astype(dtype), desc=False)[1]
@@ -209,7 +202,6 @@ def test_mixmax_nonsingular(mixmax_scores):
     dtypes = [np.float64, np.uint8, np.int8, np.float32]
     for dtype in dtypes:
         pi0, qvals = do_mixmax(scores.astype(dtype), target, desc=False)
-        print(qvals)
         assert pi0 != 1.0
         assert any(q != 1.0 for q in qvals)
 

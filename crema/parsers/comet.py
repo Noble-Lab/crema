@@ -53,6 +53,7 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
 
     # Keep only Comet scores that exist in all of the files.
     skip_first_line = False
+    crux_comet = False  # tracks whether standalone comet or Crux Comet
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))
     else:
@@ -67,6 +68,13 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
                     skip_first_line = True
                 cols = line.split("\t")
                 scores = scores.intersection(set(cols))
+
+                # Standalone Comet and Crux Comet use different column headers
+                if protein not in cols:
+                    protein = "protein id"
+                    peptide = "modified sequence"
+                    spectrum = ["scan", "spectrum neutral mass"]
+                    crux_comet = True
 
     if not scores:
         raise ValueError(
@@ -88,7 +96,10 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
             ]
         )
 
-    data["target/decoy"] = ~data[protein].str.contains("DECOY_")
+    if crux_comet:
+        data["target/decoy"] = ~data[protein].str.contains("decoy_")
+    else:
+        data["target/decoy"] = ~data[protein].str.contains("DECOY_")
 
     psms = read_txt(
         data,
@@ -111,7 +122,9 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     # always pair target and decoys for Comet
     if pairing_file_name == None:
         # implicit pairing based off fact that Comet reverses peptides
-        psms._peptide_pairing = _create_pairing(data)
+        psms._peptide_pairing = _create_pairing(
+            data, peptide, protein, crux_comet
+        )
     else:  # explicit pairing
         psms._peptide_pairing = utils.create_pairing_from_file(
             pairing_file_name
@@ -125,7 +138,7 @@ def read_comet(txt_files, pairing_file_name=None, copy_data=True):
     return psms
 
 
-def _create_pairing(pairing_data):
+def _create_pairing(pairing_data, peptide_col, protein_col, crux_comet):
     """Parse a single Comet dataframe to implicity pair target and
     decoy sequences.
 
@@ -133,7 +146,18 @@ def _create_pairing(pairing_data):
     ----------
     pairing_data : pandas.DataFrame
         A collection of PSMs with the necessary columns to create a
-        target/decoy peptide pairing. Required columns are "sequence".
+        target/decoy peptide pairing. Required columns are modified sequence
+        and protein ID.
+
+    peptide_col: str
+        Identifies the modified sequence column.
+
+    protein_col: str
+        Identifies the protein ID column.
+
+    crux_comet: bool
+        If true, then output is from Comet inside of Crux. If false, then outut
+        if from standalone Comet.
 
     Returns
     -------
@@ -143,7 +167,7 @@ def _create_pairing(pairing_data):
 
     """
     # ensure pairing_data dataframe contains all necessary columns
-    req_fields = ["modified_peptide", "protein"]
+    req_fields = [peptide_col, protein_col]
 
     if not set(req_fields).issubset(pairing_data.columns):
         miss = ", ".join(set(req_fields) - set(pairing_data.columns))
@@ -152,15 +176,19 @@ def _create_pairing(pairing_data):
         )
 
     pairing_data = pairing_data.loc[:, req_fields]
-    pairing_data["modified_peptide"] = pairing_data["modified_peptide"].str[
-        2:-2
-    ]
-    pairing_data["target/decoy"] = ~pairing_data["protein"].str.contains(
-        "DECOY_"
-    )
+    pairing_data[peptide_col] = pairing_data[peptide_col].str[2:-2]
+
+    if crux_comet:
+        pairing_data["target/decoy"] = ~pairing_data[protein_col].str.contains(
+            "decoy_"
+        )
+    else:
+        pairing_data["target/decoy"] = ~pairing_data[protein_col].str.contains(
+            "DECOY_"
+        )
 
     reverse_peptide_list = []
-    for seq in list(pairing_data["modified_peptide"]):
+    for seq in list(pairing_data[peptide_col]):
         # NOTE regex is not quite right
         seq_sp = re.split(r"([A-Z]\[\d+\.\d+\])?", seq)
         seq_sp = list(filter(lambda item: item != None, seq_sp))
@@ -174,8 +202,8 @@ def _create_pairing(pairing_data):
     targets = pairing_data[pairing_data["target/decoy"]]
     decoys = pairing_data[~pairing_data["target/decoy"]]
 
-    dic1 = dict(zip(targets["modified_peptide"], targets["reverse_peptide"]))
-    dic2 = dict(zip(decoys["reverse_peptide"], decoys["modified_peptide"]))
+    dic1 = dict(zip(targets[peptide_col], targets["reverse_peptide"]))
+    dic2 = dict(zip(decoys["reverse_peptide"], decoys[peptide_col]))
 
     dic2.update(dic1)
     return dic2
