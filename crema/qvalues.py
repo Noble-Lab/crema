@@ -1,8 +1,12 @@
 """
 This module estimates q-values.
 """
+import logging
+
 import numpy as np
 import numba as nb
+
+LOGGER = logging.getLogger(__name__)
 
 
 def tdc(scores, target, desc=True):
@@ -191,9 +195,20 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
 
     # calculate pi0
     pi0 = estimate_pi0(pValList)
-    fdrmod = calculate_mixmax_qval(
-        np.array(target_scores), np.array(decoy_scores), pi0
-    )
+
+    if pi0 == 1.0:
+        # All targets are assumed to be incorrect! Algorithm 1, line 5-6
+        LOGGER.debug("FALLBACK: pi0==1.0; all q-values will be 1.0")
+        fdrmod = np.full(num_targets, 1.0)  # all q-values are 1
+    elif pi0 < 0 or pi0 >= 1 or not np.isfinite(pi0):
+        raise ValueError(
+            f"Invalid pi0 estimate ({pi0}); unable to proceed FDR estimation!"
+        )
+    else:
+        fdrmod = calculate_mixmax_qval(
+            np.array(target_scores), np.array(decoy_scores), pi0
+        )
+
     return (pi0, fdrmod)
 
 
@@ -216,6 +231,8 @@ def estimate_pi0(pval_list):
     maxLambda = 0.5
     numBoot = 100
 
+    # LOGGER.debug("pval_list=%s", pval_list)
+
     n_pval = pval_list.size
     lambda_list = []
     pi0s_list = []
@@ -231,6 +248,9 @@ def estimate_pi0(pval_list):
         if pi0 > 0.0:
             lambda_list.append(cur_lambda)
             pi0s_list.append(pi0)
+
+    # LOGGER.debug("%s", lambda_list)
+    # LOGGER.debug("%s", pi0s_list)
 
     assert len(pi0s_list) != 0, (
         "Error in the input data: "
@@ -258,6 +278,9 @@ def estimate_pi0(pval_list):
 
     # Which index did the iterator go?
     minIdx = np.argmin(mse_list)
+
+    # LOGGER.debug(f"Estimated pi0=%f at lambda=%f (MSE=%f)", pi0s_list[minIdx], lambda_list[minIdx], mse_list[minIdx])
+
     pi0 = max(min(pi0s_list[minIdx], 1.0), 0.0)
     return pi0
 
@@ -265,6 +288,8 @@ def estimate_pi0(pval_list):
 @nb.njit
 def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     """ """
+    # assert pi0 >= 0 and pi0 < 1
+
     num_targets = target_scores.shape[0]
     num_decoys = decoy_scores.shape[0]
 
