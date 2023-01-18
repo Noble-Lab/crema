@@ -137,7 +137,6 @@ def _create_pairing(pairing_data):
 
     """
     # ensure pairing_data dataframe contains all necessary columns
-    print(pairing_data)
     seq = "original target sequence"
     req_fields = [
         "sequence",

@@ -16,14 +16,14 @@ except ImportError:
         pass
 
 # Here is where we can export public functions and classes.
-from crema.dataset import PsmDataset
-from crema.parsers.crux import read_crux
-from crema.parsers.msgf import read_msgf
-from crema.parsers.msamanda import read_msamanda
-from crema.parsers.msfragger import read_msfragger
-from crema.parsers.comet import read_comet
-from crema.parsers.txt import read_txt
-from crema.parsers.mztab import read_mztab
-from crema.parsers.pepxml import read_pepxml
-from crema.confidence import TdcConfidence, assign_confidence
-from crema.writers.txt import to_txt
+from .dataset import PsmDataset
+from .parsers.crux import read_crux
+from .parsers.msgf import read_msgf
+from .parsers.msamanda import read_msamanda
+from .parsers.msfragger import read_msfragger
+from .parsers.comet import read_comet
+from .parsers.txt import read_txt
+from .parsers.mztab import read_mztab
+from .parsers.pepxml import read_pepxml
+from .confidence import TdcConfidence, assign_confidence
+from .writers.txt import to_txt

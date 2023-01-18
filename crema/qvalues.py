@@ -170,31 +170,31 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
     num_decoys = decoy_scores.shape[0]
 
     # calculate p-values from scores
-    nDecoys = 1
-    posSame = 0
-    negSame = 0
-    pValList = []
-    curScore = None
+    n_decoys = 1
+    pos_same = 0
+    neg_same = 0
+    pval_list = []
+    cur_score = None
     for score, target in zip(combined_score, combined_score_target):
         if target:
-            posSame += 1
+            pos_same += 1
         else:
-            negSame += 1
+            neg_same += 1
 
         # TODO Unclear if need if statement. This appears in Percolator code
         # however, adding it makes Crema and Percolator pValList different length
         # if curScore != score:
-        for ix in range(0, posSame):
-            pValList.append(nDecoys + (negSame * (ix + 1)) / (posSame + 1))
+        for ix in range(0, pos_same):
+            pval_list.append(n_decoys + (neg_same * (ix + 1)) / (pos_same + 1))
 
-        nDecoys += negSame
-        negSame = 0
-        posSame = 0
-        curScore = score
-    pValList = np.array(pValList) / nDecoys
+        n_decoys += neg_same
+        neg_same = 0
+        pos_same = 0
+        cur_score = score
+    pval_list = np.array(pval_list) / n_decoys
 
     # calculate pi0
-    pi0 = estimate_pi0(pValList)
+    pi0 = estimate_pi0(pval_list)
 
     if pi0 == 1.0:
         # All targets are assumed to be incorrect! Algorithm 1, line 5-6
@@ -227,19 +227,19 @@ def estimate_pi0(pval_list):
     pi0 : float
         Estimated pi_zero.
     """
-    numLambda = 100
-    maxLambda = 0.5
-    numBoot = 100
+    num_lambda = 100
+    max_lambda = 0.5
+    num_boot = 100
 
     # LOGGER.debug("pval_list=%s", pval_list)
 
     n_pval = pval_list.size
     lambda_list = []
     pi0s_list = []
-    for idx in range(0, numLambda):
-        cur_lambda = ((idx + 1) / numLambda) * maxLambda
+    for idx in range(0, num_lambda):
+        cur_lambda = ((idx + 1) / num_lambda) * max_lambda
 
-        # Find the index of the first element in pValList
+        # Find the index of the first element in pval_list
         # that is > lambda.
         start = np.searchsorted(pval_list, cur_lambda)
         W1 = n_pval - start
@@ -262,7 +262,7 @@ def estimate_pi0(pval_list):
     mse_list = np.zeros(len(pi0s_list))
     max_size = 1000
     # Examine which lambda level that is most stable under bootstrap
-    for i in range(0, numBoot):
+    for i in range(0, num_boot):
         # Create an array of bootstrapped p-values, and sort in ascending order.
         num_draw = min(n_pval, max_size)
         pBoot_list = np.random.choice(pval_list, size=num_draw, replace=True)
