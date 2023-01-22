@@ -10,7 +10,9 @@ from .. import utils
 LOGGER = logging.getLogger(__name__)
 
 
-def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
+def read_msgf(
+    txt_files, pairing_file_name=None, decoy_prefix="XXX_", copy_data=True
+):
     """Read peptide-spectrum matches (PSMs) from MSGF+ tab-delimited files.
 
     Parameters
@@ -22,6 +24,9 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
         sequences. Requires one column labled 'target' that contains target
         sequences and a second colun labeled 'decoy' that contains decoy
         sequences.
+    decoy_prefix : str, optional
+        The prefix used to indicate a decoy protein in the protein column.
+        Default value is 'XXX_'.
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
@@ -78,7 +83,7 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
             [utils.parse_psms_txt(f, fields, False) for f in txt_files]
         )
 
-    data["target/decoy"] = ~data[protein].str.contains("XXX_")
+    data["target/decoy"] = ~data[protein].str.contains(decoy_prefix)
 
     psms = read_txt(
         data,
@@ -104,7 +109,9 @@ def read_msgf(txt_files, pairing_file_name=None, copy_data=True):
     new_protein_column = protein_column.str.replace(
         "\\([^()]*\\)", "", regex=True
     )
-    new_protein_column = new_protein_column.str.replace("XXX_", "", regex=True)
+    new_protein_column = new_protein_column.str.replace(
+        decoy_prefix, "", regex=True
+    )
     psms.set_protein_column(new_protein_column)
 
     return psms

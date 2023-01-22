@@ -13,8 +13,10 @@ from .. import utils
 LOGGER = logging.getLogger(__name__)
 
 
-def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
-    """Read peptide-spectrum matches (PSMs) from MSFragger tab-delimited files.
+def read_msfragger(
+    txt_files, pairing_file_name=None, decoy_prefix="rev_", copy_data=True
+):
+    """Read peptide-spectrum matches (PSMs) from MSFragger pepXML files.
 
     Parameters
     ----------
@@ -25,6 +27,9 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
         sequences. Requires one column labled 'target' that contains target
         sequences and a second colun labeled 'decoy' that contains decoy
         sequences.
+    decoy_prefix : str, optional
+        The prefix used to indicate a decoy protein in the protein column.
+        Default value is 'rev_'.
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
@@ -46,7 +51,6 @@ def read_msfragger(txt_files, pairing_file_name=None, copy_data=True):
     # protein = "protein" # check for TSV
     protein = "proteins"
     protein_delim = ";"
-    decoy_prefix = "rev_"
 
     # The text below in any pepXML field identifies the field as a score field
     score_id = "search_engine_score:"
