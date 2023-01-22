@@ -1,0 +1,999 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="pepXML_std.xsl"?>
+<msms_pipeline_analysis date="2023-01-10T14:25:52" xmlns="http://regis-web.systemsbiology.net/pepXML" summary_xml="/home/lina627/projects/2020_dsee_ms-fdr-tool/results/andy/20220830-crema-results/ecoli/../../../../data/pxd011189-ecoli/mzML/134_2018_ZBS6_Ecoli_SP3_2.pepXML" xsi:schemaLocation="http://sashimi.sourceforge.net/schema_revision/pepXML/pepXML_v122.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<msms_run_summary base_name="/home/lina627/projects/2020_dsee_ms-fdr-tool/results/andy/20220830-crema-results/ecoli/../../../../data/pxd011189-ecoli/mzML/134_2018_ZBS6_Ecoli_SP3_2" raw_data_type="mzML" comment="This pepXML was from calibrated spectra." raw_data="mzML">
+<sample_enzyme name="stricttrypsin">
+<specificity cut="KR" no_cut="" sense="C"/>
+</sample_enzyme>
+<search_summary base_name="/home/lina627/projects/2020_dsee_ms-fdr-tool/results/andy/20220830-crema-results/ecoli/../../../../data/pxd011189-ecoli/mzML/134_2018_ZBS6_Ecoli_SP3_2" precursor_mass_type="monoisotopic" search_engine="X! Tandem" search_engine_version="MSFragger-3.5" fragment_mass_type="monoisotopic" search_id="1">
+<search_database local_path="2022-09-02-decoys-ecoli.fasta.fas" type="AA"/>
+<enzymatic_search_constraint enzyme="default" min_number_termini="2" max_num_internal_cleavages="2"/>
+<aminoacid_modification aminoacid="C" massdiff="57.021465" mass="160.030655" variable="N"/>
+<aminoacid_modification aminoacid="M" massdiff="15.994900" mass="147.035400" variable="Y"/>
+<terminal_modification massdiff="42.010601" protein_terminus="Y" mass="43.018425" terminus="N" variable="Y"/>
+<parameter name="# MSFragger.build" value="MSFragger-3.5"/>
+<parameter name="database_name" value="2022-09-02-decoys-ecoli.fasta.fas"/>
+<parameter name="decoy_prefix" value="rev_"/>
+<parameter name="num_threads" value="16"/>
+<parameter name="precursor_mass_lower" value="-20.0"/>
+<parameter name="precursor_mass_upper" value="20.0"/>
+<parameter name="precursor_mass_units" value="1"/>
+<parameter name="precursor_true_tolerance" value="20.0"/>
+<parameter name="data_type" value="0"/>
+<parameter name="precursor_true_units" value="1"/>
+<parameter name="fragment_mass_tolerance" value="15.0"/>
+<parameter name="fragment_mass_units" value="1"/>
+<parameter name="calibrate_mass" value="2"/>
+<parameter name="use_all_mods_in_first_search" value="0"/>
+<parameter name="write_calibrated_mgf" value="0"/>
+<parameter name="isotope_error" value="0"/>
+<parameter name="mass_offsets" value="0"/>
+<parameter name="labile_search_mode" value="OFF"/>
+<parameter name="restrict_deltamass_to" value="all"/>
+<parameter name="precursor_mass_mode" value="SELECTED"/>
+<parameter name="intensity_transform" value="1"/>
+<parameter name="activation_types" value=""/>
+<parameter name="remove_precursor_peak" value="1"/>
+<parameter name="remove_precursor_range" value="-1.5,1.5"/>
+<parameter name="localize_delta_mass" value="0"/>
+<parameter name="delta_mass_exclude_ranges" value="(-1.5, 3.5)"/>
+<parameter name="fragment_ion_series" value="b,y"/>
+<parameter name="ion_series_definitions" value=""/>
+<parameter name="search_enzyme_name" value="stricttrypsin"/>
+<parameter name="min_sequence_matches" value="2"/>
+<parameter name="check_spectral_files" value="1"/>
+<parameter name="search_enzyme_cut_1" value="KR"/>
+<parameter name="search_enzyme_nocut_1" value=""/>
+<parameter name="num_enzyme_termini" value="2"/>
+<parameter name="allowed_missed_cleavage_1" value="2"/>
+<parameter name="search_enzyme_sense_1" value="C"/>
+<parameter name="clip_nTerm_M" value="1"/>
+<parameter name="allow_multiple_variable_mods_on_residue" value="0"/>
+<parameter name="max_variable_mods_per_peptide" value="3"/>
+<parameter name="max_variable_mods_combinations" value="5000"/>
+<parameter name="mass_diff_to_variable_mod" value="0"/>
+<parameter name="output_format" value="tsv_pepxml"/>
+<parameter name="output_report_topN" value="1"/>
+<parameter name="output_max_expect" value="50.0"/>
+<parameter name="report_alternative_proteins" value="0"/>
+<parameter name="override_charge" value="0"/>
+<parameter name="precursor_charge" value="1 4"/>
+<parameter name="digest_min_length" value="7"/>
+<parameter name="digest_max_length" value="50"/>
+<parameter name="digest_mass_range" value="500.0 5000.0"/>
+<parameter name="max_fragment_charge" value="1"/>
+<parameter name="deisotope" value="1"/>
+<parameter name="deneutralloss" value="1"/>
+<parameter name="track_zero_topN" value="0"/>
+<parameter name="zero_bin_accept_expect" value="0.0"/>
+<parameter name="zero_bin_mult_expect" value="1.0"/>
+<parameter name="add_topN_complementary" value="0"/>
+<parameter name="minimum_peaks" value="15"/>
+<parameter name="use_topN_peaks" value="175"/>
+<parameter name="min_fragments_modelling" value="2"/>
+<parameter name="min_matched_fragments" value="4"/>
+<parameter name="minimum_ratio" value="0.0"/>
+<parameter name="clear_mz_range" value="0.0 0.0"/>
+<parameter name="excluded_scan_list_file" value=""/>
+<parameter name="variable_mod_01" value="15.99490 M 3"/>
+<parameter name="variable_mod_02" value="42.01060 [^ 3"/>
+<parameter name="add_C_cysteine" value="57.021464"/>
+<parameter name="add_Cterm_peptide" value="0.0"/>
+<parameter name="add_Cterm_protein" value="0.0"/>
+<parameter name="add_Nterm_peptide" value="0.0"/>
+<parameter name="add_Nterm_protein" value="0.0"/>
+</search_summary>
+<spectrum_query start_scan="2" uncalibrated_precursor_neutral_mass="702.39307" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.2.2.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=2" end_scan="2" index="1" precursor_neutral_mass="702.391" retention_time_sec="0.4948069900274277">
+<search_result>
+<search_hit peptide="LEGLSGK" massdiff="-1.8310546875E-4" calc_neutral_pep_mass="702.3912" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Cell division protein DedD OS=Escherichia coli O157:H7 OX=83334 GN=dedD PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="rev_tr|Q8XCR4|Q8XCR4_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="8.908"/>
+<search_score name="nextscore" value="8.649"/>
+<search_score name="expect" value="1.406048e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="3" uncalibrated_precursor_neutral_mass="805.34766" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.3.3.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=3" end_scan="3" index="2" precursor_neutral_mass="805.3454" retention_time_sec="0.5736810900270939">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="6.103515625E-5" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="9" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="18.842"/>
+<search_score name="nextscore" value="11.064"/>
+<search_score name="expect" value="8.212970e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="5" uncalibrated_precursor_neutral_mass="856.47845" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.5.5.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=5" end_scan="5" index="4" precursor_neutral_mass="856.47705" retention_time_sec="0.7313070259988308">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="4.2724609375E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="8" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="16.427"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.297995e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="11" uncalibrated_precursor_neutral_mass="789.4248" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.11.11.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=11" end_scan="11" index="10" precursor_neutral_mass="789.42303" retention_time_sec="1.2039310857653618">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="-1.8310546875E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.34"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.467368e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="14" uncalibrated_precursor_neutral_mass="824.41626" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.14.14.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=14" end_scan="14" index="12" precursor_neutral_mass="824.41437" retention_time_sec="1.6560539603233337">
+<search_result>
+<search_hit peptide="QLDHGQK" massdiff="3.0517578125E-4" calc_neutral_pep_mass="824.41406" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="8.244"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.158777e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="45" uncalibrated_precursor_neutral_mass="822.33563" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.45.45.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=45" end_scan="45" index="29" precursor_neutral_mass="822.3353" retention_time_sec="7.201690077781677">
+<search_result>
+<search_hit peptide="DTETDSR" massdiff="-1.8310546875E-4" calc_neutral_pep_mass="822.3355" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate dehydrogenase iron-sulfur subunit OS=Escherichia coli O157:H7 OX=83334 GN=sdhB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="tr|Q8X9A8|Q8X9A8_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="12.739"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.549708e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="91" uncalibrated_precursor_neutral_mass="856.47723" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.91.91.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=91" end_scan="91" index="38" precursor_neutral_mass="856.4771" retention_time_sec="21.17370307445526">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="4.8828125E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="9.979"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.590143e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="101" uncalibrated_precursor_neutral_mass="789.4236" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.101.101.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=101" end_scan="101" index="46" precursor_neutral_mass="789.4232" retention_time_sec="22.375084161758423">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="0.0" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.255"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.475152e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="113" uncalibrated_precursor_neutral_mass="759.3866" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.113.113.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=113" end_scan="113" index="55" precursor_neutral_mass="759.3877" retention_time_sec="23.73420774936676">
+<search_result>
+<search_hit peptide="SAVDVGGR" massdiff="1.8310546875E-4" calc_neutral_pep_mass="759.3875" peptide_next_aa="G" num_missed_cleavages="0" num_tol_term="2" protein_descr="Phage polarity suppression protein OS=Escherichia coli O157:H7 OX=83334 GN=ECs_0297 PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="rev_tr|Q8X7J0|Q8X7J0_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="9.958"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.366155e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="140" uncalibrated_precursor_neutral_mass="833.3774" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.140.140.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=140" end_scan="140" index="61" precursor_neutral_mass="833.3777" retention_time_sec="31.384845972061157">
+<search_result>
+<search_hit peptide="EAEEAASK" massdiff="0.00103759765625" calc_neutral_pep_mass="833.37665" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate--CoA ligase [ADP-forming] subunit beta OS=Escherichia coli O157:H7 OX=83334 GN=sucC PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="5" protein="sp|P0A838|SUCC_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.14"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.918308e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="163" uncalibrated_precursor_neutral_mass="744.37756" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.163.163.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=163" end_scan="163" index="65" precursor_neutral_mass="744.37805" retention_time_sec="38.64397644996643">
+<search_result>
+<search_hit peptide="EANVQGK" massdiff="0.00146484375" calc_neutral_pep_mass="744.3766" peptide_next_aa="N" num_missed_cleavages="0" num_tol_term="2" protein_descr="Maltoporin OS=Escherichia coli O157:H7 OX=83334 GN=lamB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|Q8X5W7|LAMB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.477"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.801980e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="172" uncalibrated_precursor_neutral_mass="805.34607" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.172.172.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=172" end_scan="172" index="67" precursor_neutral_mass="805.3454" retention_time_sec="41.2164831161499">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="6.103515625E-5" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="16.582"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.696289e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="175" uncalibrated_precursor_neutral_mass="856.47705" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.175.175.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=175" end_scan="175" index="69" precursor_neutral_mass="856.4772" retention_time_sec="41.680229902267456">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="5.4931640625E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="8" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="16.446"/>
+<search_score name="nextscore" value="10.464"/>
+<search_score name="expect" value="5.800965e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="184" uncalibrated_precursor_neutral_mass="824.4148" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.184.184.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=184" end_scan="184" index="75" precursor_neutral_mass="824.41473" retention_time_sec="43.035736083984375">
+<search_result>
+<search_hit peptide="QLDHGQK" massdiff="6.7138671875E-4" calc_neutral_pep_mass="824.41406" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="8.503"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.775211e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="185" uncalibrated_precursor_neutral_mass="789.42365" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.185.185.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=185" end_scan="185" index="76" precursor_neutral_mass="789.42334" retention_time_sec="43.10873508453369">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="1.220703125E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="6" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.526"/>
+<search_score name="nextscore" value="10.082"/>
+<search_score name="expect" value="9.851446e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="196" uncalibrated_precursor_neutral_mass="759.387" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.196.196.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=196" end_scan="196" index="85" precursor_neutral_mass="759.3879" retention_time_sec="44.40511107444763">
+<search_result>
+<search_hit peptide="TDIGQAR" massdiff="3.662109375E-4" calc_neutral_pep_mass="759.3875" peptide_next_aa="Y" num_missed_cleavages="0" num_tol_term="2" protein_descr="Integrase OS=Escherichia coli O157:H7 OX=83334 GN=ECs_1501 PE=4 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="rev_tr|Q8X8D8|Q8X8D8_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="9.823"/>
+<search_score name="nextscore" value="9.818"/>
+<search_score name="expect" value="1.476556e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="268" uncalibrated_precursor_neutral_mass="805.3465" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.268.268.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=268" end_scan="268" index="100" precursor_neutral_mass="805.34564" retention_time_sec="61.722257137298584">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="3.0517578125E-4" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="16.234"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.072527e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="272" uncalibrated_precursor_neutral_mass="856.47705" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.272.272.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=272" end_scan="272" index="103" precursor_neutral_mass="856.47736" retention_time_sec="62.24288463592529">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="7.32421875E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="14.519"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="9.891223e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="279" uncalibrated_precursor_neutral_mass="824.41473" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.279.279.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=279" end_scan="279" index="108" precursor_neutral_mass="824.4148" retention_time_sec="63.22188377380371">
+<search_result>
+<search_hit peptide="QLDHGQK" massdiff="7.32421875E-4" calc_neutral_pep_mass="824.41406" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.489"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="5.659133e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="281" uncalibrated_precursor_neutral_mass="789.42334" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.281.281.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=281" end_scan="281" index="109" precursor_neutral_mass="789.4234" retention_time_sec="63.60051155090332">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="1.8310546875E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.207"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.656563e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="285" uncalibrated_precursor_neutral_mass="905.42804" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.285.285.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=285" end_scan="285" index="112" precursor_neutral_mass="905.4269" retention_time_sec="64.13751125335693">
+<search_result>
+<search_hit peptide="KAMDEQGK" massdiff="-7.9345703125E-4" calc_neutral_pep_mass="905.4277" peptide_next_aa="S" num_missed_cleavages="1" num_tol_term="2" protein_descr="DNA-binding protein H-NS OS=Escherichia coli O157:H7 OX=83334 GN=hns PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="5" protein="sp|P0ACG0|HNS_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="12.274"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.025349e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="303" uncalibrated_precursor_neutral_mass="833.3777" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.303.303.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=303" end_scan="303" index="123" precursor_neutral_mass="833.3778" retention_time_sec="67.31426954269409">
+<search_result>
+<search_hit peptide="EAEEAASK" massdiff="0.00115966796875" calc_neutral_pep_mass="833.37665" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate--CoA ligase [ADP-forming] subunit beta OS=Escherichia coli O157:H7 OX=83334 GN=sucC PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A838|SUCC_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="12.279"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.019528e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="309" uncalibrated_precursor_neutral_mass="773.4284" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.309.309.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=309" end_scan="309" index="127" precursor_neutral_mass="773.4274" retention_time_sec="68.29326868057251">
+<search_result>
+<search_hit peptide="KVSTDPK" massdiff="-8.544921875E-4" calc_neutral_pep_mass="773.4283" peptide_next_aa="L" num_missed_cleavages="1" num_tol_term="2" protein_descr="PTS system mannose-specific EIIAB component OS=Escherichia coli O157:H7 OX=83334 GN=manX PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P69799|PTNAB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="11.471"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.215512e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="316" uncalibrated_precursor_neutral_mass="730.3981" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.316.316.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=316" end_scan="316" index="129" precursor_neutral_mass="730.39746" retention_time_sec="70.24314880371094">
+<search_result>
+<search_hit peptide="VGGAAQTK" massdiff="1.220703125E-4" calc_neutral_pep_mass="730.39734" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="12.96"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.673614e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="319" uncalibrated_precursor_neutral_mass="822.3361" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.319.319.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=319" end_scan="319" index="130" precursor_neutral_mass="822.33545" retention_time_sec="71.08439683914185">
+<search_result>
+<search_hit peptide="DTETDSR" massdiff="-6.103515625E-5" calc_neutral_pep_mass="822.3355" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate dehydrogenase iron-sulfur subunit OS=Escherichia coli O157:H7 OX=83334 GN=sdhB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="tr|Q8X9A8|Q8X9A8_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="12.409"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.873915e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="326" uncalibrated_precursor_neutral_mass="744.37714" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.326.326.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=326" end_scan="326" index="132" precursor_neutral_mass="744.37805" retention_time_sec="72.75689363479614">
+<search_result>
+<search_hit peptide="EANVQGK" massdiff="0.00146484375" calc_neutral_pep_mass="744.3766" peptide_next_aa="N" num_missed_cleavages="0" num_tol_term="2" protein_descr="Maltoporin OS=Escherichia coli O157:H7 OX=83334 GN=lamB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|Q8X5W7|LAMB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.489"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.789575e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="358" uncalibrated_precursor_neutral_mass="805.3461" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.358.358.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=358" end_scan="358" index="139" precursor_neutral_mass="805.3456" retention_time_sec="82.1022891998291">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="2.44140625E-4" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="15.337"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.473362e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="362" uncalibrated_precursor_neutral_mass="856.4774" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.362.362.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=362" end_scan="362" index="142" precursor_neutral_mass="856.4772" retention_time_sec="82.62278079986572">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="5.4931640625E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="5" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="11.095"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.992546e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="366" uncalibrated_precursor_neutral_mass="864.42084" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.366.366.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=366" end_scan="366" index="145" precursor_neutral_mass="864.4213" retention_time_sec="83.15216302871704">
+<search_result>
+<search_hit peptide="HPQEGAAR" massdiff="0.00115966796875" calc_neutral_pep_mass="864.42017" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Aspartate carbamoyltransferase catalytic subunit OS=Escherichia coli O157:H7 OX=83334 GN=pyrB PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A788|PYRB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.995"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.337365e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="372" uncalibrated_precursor_neutral_mass="789.4233" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.372.372.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=372" end_scan="372" index="149" precursor_neutral_mass="789.42334" retention_time_sec="84.06015872955322">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="1.220703125E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.339"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.169502e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="386" uncalibrated_precursor_neutral_mass="759.38763" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.386.386.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=386" end_scan="386" index="159" precursor_neutral_mass="759.38794" retention_time_sec="86.05966329574585">
+<search_result>
+<search_hit peptide="TDIGQAR" massdiff="4.2724609375E-4" calc_neutral_pep_mass="759.3875" peptide_next_aa="Y" num_missed_cleavages="0" num_tol_term="2" protein_descr="Integrase OS=Escherichia coli O157:H7 OX=83334 GN=ECs_1501 PE=4 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="rev_tr|Q8X8D8|Q8X8D8_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="9.831"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.469772e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="393" uncalibrated_precursor_neutral_mass="833.3774" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.393.393.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=393" end_scan="393" index="162" precursor_neutral_mass="833.3778" retention_time_sec="87.68279314041138">
+<search_result>
+<search_hit peptide="EAEEAASK" massdiff="0.00115966796875" calc_neutral_pep_mass="833.37665" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate--CoA ligase [ADP-forming] subunit beta OS=Escherichia coli O157:H7 OX=83334 GN=sucC PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="5" protein="sp|P0A838|SUCC_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.143"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.906374e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="405" uncalibrated_precursor_neutral_mass="730.3978" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.405.405.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=405" end_scan="405" index="166" precursor_neutral_mass="730.3974" retention_time_sec="90.4672908782959">
+<search_result>
+<search_hit peptide="VGGAAQTK" massdiff="6.103515625E-5" calc_neutral_pep_mass="730.39734" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.123"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.242367e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="408" uncalibrated_precursor_neutral_mass="822.3359" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.408.408.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=408" end_scan="408" index="167" precursor_neutral_mass="822.33545" retention_time_sec="91.30617141723633">
+<search_result>
+<search_hit peptide="DTETDSR" massdiff="-6.103515625E-5" calc_neutral_pep_mass="822.3355" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate dehydrogenase iron-sulfur subunit OS=Escherichia coli O157:H7 OX=83334 GN=sdhB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="tr|Q8X9A8|Q8X9A8_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="8.822"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.477407e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="415" uncalibrated_precursor_neutral_mass="773.4287" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.415.415.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=415" end_scan="415" index="170" precursor_neutral_mass="773.4272" retention_time_sec="92.58917570114136">
+<search_result>
+<search_hit peptide="KVSTDPK" massdiff="-0.0010986328125" calc_neutral_pep_mass="773.4283" peptide_next_aa="L" num_missed_cleavages="1" num_tol_term="2" protein_descr="PTS system mannose-specific EIIAB component OS=Escherichia coli O157:H7 OX=83334 GN=manX PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P69799|PTNAB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="11.397"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.355443e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="417" uncalibrated_precursor_neutral_mass="744.37714" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.417.417.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=417" end_scan="417" index="171" precursor_neutral_mass="744.3781" retention_time_sec="92.96817541122437">
+<search_result>
+<search_hit peptide="VQNAEGK" massdiff="0.00152587890625" calc_neutral_pep_mass="744.3766" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Cytochrome c-552 OS=Escherichia coli O157:H7 OX=83334 GN=nrfA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0ABL0|NRFA_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.672"/>
+<search_score name="nextscore" value="10.553"/>
+<search_score name="expect" value="1.610646e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="429" uncalibrated_precursor_neutral_mass="878.3182" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.429.429.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=429" end_scan="429" index="174" precursor_neutral_mass="878.318" retention_time_sec="96.19617462158203">
+<search_result>
+<search_hit peptide="DGQDCER" massdiff="-8.544921875E-4" calc_neutral_pep_mass="878.31885" peptide_next_aa="W" num_missed_cleavages="0" num_tol_term="2" protein_descr="Pyruvate dehydrogenase E1 component OS=Escherichia coli O157:H7 OX=83334 GN=aceE PE=1 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0AFG9|ODP1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<modification_info modified_peptide="DGQDCER">
+<mod_aminoacid_mass mass="160.030655" position="5"/>
+</modification_info>
+<search_score name="hyperscore" value="8.977"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.351294e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="456" uncalibrated_precursor_neutral_mass="856.4772" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.456.456.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=456" end_scan="456" index="182" precursor_neutral_mass="856.47723" retention_time_sec="103.19381475448608">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="6.103515625E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="12.756"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.728979e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="459" uncalibrated_precursor_neutral_mass="864.42065" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.459.459.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=459" end_scan="459" index="184" precursor_neutral_mass="864.4222" retention_time_sec="103.64469051361084">
+<search_result>
+<search_hit peptide="HPQEGAAR" massdiff="0.00201416015625" calc_neutral_pep_mass="864.42017" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Aspartate carbamoyltransferase catalytic subunit OS=Escherichia coli O157:H7 OX=83334 GN=pyrB PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A788|PYRB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="14.136"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.934259e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="465" uncalibrated_precursor_neutral_mass="789.4237" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.465.465.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=465" end_scan="465" index="188" precursor_neutral_mass="789.42346" retention_time_sec="104.54981088638306">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="2.44140625E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.251"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.490078e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="469" uncalibrated_precursor_neutral_mass="905.4284" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.469.469.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=469" end_scan="469" index="191" precursor_neutral_mass="905.4269" retention_time_sec="105.08606672286987">
+<search_result>
+<search_hit peptide="KAMDEQGK" massdiff="-7.9345703125E-4" calc_neutral_pep_mass="905.4277" peptide_next_aa="S" num_missed_cleavages="1" num_tol_term="2" protein_descr="DNA-binding protein H-NS OS=Escherichia coli O157:H7 OX=83334 GN=hns PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0ACG0|HNS_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="13.51"/>
+<search_score name="nextscore" value="10.829"/>
+<search_score name="expect" value="1.768072e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="493" uncalibrated_precursor_neutral_mass="833.37744" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.493.493.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=493" end_scan="493" index="205" precursor_neutral_mass="833.37787" retention_time_sec="109.56819534301758">
+<search_result>
+<search_hit peptide="EAEEAASK" massdiff="0.001220703125" calc_neutral_pep_mass="833.37665" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate--CoA ligase [ADP-forming] subunit beta OS=Escherichia coli O157:H7 OX=83334 GN=sucC PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A838|SUCC_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.601"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.677838e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="495" uncalibrated_precursor_neutral_mass="759.3516" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.495.495.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=495" end_scan="495" index="206" precursor_neutral_mass="759.35126" retention_time_sec="110.02656698226929">
+<search_result>
+<search_hit peptide="GEAEQAR" massdiff="1.8310546875E-4" calc_neutral_pep_mass="759.3511" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Ribosome-recycling factor OS=Escherichia coli O157:H7 OX=83334 GN=frr PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A807|RRF_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="11.869"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.557113e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="498" uncalibrated_precursor_neutral_mass="730.3977" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.498.498.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=498" end_scan="498" index="207" precursor_neutral_mass="730.39746" retention_time_sec="110.76982498168945">
+<search_result>
+<search_hit peptide="VGGAAQTK" massdiff="1.220703125E-4" calc_neutral_pep_mass="730.39734" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="15.042"/>
+<search_score name="nextscore" value="9.551"/>
+<search_score name="expect" value="7.319814e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="513" uncalibrated_precursor_neutral_mass="773.42847" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.513.513.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=513" end_scan="513" index="210" precursor_neutral_mass="773.42725" retention_time_sec="114.87732410430908">
+<search_result>
+<search_hit peptide="KVSTDPK" massdiff="-0.00103759765625" calc_neutral_pep_mass="773.4283" peptide_next_aa="L" num_missed_cleavages="1" num_tol_term="2" protein_descr="PTS system mannose-specific EIIAB component OS=Escherichia coli O157:H7 OX=83334 GN=manX PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P69799|PTNAB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="11.47"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.217362e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="514" uncalibrated_precursor_neutral_mass="822.3359" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.514.514.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=514" end_scan="514" index="211" precursor_neutral_mass="822.33545" retention_time_sec="114.95607376098633">
+<search_result>
+<search_hit peptide="DTETDSR" massdiff="-6.103515625E-5" calc_neutral_pep_mass="822.3355" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate dehydrogenase iron-sulfur subunit OS=Escherichia coli O157:H7 OX=83334 GN=sdhB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="6" protein="tr|Q8X9A8|Q8X9A8_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.977"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="4.273168e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="515" uncalibrated_precursor_neutral_mass="744.377" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.515.515.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=515" end_scan="515" index="212" precursor_neutral_mass="744.37805" retention_time_sec="115.02681970596313">
+<search_result>
+<search_hit peptide="EANVQGK" massdiff="0.00146484375" calc_neutral_pep_mass="744.3766" peptide_next_aa="N" num_missed_cleavages="0" num_tol_term="2" protein_descr="Maltoporin OS=Escherichia coli O157:H7 OX=83334 GN=lamB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|Q8X5W7|LAMB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.569"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.709031e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="521" uncalibrated_precursor_neutral_mass="878.31805" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.521.521.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=521" end_scan="521" index="214" precursor_neutral_mass="878.3178" retention_time_sec="116.70857191085815">
+<search_result>
+<search_hit peptide="DGQDCER" massdiff="-0.00103759765625" calc_neutral_pep_mass="878.31885" peptide_next_aa="W" num_missed_cleavages="0" num_tol_term="2" protein_descr="Pyruvate dehydrogenase E1 component OS=Escherichia coli O157:H7 OX=83334 GN=aceE PE=1 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0AFG9|ODP1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<modification_info modified_peptide="DGQDCER">
+<mod_aminoacid_mass mass="160.030655" position="5"/>
+</modification_info>
+<search_score name="hyperscore" value="11.252"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.647540e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="540" uncalibrated_precursor_neutral_mass="805.34576" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.540.540.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=540" end_scan="540" index="218" precursor_neutral_mass="805.3455" retention_time_sec="122.47495651245117">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="1.8310546875E-4" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="13.7"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="8.912510e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="548" uncalibrated_precursor_neutral_mass="856.4772" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.548.548.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=548" end_scan="548" index="223" precursor_neutral_mass="856.4771" retention_time_sec="123.5387134552002">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="4.8828125E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="14.709"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="8.866456e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="550" uncalibrated_precursor_neutral_mass="864.4205" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.550.550.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=550" end_scan="550" index="224" precursor_neutral_mass="864.4212" retention_time_sec="123.9173412322998">
+<search_result>
+<search_hit peptide="HPQEGAAR" massdiff="0.00103759765625" calc_neutral_pep_mass="864.42017" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Aspartate carbamoyltransferase catalytic subunit OS=Escherichia coli O157:H7 OX=83334 GN=pyrB PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A788|PYRB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.913"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.884061e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="554" uncalibrated_precursor_neutral_mass="824.4143" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.554.554.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=554" end_scan="554" index="227" precursor_neutral_mass="824.4145" retention_time_sec="124.44271087646484">
+<search_result>
+<search_hit peptide="QLDHGQK" massdiff="4.2724609375E-4" calc_neutral_pep_mass="824.41406" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.193"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.710425e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="557" uncalibrated_precursor_neutral_mass="789.42334" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.557.557.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=557" end_scan="557" index="229" precursor_neutral_mass="789.42346" retention_time_sec="124.89708423614502">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="2.44140625E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.216"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.622167e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="563" uncalibrated_precursor_neutral_mass="905.4281" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.563.563.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=563" end_scan="563" index="233" precursor_neutral_mass="905.427" retention_time_sec="125.81408500671387">
+<search_result>
+<search_hit peptide="KAMDEQGK" massdiff="-6.7138671875E-4" calc_neutral_pep_mass="905.4277" peptide_next_aa="S" num_missed_cleavages="1" num_tol_term="2" protein_descr="DNA-binding protein H-NS OS=Escherichia coli O157:H7 OX=83334 GN=hns PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="sp|P0ACG0|HNS_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.933"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.793815e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="585" uncalibrated_precursor_neutral_mass="759.35144" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.585.585.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=585" end_scan="585" index="242" precursor_neutral_mass="759.3513" retention_time_sec="130.61160564422607">
+<search_result>
+<search_hit peptide="GEAEQAR" massdiff="2.44140625E-4" calc_neutral_pep_mass="759.3511" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Ribosome-recycling factor OS=Escherichia coli O157:H7 OX=83334 GN=frr PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A807|RRF_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="11.631"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.932582e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="587" uncalibrated_precursor_neutral_mass="730.3979" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.587.587.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=587" end_scan="587" index="243" precursor_neutral_mass="730.39734" retention_time_sec="130.99446773529053">
+<search_result>
+<search_hit peptide="VGGAAQTK" massdiff="0.0" calc_neutral_pep_mass="730.39734" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="8" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="16.997"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.335827e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="596" uncalibrated_precursor_neutral_mass="833.3774" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.596.596.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=596" end_scan="596" index="244" precursor_neutral_mass="833.3778" retention_time_sec="133.46621990203857">
+<search_result>
+<search_hit peptide="EAEEAASK" massdiff="0.00115966796875" calc_neutral_pep_mass="833.37665" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate--CoA ligase [ADP-forming] subunit beta OS=Escherichia coli O157:H7 OX=83334 GN=sucC PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="5" protein="sp|P0A838|SUCC_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.265"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.437984e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="603" uncalibrated_precursor_neutral_mass="822.3364" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.603.603.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=603" end_scan="603" index="246" precursor_neutral_mass="822.33545" retention_time_sec="135.36097526550293">
+<search_result>
+<search_hit peptide="DTETDSR" massdiff="-6.103515625E-5" calc_neutral_pep_mass="822.3355" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate dehydrogenase iron-sulfur subunit OS=Escherichia coli O157:H7 OX=83334 GN=sdhB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="6" protein="tr|Q8X9A8|Q8X9A8_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="14.173"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.788126e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="611" uncalibrated_precursor_neutral_mass="878.31854" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.611.611.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=611" end_scan="611" index="249" precursor_neutral_mass="878.3177" retention_time_sec="137.48173713684082">
+<search_result>
+<search_hit peptide="DGQDCER" massdiff="-0.00115966796875" calc_neutral_pep_mass="878.31885" peptide_next_aa="W" num_missed_cleavages="0" num_tol_term="2" protein_descr="Pyruvate dehydrogenase E1 component OS=Escherichia coli O157:H7 OX=83334 GN=aceE PE=1 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0AFG9|ODP1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<modification_info modified_peptide="DGQDCER">
+<mod_aminoacid_mass mass="160.030655" position="5"/>
+</modification_info>
+<search_score name="hyperscore" value="11.662"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.880713e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="614" uncalibrated_precursor_neutral_mass="744.37695" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.614.614.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=614" end_scan="614" index="250" precursor_neutral_mass="744.3779" retention_time_sec="138.29285144805908">
+<search_result>
+<search_hit peptide="VQNAEGK" massdiff="0.0013427734375" calc_neutral_pep_mass="744.3766" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Cytochrome c-552 OS=Escherichia coli O157:H7 OX=83334 GN=nrfA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0ABL0|NRFA_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.714"/>
+<search_score name="nextscore" value="8.806"/>
+<search_score name="expect" value="1.572172e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="624" uncalibrated_precursor_neutral_mass="773.4284" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.624.624.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=624" end_scan="624" index="254" precursor_neutral_mass="773.42737" retention_time_sec="140.35810947418213">
+<search_result>
+<search_hit peptide="KVSTDPK" massdiff="-9.1552734375E-4" calc_neutral_pep_mass="773.4283" peptide_next_aa="L" num_missed_cleavages="1" num_tol_term="2" protein_descr="PTS system mannose-specific EIIAB component OS=Escherichia coli O157:H7 OX=83334 GN=manX PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P69799|PTNAB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="11.46"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.235936e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="632" uncalibrated_precursor_neutral_mass="805.346" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.632.632.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=632" end_scan="632" index="256" precursor_neutral_mass="805.3456" retention_time_sec="142.66586780548096">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="2.44140625E-4" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="15.822"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.627242e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="640" uncalibrated_precursor_neutral_mass="856.477" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.640.640.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=640" end_scan="640" index="261" precursor_neutral_mass="856.47723" retention_time_sec="143.94285678863525">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="6.103515625E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="5" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="11.255"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.641246e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="643" uncalibrated_precursor_neutral_mass="864.4211" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.643.643.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=643" end_scan="643" index="263" precursor_neutral_mass="864.42126" retention_time_sec="144.40312385559082">
+<search_result>
+<search_hit peptide="HPQEGAAR" massdiff="0.0010986328125" calc_neutral_pep_mass="864.42017" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Aspartate carbamoyltransferase catalytic subunit OS=Escherichia coli O157:H7 OX=83334 GN=pyrB PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A788|PYRB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.906"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.915894e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="655" uncalibrated_precursor_neutral_mass="789.42456" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.655.655.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=655" end_scan="655" index="265" precursor_neutral_mass="789.42346" retention_time_sec="145.61199188232422">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="2.44140625E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.249"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.497557e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="662" uncalibrated_precursor_neutral_mass="905.4278" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.662.662.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=662" end_scan="662" index="270" precursor_neutral_mass="905.42676" retention_time_sec="146.5894889831543">
+<search_result>
+<search_hit peptide="KAMDEQGK" massdiff="-9.1552734375E-4" calc_neutral_pep_mass="905.4277" peptide_next_aa="S" num_missed_cleavages="1" num_tol_term="2" protein_descr="DNA-binding protein H-NS OS=Escherichia coli O157:H7 OX=83334 GN=hns PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="sp|P0ACG0|HNS_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.88"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="4.518559e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="685" uncalibrated_precursor_neutral_mass="730.3982" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.685.685.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=685" end_scan="685" index="282" precursor_neutral_mass="730.3973" retention_time_sec="151.20875358581543">
+<search_result>
+<search_hit peptide="VGGAAQTK" massdiff="-6.103515625E-5" calc_neutral_pep_mass="730.39734" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="14.241"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.527546e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="700" uncalibrated_precursor_neutral_mass="822.33594" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.700.700.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=700" end_scan="700" index="285" precursor_neutral_mass="822.3355" retention_time_sec="155.43750286102295">
+<search_result>
+<search_hit peptide="DTETDSR" massdiff="0.0" calc_neutral_pep_mass="822.3355" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate dehydrogenase iron-sulfur subunit OS=Escherichia coli O157:H7 OX=83334 GN=sdhB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="tr|Q8X9A8|Q8X9A8_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="8.758"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.532851e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="702" uncalibrated_precursor_neutral_mass="935.41064" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.702.702.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=702" end_scan="702" index="287" precursor_neutral_mass="935.41315" retention_time_sec="155.58700561523438">
+<search_result>
+<search_hit peptide="NSTAQAGCK" massdiff="6.103515625E-5" calc_neutral_pep_mass="935.4131" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Selenide, water dikinase OS=Escherichia coli O157:H7 OX=83334 GN=selD PE=3 SV=1" num_tot_proteins="1" tot_num_ions="16" hit_rank="1" num_matched_ions="5" protein="sp|P66794|SELD_ECO57" peptide_prev_aa="K" is_rejected="0">
+<modification_info modified_peptide="NSTAQAGCK">
+<mod_aminoacid_mass mass="160.030655" position="8"/>
+</modification_info>
+<search_score name="hyperscore" value="12.599"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.679771e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="705" uncalibrated_precursor_neutral_mass="833.3774" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.705.705.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=705" end_scan="705" index="288" precursor_neutral_mass="833.378" retention_time_sec="156.10701084136963">
+<search_result>
+<search_hit peptide="EAEEAASK" massdiff="0.0013427734375" calc_neutral_pep_mass="833.37665" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate--CoA ligase [ADP-forming] subunit beta OS=Escherichia coli O157:H7 OX=83334 GN=sucC PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A838|SUCC_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.677"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.606016e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="715" uncalibrated_precursor_neutral_mass="747.3767" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.715.715.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=715" end_scan="715" index="291" precursor_neutral_mass="747.3769" retention_time_sec="158.55262756347656">
+<search_result>
+<search_hit peptide="AEVTGSGK" massdiff="6.103515625E-4" calc_neutral_pep_mass="747.3763" peptide_next_aa="K" num_missed_cleavages="0" num_tol_term="2" protein_descr="50S ribosomal protein L4 OS=Escherichia coli O157:H7 OX=83334 GN=rplD PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="sp|P60725|RL4_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="17.184"/>
+<search_score name="nextscore" value="11.705"/>
+<search_score name="expect" value="1.199499e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="731" uncalibrated_precursor_neutral_mass="805.346" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.731.731.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=731" end_scan="731" index="295" precursor_neutral_mass="805.3455" retention_time_sec="162.81289100646973">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="1.8310546875E-4" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="13.983"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.346636e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="738" uncalibrated_precursor_neutral_mass="696.39246" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.738.738.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=738" end_scan="738" index="299" precursor_neutral_mass="696.3917" retention_time_sec="164.021258354187">
+<search_result>
+<search_hit peptide="HITAGAK" massdiff="-1.220703125E-4" calc_neutral_pep_mass="696.39185" peptide_next_aa="K" num_missed_cleavages="0" num_tol_term="2" protein_descr="Glyceraldehyde-3-phosphate dehydrogenase A OS=Escherichia coli O157:H7 OX=83334 GN=gapA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="9" protein="sp|P0A9B4|G3P1_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="18.617"/>
+<search_score name="nextscore" value="11.374"/>
+<search_score name="expect" value="5.257144e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="740" uncalibrated_precursor_neutral_mass="856.4772" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.740.740.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=740" end_scan="740" index="300" precursor_neutral_mass="856.47705" retention_time_sec="164.40025806427002">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="4.2724609375E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="8" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="16.532"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.104560e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="742" uncalibrated_precursor_neutral_mass="864.42065" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.742.742.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=742" end_scan="742" index="301" precursor_neutral_mass="864.4213" retention_time_sec="164.77888584136963">
+<search_result>
+<search_hit peptide="HPQEGAAR" massdiff="0.00115966796875" calc_neutral_pep_mass="864.42017" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Aspartate carbamoyltransferase catalytic subunit OS=Escherichia coli O157:H7 OX=83334 GN=pyrB PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A788|PYRB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="13.889"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.993740e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="745" uncalibrated_precursor_neutral_mass="759.3517" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.745.745.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=745" end_scan="745" index="302" precursor_neutral_mass="759.351" retention_time_sec="165.59813976287842">
+<search_result>
+<search_hit peptide="GEAEQAR" massdiff="-6.103515625E-5" calc_neutral_pep_mass="759.3511" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Ribosome-recycling factor OS=Escherichia coli O157:H7 OX=83334 GN=frr PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0A807|RRF_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="9.912"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.888602e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="748" uncalibrated_precursor_neutral_mass="789.4239" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.748.748.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=748" end_scan="748" index="304" precursor_neutral_mass="789.4236" retention_time_sec="166.05538845062256">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="3.662109375E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.235"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.550133e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="753" uncalibrated_precursor_neutral_mass="845.4611" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.753.753.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=753" end_scan="753" index="307" precursor_neutral_mass="845.46106" retention_time_sec="166.88352584838867">
+<search_result>
+<search_hit peptide="KGNEGTIK" massdiff="4.2724609375E-4" calc_neutral_pep_mass="845.46063" peptide_next_aa="T" num_missed_cleavages="1" num_tol_term="2" protein_descr="Cystine transporter subunit OS=Escherichia coli O157:H7 OX=83334 GN=fliY PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="tr|Q8XBC5|Q8XBC5_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="9.825"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.474857e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="754" uncalibrated_precursor_neutral_mass="773.4286" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.754.754.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=754" end_scan="754" index="308" precursor_neutral_mass="773.4273" retention_time_sec="166.96975708007812">
+<search_result>
+<search_hit peptide="KVSTDPK" massdiff="-9.765625E-4" calc_neutral_pep_mass="773.4283" peptide_next_aa="L" num_missed_cleavages="1" num_tol_term="2" protein_descr="PTS system mannose-specific EIIAB component OS=Escherichia coli O157:H7 OX=83334 GN=manX PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P69799|PTNAB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="12.644"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.636816e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="755" uncalibrated_precursor_neutral_mass="905.42834" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.755.755.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=755" end_scan="755" index="309" precursor_neutral_mass="905.4268" retention_time_sec="167.0486354827881">
+<search_result>
+<search_hit peptide="KAMDEQGK" massdiff="-8.544921875E-4" calc_neutral_pep_mass="905.4277" peptide_next_aa="S" num_missed_cleavages="1" num_tol_term="2" protein_descr="DNA-binding protein H-NS OS=Escherichia coli O157:H7 OX=83334 GN=hns PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="sp|P0ACG0|HNS_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.719"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="4.957355e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="776" uncalibrated_precursor_neutral_mass="730.3976" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.776.776.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=776" end_scan="776" index="318" precursor_neutral_mass="730.3972" retention_time_sec="171.6035270690918">
+<search_result>
+<search_hit peptide="VGGAAQTK" massdiff="-1.220703125E-4" calc_neutral_pep_mass="730.39734" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="14.142"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.910349e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="784" uncalibrated_precursor_neutral_mass="765.3665" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.784.784.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=784" end_scan="784" index="322" precursor_neutral_mass="765.36536" retention_time_sec="173.09739589691162">
+<search_result>
+<search_hit peptide="FKGDDGK" massdiff="-3.0517578125E-4" calc_neutral_pep_mass="765.36566" peptide_next_aa="A" num_missed_cleavages="1" num_tol_term="2" protein_descr="NADP-dependent 3-hydroxy acid dehydrogenase YdfG OS=Escherichia coli O157:H7 OX=83334 GN=ydfG PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|Q8X505|YDFG_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="8.249"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.054708e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="795" uncalibrated_precursor_neutral_mass="1020.4737" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.795.795.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=795" end_scan="795" index="325" precursor_neutral_mass="1020.4743" retention_time_sec="176.10451698303223">
+<search_result>
+<search_hit peptide="NDVSDSEKK" massdiff="0.001953125" calc_neutral_pep_mass="1020.47235" peptide_next_aa="A" num_missed_cleavages="1" num_tol_term="2" protein_descr="DNA protection during starvation protein OS=Escherichia coli O157:H7 OX=83334 GN=dps PE=3 SV=2" num_tot_proteins="1" tot_num_ions="16" hit_rank="1" num_matched_ions="5" protein="sp|P0ABT3|DPS_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="12.948"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.374042e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="799" uncalibrated_precursor_neutral_mass="906.3779" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.799.799.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=799" end_scan="799" index="326" precursor_neutral_mass="906.37537" retention_time_sec="177.02465057373047">
+<search_result>
+<search_hit peptide="PCSEEGTK" massdiff="6.103515625E-5" calc_neutral_pep_mass="906.3753" peptide_next_aa="R" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<modification_info modified_peptide="PCSEEGTK">
+<mod_aminoacid_mass mass="160.030655" position="2"/>
+</modification_info>
+<search_score name="hyperscore" value="9.327"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.104715e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="803" uncalibrated_precursor_neutral_mass="878.3198" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.803.803.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=803" end_scan="803" index="327" precursor_neutral_mass="878.318" retention_time_sec="178.13140869140625">
+<search_result>
+<search_hit peptide="DGQDCER" massdiff="-8.544921875E-4" calc_neutral_pep_mass="878.31885" peptide_next_aa="W" num_missed_cleavages="0" num_tol_term="2" protein_descr="Pyruvate dehydrogenase E1 component OS=Escherichia coli O157:H7 OX=83334 GN=aceE PE=1 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0AFG9|ODP1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<modification_info modified_peptide="DGQDCER">
+<mod_aminoacid_mass mass="160.030655" position="5"/>
+</modification_info>
+<search_score name="hyperscore" value="12.981"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.348187e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="805" uncalibrated_precursor_neutral_mass="744.37775" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.805.805.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=805" end_scan="805" index="328" precursor_neutral_mass="744.3781" retention_time_sec="178.58253479003906">
+<search_result>
+<search_hit peptide="EANVQGK" massdiff="0.00152587890625" calc_neutral_pep_mass="744.3766" peptide_next_aa="N" num_missed_cleavages="0" num_tol_term="2" protein_descr="Maltoporin OS=Escherichia coli O157:H7 OX=83334 GN=lamB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|Q8X5W7|LAMB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.522"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.755901e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="808" uncalibrated_precursor_neutral_mass="833.3778" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.808.808.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=808" end_scan="808" index="329" precursor_neutral_mass="833.3779" retention_time_sec="179.33053493499756">
+<search_result>
+<search_hit peptide="EAEEAASK" massdiff="0.00128173828125" calc_neutral_pep_mass="833.37665" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate--CoA ligase [ADP-forming] subunit beta OS=Escherichia coli O157:H7 OX=83334 GN=sucC PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="5" protein="sp|P0A838|SUCC_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.193"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.710425e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="809" uncalibrated_precursor_neutral_mass="702.39124" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.809.809.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=809" end_scan="809" index="330" precursor_neutral_mass="702.3912" retention_time_sec="179.40941333770752">
+<search_result>
+<search_hit peptide="ADSGLLK" massdiff="0.0" calc_neutral_pep_mass="702.3912" peptide_next_aa="P" num_missed_cleavages="0" num_tol_term="2" protein_descr="Riboflavin biosynthesis protein RibD OS=Escherichia coli O157:H7 OX=83334 GN=ribD PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="rev_tr|Q8XE88|Q8XE88_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.447"/>
+<search_score name="nextscore" value="10.447"/>
+<search_score name="expect" value="1.833370e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="822" uncalibrated_precursor_neutral_mass="805.3464" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.822.822.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=822" end_scan="822" index="333" precursor_neutral_mass="805.3456" retention_time_sec="183.1856632232666">
+<search_result>
+<search_hit peptide="ADSADAEK" massdiff="2.44140625E-4" calc_neutral_pep_mass="805.34534" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="7" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="15.621"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.949510e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="831" uncalibrated_precursor_neutral_mass="856.47736" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.831.831.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=831" end_scan="831" index="338" precursor_neutral_mass="856.4771" retention_time_sec="184.8042869567871">
+<search_result>
+<search_hit peptide="VKNPNTGK" massdiff="4.8828125E-4" calc_neutral_pep_mass="856.4766" peptide_next_aa="E" num_missed_cleavages="1" num_tol_term="2" protein_descr="Isocitrate dehydrogenase [NADP] OS=Escherichia coli O157:H7 OX=83334 GN=icd PE=4 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="4" protein="tr|Q8X722|Q8X722_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="10.019"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.417371e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="833" uncalibrated_precursor_neutral_mass="864.4208" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.833.833.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=833" end_scan="833" index="339" precursor_neutral_mass="864.4207" retention_time_sec="185.18291473388672">
+<search_result>
+<search_hit peptide="HPQEGAAR" massdiff="5.4931640625E-4" calc_neutral_pep_mass="864.42017" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Aspartate carbamoyltransferase catalytic subunit OS=Escherichia coli O157:H7 OX=83334 GN=pyrB PE=3 SV=2" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="6" protein="sp|P0A788|PYRB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="14.082"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="7.153195e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="839" uncalibrated_precursor_neutral_mass="789.4236" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.839.839.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=839" end_scan="839" index="342" precursor_neutral_mass="789.4235" retention_time_sec="186.43090724945068">
+<search_result>
+<search_hit peptide="EKVDATK" massdiff="3.0517578125E-4" calc_neutral_pep_mass="789.4232" peptide_next_aa="Q" num_missed_cleavages="1" num_tol_term="2" protein_descr="50S ribosomal protein L1 OS=Escherichia coli O157:H7 OX=83334 GN=rplA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0A7L2|RL1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.243"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.159445e+00"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="841" uncalibrated_precursor_neutral_mass="696.392" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.841.841.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=841" end_scan="841" index="343" precursor_neutral_mass="696.39154" retention_time_sec="186.80979251861572">
+<search_result>
+<search_hit peptide="HITAGAK" massdiff="-3.0517578125E-4" calc_neutral_pep_mass="696.39185" peptide_next_aa="K" num_missed_cleavages="0" num_tol_term="2" protein_descr="Glyceraldehyde-3-phosphate dehydrogenase A OS=Escherichia coli O157:H7 OX=83334 GN=gapA PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="10" protein="sp|P0A9B4|G3P1_ECO57" peptide_prev_aa="K" is_rejected="0">
+<search_score name="hyperscore" value="20.06"/>
+<search_score name="nextscore" value="11.241"/>
+<search_score name="expect" value="2.290868e-05"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="848" uncalibrated_precursor_neutral_mass="759.3517" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.848.848.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=848" end_scan="848" index="347" precursor_neutral_mass="759.351" retention_time_sec="187.80016422271729">
+<search_result>
+<search_hit peptide="GEAEQAR" massdiff="-6.103515625E-5" calc_neutral_pep_mass="759.3511" peptide_next_aa="V" num_missed_cleavages="0" num_tol_term="2" protein_descr="Ribosome-recycling factor OS=Escherichia coli O157:H7 OX=83334 GN=frr PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="4" protein="sp|P0A807|RRF_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.222"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="6.599332e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="873" uncalibrated_precursor_neutral_mass="730.39825" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.873.873.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=873" end_scan="873" index="356" precursor_neutral_mass="730.39734" retention_time_sec="192.06105709075928">
+<search_result>
+<search_hit peptide="VGGAAQTK" massdiff="0.0" calc_neutral_pep_mass="730.39734" peptide_next_aa="I" num_missed_cleavages="0" num_tol_term="2" protein_descr="ATP synthase subunit alpha OS=Escherichia coli O157:H7 OX=83334 GN=atpA PE=3 SV=1" num_tot_proteins="1" tot_num_ions="14" hit_rank="1" num_matched_ions="8" protein="sp|P0ABB2|ATPA_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="16.092"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="2.249056e-02"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="876" uncalibrated_precursor_neutral_mass="773.4286" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.876.876.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=876" end_scan="876" index="358" precursor_neutral_mass="773.4281" retention_time_sec="192.62629508972168">
+<search_result>
+<search_hit peptide="KVSTDPK" massdiff="-1.8310546875E-4" calc_neutral_pep_mass="773.4283" peptide_next_aa="L" num_missed_cleavages="1" num_tol_term="2" protein_descr="PTS system mannose-specific EIIAB component OS=Escherichia coli O157:H7 OX=83334 GN=manX PE=3 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P69799|PTNAB_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="12.68"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.603245e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="887" uncalibrated_precursor_neutral_mass="822.3361" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.887.887.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=887" end_scan="887" index="360" precursor_neutral_mass="822.3356" retention_time_sec="195.7600450515747">
+<search_result>
+<search_hit peptide="DTETDSR" massdiff="6.103515625E-5" calc_neutral_pep_mass="822.3355" peptide_next_aa="L" num_missed_cleavages="0" num_tol_term="2" protein_descr="Succinate dehydrogenase iron-sulfur subunit OS=Escherichia coli O157:H7 OX=83334 GN=sdhB PE=3 SV=1" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="tr|Q8X9A8|Q8X9A8_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="10.414"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="3.322769e-01"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="891" uncalibrated_precursor_neutral_mass="1020.4746" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.891.891.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=891" end_scan="891" index="362" precursor_neutral_mass="1020.47437" retention_time_sec="196.51742935180664">
+<search_result>
+<search_hit peptide="NDVSDSEKK" massdiff="0.00201416015625" calc_neutral_pep_mass="1020.47235" peptide_next_aa="A" num_missed_cleavages="1" num_tol_term="2" protein_descr="DNA protection during starvation protein OS=Escherichia coli O157:H7 OX=83334 GN=dps PE=3 SV=2" num_tot_proteins="1" tot_num_ions="16" hit_rank="1" num_matched_ions="7" protein="sp|P0ABT3|DPS_ECO57" peptide_prev_aa="R" is_rejected="0">
+<search_score name="hyperscore" value="16.317"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.975833e-04"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+<spectrum_query start_scan="899" uncalibrated_precursor_neutral_mass="878.3189" assumed_charge="2" spectrum="134_2018_ZBS6_Ecoli_SP3_2.899.899.2" spectrumNativeID="controllerType=0 controllerNumber=1 scan=899" end_scan="899" index="365" precursor_neutral_mass="878.3183" retention_time_sec="198.467059135437">
+<search_result>
+<search_hit peptide="DGQDCER" massdiff="-5.4931640625E-4" calc_neutral_pep_mass="878.31885" peptide_next_aa="W" num_missed_cleavages="0" num_tol_term="2" protein_descr="Pyruvate dehydrogenase E1 component OS=Escherichia coli O157:H7 OX=83334 GN=aceE PE=1 SV=2" num_tot_proteins="1" tot_num_ions="12" hit_rank="1" num_matched_ions="5" protein="sp|P0AFG9|ODP1_ECO57" peptide_prev_aa="R" is_rejected="0">
+<modification_info modified_peptide="DGQDCER">
+<mod_aminoacid_mass mass="160.030655" position="5"/>
+</modification_info>
+<search_score name="hyperscore" value="13.263"/>
+<search_score name="nextscore" value="0.0"/>
+<search_score name="expect" value="1.146173e-03"/>
+</search_hit>
+</search_result>
+</spectrum_query>
+</msms_run_summary>
+</msms_pipeline_analysis>

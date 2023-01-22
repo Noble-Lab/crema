@@ -186,6 +186,79 @@ def basic_comet_df():
 
 
 @pytest.fixture
+def basic_msgf_df():
+    """A simple MSGF+-like dataframe"""
+    df = pd.DataFrame(
+        [
+            ["f1", 0, 0, "HCD", 1, 0, 1, 2, "ANT", "p1", 1, 1, 1, 1, 1, 1],
+            ["f1", 1, 1, "HCD", 1, 0, 1, 2, "ANT", "p1", 1, 1, 1, 1, 1, 1],
+            ["f1", 2, 2, "HCD", 1, 0, 1, 2, "CAT", "XXX_p1", 1, 1, 1, 1, 1, 1],
+            ["f1", 3, 3, "HCD", 1, 0, 1, 2, "DAB", "p2", 1, 1, 1, 1, 1, 1],
+            ["f1", 4, 4, "HCD", 1, 0, 1, 2, "EVE", "p3", 1, 1, 1, 1, 1, 1],
+            ["f1", 5, 5, "HCD", 1, 0, 1, 2, "FOE", "XXX_p3", 1, 1, 1, 1, 1, 1],
+            ["f1", 6, 6, "HCD", 1, 0, 1, 2, "HEY", "p4", 1, 1, 1, 1, 1, 1],
+            ["f1", 7, 7, "HCD", 1, 0, 1, 2, "INC", "p5", 1, 1, 1, 1, 1, 1],
+            ["f1", 8, 8, "HCD", 1, 0, 1, 2, "JET", "XXX_p6", 1, 1, 1, 1, 1, 1],
+            ["f1", 9, 9, "HCD", 1, 0, 1, 2, "KID", "p7", 1, 1, 1, 1, 1, 1],
+        ],
+        columns=[
+            "#SpecFile",
+            "SpecID",
+            "ScanNum",
+            "FragMethod",
+            "Precursor",
+            "IsotopeError",
+            "PrecursorError(ppm)",
+            "Charge",
+            "Peptide",
+            "Protein",
+            "DeNovoScore",
+            "MSGFScore",
+            "SpecEValue",
+            "EValue",
+            "QValue",
+            "PepQValue",
+        ],
+    )
+    return df
+
+
+@pytest.fixture
+def basic_msamanda_df():
+    """A simple MSAmanda-like dataframe"""
+    df = pd.DataFrame(
+        [
+            [0, "X", "APPLE", "", "p1", 15, 0.1, 1, 1, 1, 2, 3, "f1"],
+            [1, "X", "APPLE", "", "p1", 21, 0.2, 1, 1, 1, 2, 3, "f1"],
+            [2, "X", "BAT", "", "p3", 35, 0.3, 1, 1, 1, 2, 3, "f1"],
+            [3, "X", "SAT", "", "p4", 87, 0.8, 1, 1, 1, 2, 3, "f1"],
+            [4, "X", "ELPPA", "", "REV_p1", 10, 0.1, 1, 1, 1, 2, 3, "f1"],
+            [5, "X", "APPLE", "", "REV_p2", 40, 0.5, 1, 1, 1, 2, 3, "f1"],
+            [6, "X", "APPLE", "", "REV_p1", 75, 0.7, 1, 1, 1, 2, 3, "f1"],
+            [7, "X", "TAB", "", "REV_p3", 90, 0.7, 1, 1, 1, 2, 3, "f1"],
+            [8, "X", "LAP", "", "REV_p4", 10, 0.2, 1, 1, 1, 2, 3, "f1"],
+            [9, "X", "JACK", "", "REV_p5", 30, 0.3, 1, 1, 1, 2, 3, "f1"],
+        ],
+        columns=[
+            "Scan Number",
+            "Title",
+            "Sequence",
+            "Modifications",
+            "Protein Accessions",
+            "Amanda Score",
+            "Weighted Probability",
+            "Rank",
+            "m/z",
+            "Charge",
+            "RT",
+            "Nr of matched peaks",
+            "Filename",
+        ],
+    )
+    return df
+
+
+@pytest.fixture
 def basic_crux_txt(basic_crux_df, tmp_path):
     """A simple crux-like txt file"""
     out_file = tmp_path / "crux.txt"
@@ -234,6 +307,25 @@ def basic_crux_csv(basic_crux_df, tmp_path):
 
 
 @pytest.fixture
+def basic_msamanda_txt(basic_msamanda_df, tmp_path):
+    """A simple MSAmanda-like txt file"""
+    out_file = tmp_path / "msamanda.txt"
+    print(tmp_path)
+    with open(out_file, "w") as tmp_file:
+        tmp_file.write("#version: 2.0.0.18350\n")
+    basic_msamanda_df.to_csv(out_file, mode="a", sep="\t", index=False)
+    return out_file
+
+
+@pytest.fixture
+def basic_msgf_txt(basic_msgf_df, tmp_path):
+    "A simple MSGF+-liek tsv file" ""
+    out_file = tmp_path / "msgf.txt"
+    basic_msgf_df.to_csv(out_file, sep="\t", index=False)
+    return out_file
+
+
+@pytest.fixture
 def real_crux_txt():
     """Return real crux txt files"""
     targets = Path("data/example_psms_target.txt")
@@ -251,6 +343,12 @@ def real_mztab():
 def real_pepxml():
     """Return a real pepXML file"""
     return Path("data/tide-search.pep.xml")
+
+
+@pytest.fixture
+def real_msfragger_pepxml():
+    """Return a real MSFragger file"""
+    return Path("data/msfragger.pepxml")
 
 
 @pytest.fixture

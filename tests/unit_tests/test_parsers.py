@@ -87,6 +87,51 @@ def test_read_txt(basic_crux_csv):
     assert (~psms.targets).sum() == 4
 
 
+def test_read_msgf(basic_msgf_txt):
+    psms = crema.read_msgf(basic_msgf_txt)
+    assert isinstance(psms.data, pd.DataFrame)
+    assert psms.data.shape == (10, 9)
+    assert list(psms.spectra.columns) == ["#SpecFile", "ScanNum"]
+
+    scores = {
+        "DeNovoScore",
+        "MSGFScore",
+        "SpecEValue",
+        "EValue",
+    }
+    assert set(psms.score_columns) == scores
+    assert psms.scores.shape == (10, len(scores))
+    assert psms.targets.shape == (10,)
+    assert psms.targets.sum() == 7
+    assert (~psms.targets).sum() == 3
+
+
+def test_read_msamanda(basic_msamanda_txt):
+    psms = crema.read_msamanda(basic_msamanda_txt)
+    assert psms.data.shape == (10, 7)
+    assert list(psms.spectra.columns) == ["Filename", "Scan Number"]
+
+    scores = {"Amanda Score", "Weighted Probability"}
+    assert set(psms.score_columns) == scores
+    assert psms.scores.shape == (10, len(scores))
+    assert psms.targets.shape == (10,)
+    assert psms.targets.sum() == 4
+    assert (~psms.targets).sum() == 6
+
+
+def test_read_msfragger_pepxml(real_msfragger_pepxml):
+    psms = crema.read_msfragger(real_msfragger_pepxml)
+    assert psms.data.shape == (99, 8)
+    assert list(psms.spectra.columns) == ["ms_data_file", "scan"]
+
+    scores = {"nextscore", "expect", "hyperscore"}
+    assert set(psms.score_columns) == scores
+    assert psms.scores.shape == (99, len(scores))
+    assert psms.targets.shape == (99,)
+    assert psms.targets.sum() == 94
+    assert (~psms.targets).sum() == 5
+
+
 def test_read_mztab(real_mztab):
     # This test suposed to raise error as mzID file does not
     # contain decoy PSMs

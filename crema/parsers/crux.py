@@ -75,7 +75,7 @@ def read_crux(txt_files, pairing_file_name=None, copy_data=True):
     scores = list(scores)
 
     # Read in the files:
-    fields = spectrum + [peptide] + [target] + scores + [pairing] + [protein]
+    fields = [*spectrum, peptide, target, *scores, pairing, protein]
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
