@@ -186,11 +186,7 @@ def _create_pairing(pairing_data, peptide_col, protein_col, decoy_prefix):
 
     reverse_peptide_list = []
     for seq in list(pairing_data[peptide_col]):
-        # NOTE regex is not quite right
-        seq_sp = re.split(r"([A-Z]\[\d+\.\d+\])?", seq)
-        seq_sp = list(filter(lambda item: item != None, seq_sp))
-        seq_sp = list(filter(lambda item: item != "", seq_sp))
-
+        seq_sp = re.split(r"(?<=.)(?=[A-Z])", seq)
         peptide_rev = "".join([seq_sp[0], *reversed(seq_sp[1:-1]), seq_sp[-1]])
         reverse_peptide_list.append(peptide_rev)
 
