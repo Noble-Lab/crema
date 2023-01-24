@@ -287,7 +287,7 @@ def estimate_pi0(pval_list):
 
 @nb.njit
 def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
-    """ 
+    """
     Estimate q-values using mix-max.
     """
     # Note that the notation in this function follows the notation found in
