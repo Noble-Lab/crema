@@ -330,15 +330,11 @@ def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
         # not sure if this faster or if original while loop is faster
         # AssignConfidence.cpp:1225
         n_w_ge_w = (target_scores >= target_scores[i]).sum()
-        qvalue = (n_z_ge_w * pi0 + E_f1_mod_run_tot) / n_w_ge_w
+        fdr = (n_z_ge_w * pi0 + E_f1_mod_run_tot) / n_w_ge_w
 
-        if qvalue > 1:
-            qvalue = 1.0
-        fdrmod[i] = qvalue
+        if fdr > 1:
+            fdr = 1.0
+        fdrmod[i] = fdr
 
-        # convert qvalues to fdr
-        if prev_fdr > fdrmod[i]:
-            fdrmod[i] = prev_fdr
-        prev_fdr = fdrmod[i]
-
-    return fdrmod
+    # convert qvalues to fdr
+    return _fdr2qvalue(target_scores, fdrmod)
