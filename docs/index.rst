@@ -136,6 +136,10 @@ that we will save as "psms" in this example:
    >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
    >>> psms = crema.read_crux(input_files)
 
+Note that you can replace :doc:`read_crux() <api/functions>` with other methods
+such as :doc:`read_txt() <api/functions>` and :doc:`read_msgf()
+<api/functions>`.
+
 Execute the desired FDR estimation method by calling the :doc:`assign_confidence <api/functions>` method on
 the dataset object that we created above.
 This operation will return a :doc:`confidence <api/confidence>` object that we will save as "results":

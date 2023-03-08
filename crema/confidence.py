@@ -53,7 +53,15 @@ def assign_confidence(
     Confidence object or List of Confidence objects
         The confidence estimates for each PsmDataset.
     """
-    psms = utils.listify(psms)
+    if isinstance(psms, str):
+        raise ValueError("'psms' should be a PsmDataset object, not a string.")
+
+    # TODO unable to check whether psms is type PsmDataset w/o circular import
+    try:
+        assert isinstance(psms, list)
+    except (AssertionError, TypeError):
+        psms = [psms]
+
     confs = []
     for dset in psms:
         conf = dset.assign_confidence(

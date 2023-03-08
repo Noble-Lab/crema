@@ -1,6 +1,12 @@
 # Changelog for crema  
 
 ## [Unreleased]
+### Added
+- Added peptide- and protein-level FDR
+- Added mix-max
+- Added support for MSAmanda, MSFragger, MSGF+, and Comet
+- Added support for mzTab and pepXML file format
+
 ### Fixed
 - Fixed a bug where newer versions of Pandas resulted in an error with peptide
   pairing.
