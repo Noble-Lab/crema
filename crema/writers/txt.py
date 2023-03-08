@@ -5,7 +5,9 @@ from collections import defaultdict
 import pandas as pd
 
 
-def to_txt(conf, output_dir=None, file_root=None, sep="\t", decoys=False):
+def to_txt(
+    conf, output_dir=None, file_root=None, sep="\t", decoys=False, precision=6
+):
     """Save confidence estimates to delimited text files.
 
     Write the confidence estimates for each of the available levels
@@ -30,6 +32,8 @@ def to_txt(conf, output_dir=None, file_root=None, sep="\t", decoys=False):
         The delimiter to use.
     decoys : bool, optional
         Save decoys confidence estimates as well?
+    precision : int, optional
+        Precision for float values.
 
     Returns
     -------
@@ -59,7 +63,9 @@ def to_txt(conf, output_dir=None, file_root=None, sep="\t", decoys=False):
     out_files = []
     for level, qval_list in results.items():
         out_file = str(file_base) + f".{level}.txt"
-        pd.concat(qval_list).to_csv(out_file, sep=sep, index=False)
+        pd.concat(qval_list).to_csv(
+            out_file, sep=sep, index=False, float_format=f"%.{precision}f"
+        )
         out_files.append(out_file)
 
     return out_files
