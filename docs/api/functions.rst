@@ -9,7 +9,7 @@ Primary Functions
 
 Parsers
 *****************
-.. autofunction:: read_crux
+.. autofunction:: read_tide
 .. autofunction:: read_msamanda
 .. autofunction:: read_msfragger
 .. autofunction:: read_msgf

@@ -1,4 +1,4 @@
-"""A parser for the crux tab-delimited format"""
+"""A parser for the Tide tab-delimited format"""
 import re
 import logging
 
@@ -10,15 +10,15 @@ from .. import utils
 LOGGER = logging.getLogger(__name__)
 
 
-def read_crux(
+def read_tide(
     txt_files, pairing_file_name=None, decoy_prefix="decoy_", copy_data=True
 ):
-    """Read peptide-spectrum matches (PSMs) from Crux tab-delimited files.
+    """Read peptide-spectrum matches (PSMs) from Tide tab-delimited files.
 
     Parameters
     ----------
     txt_files : str, pandas.DataFrame or tuple of str
-        One or more collection of PSMs in the Crux tab-delimited format.
+        One or more collection of PSMs in the Tide tab-delimited format.
     pairing_file_name : str, optional
         A tab-delimited file that explicity pairs target and decoy peptide
         sequences. Requires one column labled 'target' that contains target
@@ -47,7 +47,7 @@ def read_crux(
     protein = "protein id"
     protein_delim = ","
 
-    # Possible score columns output by Crux.
+    # Possible score columns output by Tide.
     scores = {
         "sp score",
         "delta_cn",
@@ -61,7 +61,7 @@ def read_crux(
     }
     scores_all = scores
 
-    # Keep only Crux scores that exist in all of the files.
+    # Keep only Tide scores that exist in all of the files.
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))
     else:
@@ -73,7 +73,7 @@ def read_crux(
 
     if not scores:
         raise ValueError(
-            "Could not find any of the Crux score columns in all of the files."
+            "Could not find any of the Tide score columns in all of the files."
             f" The columns Crema looks for are {', '.join(list(scores_all))}"
         )
 
@@ -100,7 +100,7 @@ def read_crux(
         copy_data=False,
     )
 
-    # always pair target and decoys for Crux
+    # always pair target and decoys for Tide
     if pairing_file_name == None:  # implicit pairing
         psms._peptide_pairing = _create_pairing(data)
     else:  # explicit pairing
@@ -124,7 +124,7 @@ def read_crux(
 
 
 def _create_pairing(pairing_data):
-    """Parse a single Crux dataframe to implicity pair target and
+    """Parse a single Tide dataframe to implicity pair target and
     decoy sequences.
 
     Parameters

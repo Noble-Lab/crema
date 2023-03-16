@@ -17,7 +17,7 @@ except ImportError:
 
 # Here is where we can export public functions and classes.
 from .dataset import PsmDataset
-from .parsers.crux import read_crux
+from .parsers.tide import read_tide
 from .parsers.msgf import read_msgf
 from .parsers.msamanda import read_msamanda
 from .parsers.msfragger import read_msfragger

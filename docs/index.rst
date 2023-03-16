@@ -74,7 +74,7 @@ Basic Usage
 Use **crema** from the Command Line
 ###################################
 
-If your input files are in the mzTab or Crux tab-delimited formats, then simple crema analyses can be performed
+If your input files are in the mzTab or Tide tab-delimited formats, then simple crema analyses can be performed
 straight from the command line!
 
 Suppose your mzTab file is located at the directory "data/psms.mztab". Simply run the following command:
@@ -83,7 +83,7 @@ Suppose your mzTab file is located at the directory "data/psms.mztab". Simply ru
 
    $ crema data/psms.mztab
 
-Suppose your Crux files are located at the directory "data/target_psms.txt" and "data/decoy_psms.txt".
+Suppose your Tide files are located at the directory "data/target_psms.txt" and "data/decoy_psms.txt".
 Simply run the following command:
 
 .. code-block:: bash
@@ -108,7 +108,7 @@ Here is a simple demonstration of how to use crema as an API:
 
     >>> import crema
     >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
-    >>> psms = crema.read_crux(input_files)
+    >>> psms = crema.read_tide(input_files)
     >>> results =  psms.assign_confidence(score_column="combined p-value", desc=False, eval_fdr=0.01, method="tdc")
     >>> results.to_txt(output_dir="example_output_dir", file_root="test", sep="\t", decoys=False)
 
@@ -126,17 +126,18 @@ Next, import crema as a package:
 
    >>> import crema
 
-Call the :doc:`read_crux() <api/functions>` method and pass in the desired input files. Note that
-the files "data/target_psms.txt" and "data/decoy_psms.txt" are already in the required Crux file
-format. The :doc:`read_crux() <api/functions>` method will return a :doc:`dataset <api/dataset>` object
+Call the :doc:`read_tide() <api/functions>` method and pass in the desired input files. Note that
+the files "data/target_psms.txt" and "data/decoy_psms.txt" are already in the
+required Tide file
+format. The :doc:`read_tide() <api/functions>` method will return a :doc:`dataset <api/dataset>` object
 that we will save as "psms" in this example:
 
 .. code-block:: Python
 
    >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
-   >>> psms = crema.read_crux(input_files)
+   >>> psms = crema.read_tide(input_files)
 
-Note that you can replace :doc:`read_crux() <api/functions>` with other methods
+Note that you can replace :doc:`read_tide() <api/functions>` with other methods
 such as :doc:`read_txt() <api/functions>` and :doc:`read_msgf()
 <api/functions>`.
 

@@ -2,8 +2,8 @@ Python API
 ==========
 The Python API enables maximum flexibility using crema.
 
-Read PSMs easily using the :py:func:`~crema.read_crux()` or
-:py:func:`~crema.read_mztab()` functions for files in the Crux
+Read PSMs easily using the :py:func:`~crema.read_tide()` or
+:py:func:`~crema.read_mztab()` functions for files in the Tide
 tab-delimited format or mzTab format, respectively. Alternatively,
 more generic tab delimited files can be read using the :py:func:`~crema.read_txt()`.
 
@@ -43,7 +43,7 @@ Parsers
 .. autosummary::
     :nosignatures:
 
-    read_crux
+    read_tide
     read_msamanda
     read_msfragger
     read_msgf

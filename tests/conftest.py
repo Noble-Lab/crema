@@ -6,8 +6,8 @@ import pandas as pd
 
 
 @pytest.fixture
-def basic_crux_df():
-    """A simple crux-like dataframe"""
+def basic_tide_df():
+    """A simple tide-like dataframe"""
     df = pd.DataFrame(
         [
             ["f1", 1, 10, 0.7, "APPLE", "target", 0.7, "p1", "APPLE"],
@@ -37,8 +37,8 @@ def basic_crux_df():
 
 
 @pytest.fixture
-def target_crux_df():
-    """A crux-like dataframe of target psms"""
+def target_tide_df():
+    """A tide-like dataframe of target psms"""
     df = pd.DataFrame(
         [
             ["f1", 1, 10, 101, 0.5, "APPLE", "target", "p1"],
@@ -67,8 +67,8 @@ def target_crux_df():
 
 
 @pytest.fixture
-def decoy_crux_df():
-    """A crux-like dataframe of decoy psms"""
+def decoy_tide_df():
+    """A tide-like dataframe of decoy psms"""
     df = pd.DataFrame(
         [
             ["f1", 1, 10, 101, 0.7, "APLPE", "decoy", "APPLE", "p1"],
@@ -98,8 +98,8 @@ def decoy_crux_df():
 
 
 @pytest.fixture
-def mod_target_crux_df():
-    """A crux-like dataframe of target psms"""
+def mod_target_tide_df():
+    """A tide-like dataframe of target psms"""
     df = pd.DataFrame(
         [
             ["f1", 1, 10, 101, 0.1, "ALLSLR", "target", "p1"],
@@ -128,8 +128,8 @@ def mod_target_crux_df():
 
 
 @pytest.fixture
-def mod_decoy_crux_df():
-    """A crux-like dataframe of target psms with peptide modifications"""
+def mod_decoy_tide_df():
+    """A tide-like dataframe of target psms with peptide modifications"""
     df = pd.DataFrame(
         [
             ["f1", 1, 10, 101, 0.1, "ALLLSR", "decoy", "ALLSLR", "p1"],
@@ -259,50 +259,50 @@ def basic_msamanda_df():
 
 
 @pytest.fixture
-def basic_crux_txt(basic_crux_df, tmp_path):
-    """A simple crux-like txt file"""
-    out_file = tmp_path / "crux.txt"
-    basic_crux_df.to_csv(out_file, sep="\t", index=False)
+def basic_tide_txt(basic_tide_df, tmp_path):
+    """A simple tide-like txt file"""
+    out_file = tmp_path / "tide.txt"
+    basic_tide_df.to_csv(out_file, sep="\t", index=False)
     return out_file
 
 
 @pytest.fixture
-def target_crux_txt(target_crux_df, tmp_path):
-    """A crux-like txt file of target psms"""
-    out_file = tmp_path / "target_crux.txt"
-    target_crux_df.to_csv(out_file, sep="\t", index=False)
+def target_tide_txt(target_tide_df, tmp_path):
+    """A tide-like txt file of target psms"""
+    out_file = tmp_path / "target_tide.txt"
+    target_tide_df.to_csv(out_file, sep="\t", index=False)
     return out_file
 
 
 @pytest.fixture
-def decoy_crux_txt(decoy_crux_df, tmp_path):
-    """A crux-like txt file of decoy psms"""
-    out_file = tmp_path / "decoy_crux.txt"
-    decoy_crux_df.to_csv(out_file, sep="\t", index=False)
+def decoy_tide_txt(decoy_tide_df, tmp_path):
+    """A tide-like txt file of decoy psms"""
+    out_file = tmp_path / "decoy_tide.txt"
+    decoy_tide_df.to_csv(out_file, sep="\t", index=False)
     return out_file
 
 
 @pytest.fixture
-def mod_target_crux_txt(mod_target_crux_df, tmp_path):
-    """A crux-like txt file of target psms"""
-    out_file = tmp_path / "mod_target_crux.txt"
-    mod_target_crux_df.to_csv(out_file, sep="\t", index=False)
+def mod_target_tide_txt(mod_target_tide_df, tmp_path):
+    """A tide-like txt file of target psms"""
+    out_file = tmp_path / "mod_target_tide.txt"
+    mod_target_tide_df.to_csv(out_file, sep="\t", index=False)
     return out_file
 
 
 @pytest.fixture
-def mod_decoy_crux_txt(mod_decoy_crux_df, tmp_path):
-    """A crux-like txt file of decoy psms"""
-    out_file = tmp_path / "mod_decoy_crux.txt"
-    mod_decoy_crux_df.to_csv(out_file, sep="\t", index=False)
+def mod_decoy_tide_txt(mod_decoy_tide_df, tmp_path):
+    """A tide-like txt file of decoy psms"""
+    out_file = tmp_path / "mod_decoy_tide.txt"
+    mod_decoy_tide_df.to_csv(out_file, sep="\t", index=False)
     return out_file
 
 
 @pytest.fixture
-def basic_crux_csv(basic_crux_df, tmp_path):
-    """A simple crux-like csv file"""
-    out_file = tmp_path / "crux.csv"
-    basic_crux_df.to_csv(out_file, sep=",", index=False)
+def basic_tide_csv(basic_tide_df, tmp_path):
+    """A simple tide-like csv file"""
+    out_file = tmp_path / "tide.csv"
+    basic_tide_df.to_csv(out_file, sep=",", index=False)
     return out_file
 
 
@@ -326,8 +326,8 @@ def basic_msgf_txt(basic_msgf_df, tmp_path):
 
 
 @pytest.fixture
-def real_crux_txt():
-    """Return real crux txt files"""
+def real_tide_txt():
+    """Return real tide txt files"""
     targets = Path("data/example_psms_target.txt")
     decoys = Path("data/example_psms_decoy.txt")
     return [targets, decoys]
@@ -353,7 +353,7 @@ def real_msfragger_pepxml():
 
 @pytest.fixture
 def mod_comet_txt(basic_comet_df, tmp_path):
-    """A crux-like txt file of target psms"""
+    """A tide-like txt file of target psms"""
     out_file = tmp_path / "mod_comet.txt"
     basic_comet_df.to_csv(out_file, sep="\t", index=False)
     return out_file

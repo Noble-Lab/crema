@@ -53,7 +53,7 @@ def _configure_parser():
         nargs="+",
         help=(
             "One or more collection of peptide-spectrum matches (PSMs) in the "
-            "mzTab or Crux tab-delimited formats."
+            "mzTab or Tide tab-delimited formats."
         ),
     )
 

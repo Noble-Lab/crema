@@ -40,7 +40,7 @@ interpreter and affords greater flexibility:
 ```Python
     >>> import crema
     >>> input_files = ["data/tide-search.target.psms.txt", "data/tide-search.decoy.psms.txt"]
-    >>> psms = crema.read_crux(input_files)
+    >>> psms = crema.read_tide(input_files)
     >>> results =  psms.assign_confidence()
     >>> results.to_txt(ouput_dir="example_output_dir")
 ```

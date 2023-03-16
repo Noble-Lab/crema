@@ -89,7 +89,7 @@ def _parse_psms(txt_file, sep, cols):
     Parameters
     ----------
     txt_file : str
-        The crux tab-delimited file to read.
+        The Crux tab-delimited file to read.
     sep : str
         The delimiter to use.
     cols : list of str

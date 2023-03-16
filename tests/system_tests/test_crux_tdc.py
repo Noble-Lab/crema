@@ -3,10 +3,10 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from crema.parsers.crux import read_crux
+from crema.parsers.tide import read_tide
 
 
-def test_crux_tdc(target_crux_txt, decoy_crux_txt, tmp_path):
+def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
     expected_peptide_pairing = {
         "APPLE": "APLPE",
         "BANANA": "ANANAB",
@@ -74,7 +74,7 @@ def test_crux_tdc(target_crux_txt, decoy_crux_txt, tmp_path):
         ],
     )
 
-    psms = read_crux([target_crux_txt, decoy_crux_txt])
+    psms = read_tide([target_tide_txt, decoy_tide_txt])
     conf = psms.assign_confidence(score_column="combined p-value", desc=False)
 
     unittest.TestCase().assertDictEqual(
