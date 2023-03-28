@@ -210,6 +210,9 @@ class Confidence(ABC):
             elif level == "proteins":
                 self.confidence_estimates[level] = df.loc[:, prot_cols]
 
+        # Remove q-value column for decoy files
+        cols.pop()
+        prot_cols.pop()
         for level, df in self.decoy_confidence_estimates.items():
             if level != "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, cols]
