@@ -36,7 +36,7 @@ def _configure_parser():
 
     desc = (
         f"crema version {__version__}\n\n"
-        "Written by Donavan See (seed99@cs.washington.edu) and \n"
+        "Written by Andy Lin, Donavan See (seed99@cs.washington.edu), and \n"
         "William E Fondrie (wfondrie@uw.edu) in the \n"
         "Department of Genome Sciences at the University of Washington\n\n"
         "Official code website: https://github.com/Noble-Lab/crema\n\n"

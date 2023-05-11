@@ -42,7 +42,9 @@ def main():
     logging.getLogger().addHandler(logging.StreamHandler())
 
     logging.info("crema")
-    logging.info("Written by Donavan See and William E Fondrie in the ")
+    logging.info(
+        "Written by Andy Lin, Donavan See and William E Fondrie in the "
+    )
     logging.info(
         "Department of Genome Sciences at the University of Washington."
     )

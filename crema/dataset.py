@@ -162,6 +162,7 @@ class PsmDataset:
         eval_fdr=0.01,
         method="tdc",
         pep_fdr_type="psm-peptide",
+        prot_fdr_type="max",
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
@@ -184,7 +185,10 @@ class PsmDataset:
             The method for crema to use when calculating the confidence estimates.
         pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
             The method for crema to use when calculating peptide level confidence
-            estimates.
+            estimates. Default is "psm-peptide".
+        prot_fdr_type : {"max", "combine"}, optional
+            The method for crema to use when calculating protein level confidence
+            estimates. Default is "max".
 
         Returns
         -------
@@ -200,6 +204,7 @@ class PsmDataset:
             desc=desc,
             eval_fdr=eval_fdr,
             pep_fdr_type=pep_fdr_type,
+            prot_fdr_type=prot_fdr_type,
         )
 
         return conf

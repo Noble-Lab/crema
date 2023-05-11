@@ -17,14 +17,14 @@ def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
     expected_target_psms = pd.DataFrame(
         [
             ["f1", 3, "CHERRY", "p3", 0.1, 1 / 5],
-            ["f1", 7, "BANANA", "p7", 0.2, 1 / 5],
+            ["f1", 7, "BANANA", "p2", 0.2, 1 / 5],
             ["f1", 5, "EGGPLANT", "p5", 0.25, 1 / 5],
-            ["f1", 10, "EGGPLANT", "p10", 0.3, 1 / 5],
+            ["f1", 10, "EGGPLANT", "p5", 0.3, 1 / 5],
             ["f1", 2, "BANANA", "p2", 0.4, 1 / 5],
             ["f1", 1, "APPLE", "p1", 0.5, 2 / 9],
             ["f1", 4, "DURIAN", "p4", 0.55, 2 / 9],
-            ["f1", 6, "APPLE", "p6", 0.60, 2 / 9],
-            ["f1", 8, "CHERRY", "p8", 0.70, 2 / 9],
+            ["f1", 6, "APPLE", "p1", 0.60, 2 / 9],
+            ["f1", 8, "CHERRY", "p3", 0.70, 2 / 9],
         ],
         columns=[
             "file",
@@ -37,7 +37,7 @@ def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
     )
     expected_decoy_psms = pd.DataFrame(
         [
-            ["f1", 9, "DRIUAN", "p9", 0.5],
+            ["f1", 9, "DRIUAN", "p4", 0.5],
         ],
         columns=[
             "file",
@@ -50,7 +50,7 @@ def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
     expected_target_peptides = pd.DataFrame(
         [
             ["f1", 3, "CHERRY", "p3", 0.1, 1 / 3],
-            ["f1", 7, "BANANA", "p7", 0.2, 1 / 3],
+            ["f1", 7, "BANANA", "p2", 0.2, 1 / 3],
             ["f1", 5, "EGGPLANT", "p5", 0.25, 1 / 3],
             ["f1", 1, "APPLE", "p1", 0.5, 1 / 2],
         ],
@@ -65,12 +65,34 @@ def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
     )
     expected_decoy_peptides = pd.DataFrame(
         [
-            ["f1", 9, "DRIUAN", "p9", 0.5],
+            ["f1", 9, "DRIUAN", "p4", 0.5],
         ],
         columns=[
             "file",
             "scan",
             "sequence",
+            "protein id",
+            "combined p-value",
+        ],
+    )
+    expected_target_proteins = pd.DataFrame(
+        [
+            ["p3", 0.1, 1 / 3],
+            ["p2", 0.2, 1 / 3],
+            ["p5", 0.25, 1 / 3],
+            ["p1", 0.5, 2 / 4],
+        ],
+        columns=[
+            "protein id",
+            "combined p-value",
+            "crema q-value",
+        ],
+    )
+    expected_decoy_proteins = pd.DataFrame(
+        [
+            ["p4", 0.5],
+        ],
+        columns=[
             "protein id",
             "combined p-value",
         ],
@@ -97,4 +119,15 @@ def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
     np.testing.assert_array_equal(
         expected_decoy_peptides.values,
         conf.decoy_confidence_estimates["peptides"].values,
+    )
+    # Note that for this test case peptide level and protein level FDR estimates
+    # are equals
+    print(conf.confidence_estimates["proteins"].values)
+    np.testing.assert_array_equal(
+        expected_target_proteins.values,
+        conf.confidence_estimates["proteins"].values,
+    )
+    np.testing.assert_array_equal(
+        expected_decoy_proteins.values,
+        conf.decoy_confidence_estimates["proteins"].values,
     )

@@ -22,6 +22,7 @@ def assign_confidence(
     eval_fdr=0.01,
     method="tdc",
     pep_fdr_type="psm-peptide",
+    prot_fdr_type="max",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -47,6 +48,9 @@ def assign_confidence(
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates.
+    prot_fdr_type : {"max", "combine"}, optional
+        The method for crema to use when calculating protein level confidence
+        estimates. Default is "max".
 
     Returns
     -------
@@ -70,6 +74,7 @@ def assign_confidence(
             eval_fdr=eval_fdr,
             method=method,
             pep_fdr_type=pep_fdr_type,
+            prot_fdr_type=prot_fdr_type,
         )
         confs.append(conf)
 
@@ -142,10 +147,19 @@ class Confidence(ABC):
         desc=None,
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
+        prot_fdr_type="max",
     ):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
             raise ValueError("'eval_fdr' should be between 0 and 1.")
+
+        pep_fdr_type_option = ["psm-only", "peptide-only", "psm-peptide"]
+        if pep_fdr_type not in pep_fdr_type_option:
+            raise ValueError("%s not valid pep_fdr_type" % (pep_fdr_type))
+
+        prot_fdr_type_option = ["max", "combine"]
+        if prot_fdr_type not in prot_fdr_type_option:
+            raise ValueError("%s not valid prot_fdr_type" % s(prot_fdr_type))
 
         if desc is None:
             scores, targ = psms[score_column], psms.targets
@@ -165,6 +179,7 @@ class Confidence(ABC):
             self.dataset._protein_column,
         )
         self._pep_fdr_type = pep_fdr_type
+        self._prot_fdr_type = prot_fdr_type
         self.confidence_estimates = {}
         self.decoy_confidence_estimates = {}
 
@@ -336,6 +351,9 @@ class TdcConfidence(Confidence):
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates.
+    prot_fdr_type : {"max", "combine"}, optional
+        The method for crema to use when calculating protein level confidence
+        estimates. Default is "max".
 
     Attributes
     ----------
@@ -357,6 +375,7 @@ class TdcConfidence(Confidence):
         desc=None,
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
+        prot_fdr_type="max",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
@@ -369,6 +388,7 @@ class TdcConfidence(Confidence):
             desc=desc,
             eval_fdr=eval_fdr,
             pep_fdr_type=pep_fdr_type,
+            prot_fdr_type=prot_fdr_type,
         )
 
     def _assign_confidence(self):
@@ -419,21 +439,24 @@ class TdcConfidence(Confidence):
                     )
                 ]
 
-                # Sum scores of all unique peptides in a protein
-                if self._desc == True:  # higher score is better
-                    df2 = df.groupby(
-                        [
-                            self.dataset._protein_column,
-                            self.dataset._target_column,
-                        ]
-                    ).agg({self._score_column: ["sum"]})
-                else:
-                    df2 = df.groupby(
-                        [
-                            self.dataset._protein_column,
-                            self.dataset._target_column,
-                        ]
-                    ).agg({self._score_column: ["prod"]})
+                # Determines how to aggregate protein score
+                if self._prot_fdr_type == "max" and self._desc == True:
+                    # larger score is better
+                    agg_val = "max"
+                elif self._prot_fdr_type == "max" and self._desc == False:
+                    # smaller score is better
+                    agg_val = "min"
+                elif self._prot_fdr_type == "combine" and self._desc == True:
+                    agg_val = "sum"
+                elif self._prot_fdr_type == "combine" and self._desc == False:
+                    agg_val = "prod"
+
+                df2 = df.groupby(
+                    [
+                        self.dataset._protein_column,
+                        self.dataset._target_column,
+                    ]
+                ).agg({self._score_column: [agg_val]})
 
                 df2 = df2.reset_index()
                 df2.columns = [
@@ -497,7 +520,10 @@ class MixmaxConfidence(Confidence):
         `score_column` and `desc` to choose. This should range from 0 to 1.
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
-        estimates.
+        estimates. Default is "psm-peptide".
+    prot_fdr_type : {"max", "combine"}, optional
+        The method for crema to use when calculating protein level confidence
+        estimates. Default is "max".
 
     Attributes
     ----------
@@ -519,6 +545,7 @@ class MixmaxConfidence(Confidence):
         desc=None,
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
+        prot_fdr_type="max",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
@@ -531,6 +558,7 @@ class MixmaxConfidence(Confidence):
             desc=desc,
             eval_fdr=eval_fdr,
             pep_fdr_type=pep_fdr_type,
+            prot_fdr_type=prot_fdr_type,
         )
 
     def _assign_confidence(self):
