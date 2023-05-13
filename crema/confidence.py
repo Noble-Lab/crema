@@ -22,7 +22,7 @@ def assign_confidence(
     eval_fdr=0.01,
     method="tdc",
     pep_fdr_type="psm-peptide",
-    prot_fdr_type="max",
+    prot_fdr_type="best",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -48,9 +48,9 @@ def assign_confidence(
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates.
-    prot_fdr_type : {"max", "combine"}, optional
+    prot_fdr_type : {"best", "combine"}, optional
         The method for crema to use when calculating protein level confidence
-        estimates. Default is "max".
+        estimates. Default is "best".
 
     Returns
     -------
@@ -147,7 +147,7 @@ class Confidence(ABC):
         desc=None,
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
-        prot_fdr_type="max",
+        prot_fdr_type="best",
     ):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
@@ -157,7 +157,7 @@ class Confidence(ABC):
         if pep_fdr_type not in pep_fdr_type_option:
             raise ValueError("%s not valid pep_fdr_type" % (pep_fdr_type))
 
-        prot_fdr_type_option = ["max", "combine"]
+        prot_fdr_type_option = ["best", "combine"]
         if prot_fdr_type not in prot_fdr_type_option:
             raise ValueError("%s not valid prot_fdr_type" % s(prot_fdr_type))
 
@@ -351,9 +351,9 @@ class TdcConfidence(Confidence):
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates.
-    prot_fdr_type : {"max", "combine"}, optional
+    prot_fdr_type : {"best", "combine"}, optional
         The method for crema to use when calculating protein level confidence
-        estimates. Default is "max".
+        estimates. Default is "best".
 
     Attributes
     ----------
@@ -375,7 +375,7 @@ class TdcConfidence(Confidence):
         desc=None,
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
-        prot_fdr_type="max",
+        prot_fdr_type="best",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
@@ -440,10 +440,10 @@ class TdcConfidence(Confidence):
                 ]
 
                 # Determines how to aggregate protein score
-                if self._prot_fdr_type == "max" and self._desc == True:
+                if self._prot_fdr_type == "best" and self._desc == True:
                     # larger score is better
                     agg_val = "max"
-                elif self._prot_fdr_type == "max" and self._desc == False:
+                elif self._prot_fdr_type == "best" and self._desc == False:
                     # smaller score is better
                     agg_val = "min"
                 elif self._prot_fdr_type == "combine" and self._desc == True:
@@ -521,9 +521,9 @@ class MixmaxConfidence(Confidence):
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for crema to use when calculating peptide level confidence
         estimates. Default is "psm-peptide".
-    prot_fdr_type : {"max", "combine"}, optional
+    prot_fdr_type : {"best", "combine"}, optional
         The method for crema to use when calculating protein level confidence
-        estimates. Default is "max".
+        estimates. Default is "best".
 
     Attributes
     ----------
@@ -545,7 +545,7 @@ class MixmaxConfidence(Confidence):
         desc=None,
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
-        prot_fdr_type="max",
+        prot_fdr_type="best",
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(

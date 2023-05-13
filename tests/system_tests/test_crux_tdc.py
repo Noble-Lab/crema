@@ -120,9 +120,48 @@ def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
         expected_decoy_peptides.values,
         conf.decoy_confidence_estimates["peptides"].values,
     )
-    # Note that for this test case peptide level and protein level FDR estimates
-    # are equals
-    print(conf.confidence_estimates["proteins"].values)
+    np.testing.assert_array_equal(
+        expected_target_proteins.values,
+        conf.confidence_estimates["proteins"].values,
+    )
+    np.testing.assert_array_equal(
+        expected_decoy_proteins.values,
+        conf.decoy_confidence_estimates["proteins"].values,
+    )
+
+
+def test_tide_tdc_prot_combine(target_tide_txt, decoy_tide_txt, tmp_path):
+    # PSM and peptide level test are done above in function test_tide_tdc
+    # This test is specifically to test the "combine" version of protein level
+    # FDR
+    psms = read_tide([target_tide_txt, decoy_tide_txt])
+    conf = psms.assign_confidence(
+        score_column="combined p-value", desc=False, prot_fdr_type="combine"
+    )
+
+    expected_target_proteins = pd.DataFrame(
+        [
+            ["p3", 0.1 * 0.7, 1 / 4],
+            ["p5", 0.25 * 0.3, 1 / 4],
+            ["p2", 0.4 * 0.2, 1 / 4],
+            ["p1", 0.5 * 0.6, 1 / 4],
+        ],
+        columns=[
+            "protein id",
+            "combined p-value",
+            "crema q-value",
+        ],
+    )
+    expected_decoy_proteins = pd.DataFrame(
+        [
+            ["p4", 0.5],
+        ],
+        columns=[
+            "protein id",
+            "combined p-value",
+        ],
+    )
+
     np.testing.assert_array_equal(
         expected_target_proteins.values,
         conf.confidence_estimates["proteins"].values,

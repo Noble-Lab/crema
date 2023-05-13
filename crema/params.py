@@ -110,11 +110,20 @@ def _configure_parser():
 
     parser.add_argument(
         "-p",
-        "--pep_fdr",
+        "--pep_fdr_type",
         type=str,
         default="psm-only",
         choices=["psm-only", "peptide-only", "psm-peptide"],
         help="The peptide-level FDR estimation method to use.",
+    )
+
+    parser.add_argument(
+        "-r",
+        "--prot_fdr_type",
+        type=str,
+        default="best",
+        choices=["best", "combine"],
+        help="The protein-level FDR estimation method to use.",
     )
     return parser
 
