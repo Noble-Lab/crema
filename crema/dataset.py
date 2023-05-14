@@ -163,6 +163,7 @@ class PsmDataset:
         method="tdc",
         pep_fdr_type="psm-peptide",
         prot_fdr_type="best",
+        threshold=0.01,
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
@@ -189,6 +190,10 @@ class PsmDataset:
         prot_fdr_type : {"best", "combine"}, optional
             The method for crema to use when calculating protein level confidence
             estimates. Default is "best".
+        threshold : float or "q-value", optional
+            The FDR threshold for accepting discoveries. Default is 0.01. If
+            "q-value" is chosen, then "accept" column is replaced with
+            "crema q-value".
 
         Returns
         -------
@@ -205,6 +210,7 @@ class PsmDataset:
             eval_fdr=eval_fdr,
             pep_fdr_type=pep_fdr_type,
             prot_fdr_type=prot_fdr_type,
+            threshold=threshold,
         )
 
         return conf

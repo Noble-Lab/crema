@@ -23,6 +23,7 @@ def assign_confidence(
     method="tdc",
     pep_fdr_type="psm-peptide",
     prot_fdr_type="best",
+    threshold=0.01,
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -46,11 +47,15 @@ def assign_confidence(
     method : {"tdc"}, optional
         The method for crema to use when calculating the confidence estimates.
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
-        The method for crema to use when calculating peptide level confidence
+        The method for Crema to use when calculating peptide level confidence
         estimates.
     prot_fdr_type : {"best", "combine"}, optional
         The method for crema to use when calculating protein level confidence
         estimates. Default is "best".
+    threshold : float or "q-value", optional
+        The FDR threshold for accepting discoveries. Default is 0.01. If
+        "q-value" is chosen, then "accept" column is replaced with
+        "crema q-value".
 
     Returns
     -------
@@ -75,6 +80,7 @@ def assign_confidence(
             method=method,
             pep_fdr_type=pep_fdr_type,
             prot_fdr_type=prot_fdr_type,
+            threshold=threshold,
         )
         confs.append(conf)
 
@@ -107,6 +113,13 @@ class Confidence(ABC):
     eval_fdr : float, optional
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
+    pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
+        The method for Crema to use when calculating peptide level confidence
+        estimates.
+    threshold : float or "q-value", optional
+        The FDR threshold for accepting discoveries. Default is 0.01. If
+        "q-value" is chosen, then "accept" column is replaced with
+        "crema q-value".
 
     Attributes
     ----------
@@ -148,10 +161,19 @@ class Confidence(ABC):
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
         prot_fdr_type="best",
+        threshold=0.01,
     ):
         """Initialize a Confidence object."""
         if eval_fdr < 0 or eval_fdr > 1:
             raise ValueError("'eval_fdr' should be between 0 and 1.")
+        if (
+            pep_fdr_type != "psm-only"
+            and pep_fdr_type != "peptide-only"
+            and pep_fdr_type != "psm-peptide"
+        ):
+            raise ValueError(
+                "'pep_fdr_type' should be 'psm-only','peptide-only', or 'psm-peptide'"
+            )
 
         pep_fdr_type_option = ["psm-only", "peptide-only", "psm-peptide"]
         if pep_fdr_type not in pep_fdr_type_option:
@@ -187,7 +209,7 @@ class Confidence(ABC):
         self._assign_confidence()
 
         # Clean up tables
-        self._prettify_tables()
+        self._prettify_tables(threshold)
 
     @property
     def data(self):
@@ -204,22 +226,42 @@ class Confidence(ABC):
         """The available levels of confidence estimates"""
         return self._levels
 
-    def _prettify_tables(self):
-        """Reorder the columns of the result tables for consistency"""
+    def _prettify_tables(self, threshold):
+        """Reorder the columns of the result tables for consistency
+
+        Parameters
+        ----------
+        threshold : float or "q-value", optional
+            The FDR threshold for accepting discoveries. Default is 0.01. If
+            "q-value" is chosen, then "accept" column is replaced with
+            "crema q-value".
+        """
+        if threshold != "q-value":
+            last_col = "accept"
+        else:
+            last_col = "crema q-value"
+
         cols = [
             *self.dataset._spectrum_columns,
             self.dataset._peptide_column,
             self.dataset._protein_column,
             self._score_column,
-            "crema q-value",
         ]
         prot_cols = [
             self.dataset._protein_column,
             self._score_column,
-            "crema q-value",
         ]
+        cols.append(last_col)
+        prot_cols.append(last_col)
 
         for level, df in self.confidence_estimates.items():
+            # use 'accept' column if threshold != 'q-value'
+            if threshold != "q-value":
+                df[last_col] = df["crema q-value"] <= threshold
+
+            # reverse order so best score is begining of df
+            df = df.iloc[::-1]
+
             if level != "proteins":
                 self.confidence_estimates[level] = df.loc[:, cols]
             elif level == "proteins":
@@ -266,6 +308,10 @@ class Confidence(ABC):
             .sort_values([self._score_column] + group_columns)
             .drop_duplicates(group_columns, keep=keep)
         )
+
+        # This ensures that best score is at top of dataframe
+        if self._desc == False:
+            out_df = out_df[::-1]
         return out_df
 
     def __getitem__(self, column):
@@ -354,6 +400,10 @@ class TdcConfidence(Confidence):
     prot_fdr_type : {"best", "combine"}, optional
         The method for crema to use when calculating protein level confidence
         estimates. Default is "best".
+    threshold : float or "q-value", optional
+        The FDR threshold for accepting discoveries. Default is 0.01. If
+        "q-value" is chosen, then "accept" column is replaced with
+        "crema q-value".
 
     Attributes
     ----------
@@ -376,6 +426,7 @@ class TdcConfidence(Confidence):
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
         prot_fdr_type="best",
+        threshold=0.01,
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(
@@ -389,6 +440,7 @@ class TdcConfidence(Confidence):
             eval_fdr=eval_fdr,
             pep_fdr_type=pep_fdr_type,
             prot_fdr_type=prot_fdr_type,
+            threshold=threshold,
         )
 
     def _assign_confidence(self):
@@ -524,6 +576,11 @@ class MixmaxConfidence(Confidence):
     prot_fdr_type : {"best", "combine"}, optional
         The method for crema to use when calculating protein level confidence
         estimates. Default is "best".
+        estimates.
+    threshold : float or "q-value", optional
+        The FDR threshold for accepting discoveries. Default is 0.01. If
+        "q-value" is chosen, then "accept" column is replaced with
+        "crema q-value".
 
     Attributes
     ----------
@@ -546,6 +603,7 @@ class MixmaxConfidence(Confidence):
         eval_fdr=0.01,
         pep_fdr_type="psm-peptide",
         prot_fdr_type="best",
+        threshold=0.01,
     ):
         """Initialize a TdcConfidence object."""
         LOGGER.info(

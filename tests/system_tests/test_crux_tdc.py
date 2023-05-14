@@ -99,7 +99,9 @@ def test_tide_tdc(target_tide_txt, decoy_tide_txt, tmp_path):
     )
 
     psms = read_tide([target_tide_txt, decoy_tide_txt])
-    conf = psms.assign_confidence(score_column="combined p-value", desc=False)
+    conf = psms.assign_confidence(
+        score_column="combined p-value", desc=False, threshold="q-value"
+    )
 
     unittest.TestCase().assertDictEqual(
         expected_peptide_pairing, psms.peptide_pairing
@@ -136,7 +138,10 @@ def test_tide_tdc_prot_combine(target_tide_txt, decoy_tide_txt, tmp_path):
     # FDR
     psms = read_tide([target_tide_txt, decoy_tide_txt])
     conf = psms.assign_confidence(
-        score_column="combined p-value", desc=False, prot_fdr_type="combine"
+        score_column="combined p-value",
+        desc=False,
+        prot_fdr_type="combine",
+        threshold="q-value",
     )
 
     expected_target_proteins = pd.DataFrame(
