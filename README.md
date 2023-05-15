@@ -68,6 +68,6 @@ reflect those of the United States Government or any agency thereof.
 <p align=center>PACIFIC NORTHWEST NATIONAL LABORATORY</p>
 <p align=center><i>operated by</i></p>
 <p align=center>BATTELLE</p>
-<p align=center>for the</p>
+<p align=center><i>for the</i></p>
 <p align=center>UNITED STATES DEPARTMENT OF ENERGY</p>
 <p align=center><i>under Contract DE-AC05-76RL01830</i></p>
