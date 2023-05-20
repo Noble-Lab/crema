@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 ### Added
-- Added peptide- and protein-level FDR
+- Added three peptide-level FDR procedures: psm-only, peptide-only, and
+  psm-peptide
+- Added two protein-level FDR procedures: max and sum
 - Added mix-max
 - Added support for MSAmanda, MSFragger, MSGF+, and Comet
 - Added support for mzTab and pepXML file format
