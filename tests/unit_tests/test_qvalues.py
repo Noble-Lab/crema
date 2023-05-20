@@ -158,8 +158,6 @@ def test_mixmax_descending(desc_scores_mixmax):
     dtypes = [np.float64, np.uint8, np.int8, np.float32]
     for dtype in dtypes:
         qvals = do_mixmax(scores.astype(dtype), target, desc=True)[1]
-        print(qvals)
-        print(tgt_qvals)
         assert np.allclose(qvals, tgt_qvals, atol=1e-5)
 
         qvals = do_mixmax(scores, target.astype(dtype), desc=True)[1]
