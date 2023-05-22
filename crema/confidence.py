@@ -181,7 +181,7 @@ class Confidence(ABC):
 
         prot_fdr_type_option = ["best", "combine"]
         if prot_fdr_type not in prot_fdr_type_option:
-            raise ValueError("%s not valid prot_fdr_type" % s(prot_fdr_type))
+            raise ValueError("%s not valid prot_fdr_type" % (prot_fdr_type))
 
         if desc is None:
             scores, targ = psms[score_column], psms.targets
