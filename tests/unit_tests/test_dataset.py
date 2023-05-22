@@ -9,9 +9,9 @@ from crema import PsmDataset
 
 
 @pytest.fixture
-def simple_df(basic_crux_df):
+def simple_df(basic_tide_df):
     """A simple dataframe of PSMs"""
-    df = basic_crux_df
+    df = basic_tide_df
     df["target"] = df["target/decoy"].replace({"target": True, "decoy": False})
     return df.drop(columns="target/decoy")
 

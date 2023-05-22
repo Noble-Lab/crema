@@ -26,7 +26,7 @@ except ModuleNotFoundError:
 # -- Project information -----------------------------------------------------
 project = "crema"
 copyright = "2020, Donavan See"
-author = "William E. Fondrie, Donavan See, William S. Noble"
+author = "Andy Lin, William E. Fondrie, Donavan See, William S. Noble"
 version = str(crema.__version__)
 release = version
 

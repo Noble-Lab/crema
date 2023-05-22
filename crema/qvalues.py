@@ -300,33 +300,29 @@ def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     num_targets = target_scores.shape[0]
     num_decoys = decoy_scores.shape[0]
 
-    h_w_le_z = np.zeros(num_decoys + 1)  # histogram for N_{w<=z}
-    h_z_le_z = np.zeros(num_decoys + 1)  # histogram for N_{z<=z}
+    h_w_le_z = np.zeros(num_decoys)  # histogram for N_{w<=z}
+    h_z_le_z = np.zeros(num_decoys)  # histogram for N_{z<=z}
 
-    for i in range(0, num_decoys):
-        h_w_le_z[i] = np.searchsorted(
-            target_scores, decoy_scores[i], side="right"
+    for j in range(0, num_decoys):
+        h_w_le_z[j] = np.searchsorted(
+            target_scores, decoy_scores[j], side="right"
         )
-        h_z_le_z[i] = np.searchsorted(
-            decoy_scores, decoy_scores[i], side="right"
+        h_z_le_z[j] = np.searchsorted(
+            decoy_scores, decoy_scores[j], side="right"
         )
-
-    h_w_le_z[num_decoys] = num_targets
-    h_z_le_z[num_decoys] = num_decoys
 
     fdrmod = np.zeros(num_targets)
     estPx_lt_zj = 0.0
     E_f1_mod_run_tot = 0.0
     j = num_decoys - 1
-    k = num_targets - 1
     n_z_ge_w = 0
     n_w_ge_w = 0
     prev_fdr = -1
 
     for i in range(num_targets - 1, -1, -1):
         while j >= 0 and decoy_scores[j] >= target_scores[i]:
-            cnt_w = h_w_le_z[j + 1]
-            cnt_z = h_z_le_z[j + 1]
+            cnt_w = h_w_le_z[j]
+            cnt_z = h_z_le_z[j]
 
             estPx_lt_zj = (cnt_w - pi0 * cnt_z) / ((1.0 - pi0) * cnt_z)
             if estPx_lt_zj > 1:
@@ -341,15 +337,11 @@ def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
         # not sure if this faster or if original while loop is faster
         # AssignConfidence.cpp:1225
         n_w_ge_w = (target_scores >= target_scores[i]).sum()
-        qvalue = (n_z_ge_w * pi0 + E_f1_mod_run_tot) / n_w_ge_w
+        fdr = (n_z_ge_w * pi0 + E_f1_mod_run_tot) / n_w_ge_w
 
-        if qvalue > 1:
-            qvalue = 1.0
-        fdrmod[i] = qvalue
+        if fdr > 1:
+            fdr = 1.0
+        fdrmod[i] = fdr
 
-        # convert qvalues to fdr
-        if prev_fdr > fdrmod[i]:
-            fdrmod[i] = prev_fdr
-        prev_fdr = fdrmod[i]
-
-    return fdrmod
+    # convert qvalues to fdr
+    return _fdr2qvalue(target_scores, fdrmod)

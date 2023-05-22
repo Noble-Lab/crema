@@ -74,7 +74,7 @@ Basic Usage
 Use **crema** from the Command Line
 ###################################
 
-If your input files are in the mzTab or Crux tab-delimited formats, then simple crema analyses can be performed
+If your input files are in the mzTab or Tide tab-delimited formats, then simple crema analyses can be performed
 straight from the command line!
 
 Suppose your mzTab file is located at the directory "data/psms.mztab". Simply run the following command:
@@ -83,7 +83,7 @@ Suppose your mzTab file is located at the directory "data/psms.mztab". Simply ru
 
    $ crema data/psms.mztab
 
-Suppose your Crux files are located at the directory "data/target_psms.txt" and "data/decoy_psms.txt".
+Suppose your Tide files are located at the directory "data/target_psms.txt" and "data/decoy_psms.txt".
 Simply run the following command:
 
 .. code-block:: bash
@@ -93,7 +93,8 @@ Simply run the following command:
 That's it. The software will then run the target-decoy competition FDR estimation method using information from these columns
 to calculate confidence estimates for the given data.
 
-Your results will be saved in your working directory as .txt files named "crema.psms.txt" and "crema.peptides.txt".
+Your results will be saved in your working directory as .txt files named
+"crema.psms.txt", "crema.peptides.txt", and "crema.proteins.txt".
 These files will contain an additional column ("crema q-value") that is appended to several columns
 (specifically those that identify the psm, peptide sequence, and score) parsed from the input file.
 
@@ -108,8 +109,9 @@ Here is a simple demonstration of how to use crema as an API:
 
     >>> import crema
     >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
-    >>> psms = crema.read_crux(input_files)
-    >>> results =  psms.assign_confidence(score_column="combined p-value", desc=False, eval_fdr=0.01, method="tdc")
+    >>> pairing_file = "pairing_file.txt"
+    >>> psms = crema.read_tide(input_files, pairing_file_name=pairing_file)
+    >>> results =  psms.assign_confidence(score_column="combined p-value", pep_fdr_type="psm-peptide")
     >>> results.to_txt(output_dir="example_output_dir", file_root="test", sep="\t", decoys=False)
 
 Let's break this down and see what's really happening.
@@ -126,15 +128,22 @@ Next, import crema as a package:
 
    >>> import crema
 
-Call the :doc:`read_crux() <api/functions>` method and pass in the desired input files. Note that
-the files "data/target_psms.txt" and "data/decoy_psms.txt" are already in the required Crux file
-format. The :doc:`read_crux() <api/functions>` method will return a :doc:`dataset <api/dataset>` object
+Call the :doc:`read_tide() <api/functions>` method and pass in the desired input
+files. The files "data/target_psms.txt" and "data/decoy_psms.txt" contais PSMs
+and are in the required Tide file format. In addition, the pairing_file is an
+optional argument that explicitly pairs target and decoy peptides.
+The :doc:`read_tide() <api/functions>` method will return a :doc:`dataset <api/dataset>` object
 that we will save as "psms" in this example:
 
 .. code-block:: Python
 
    >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
-   >>> psms = crema.read_crux(input_files)
+   >>> pairing_file = "pairing_file.txt"
+   >>> psms = crema.read_tide(input_files. pairing_file_name=pairing_file)
+
+Note that you can replace :doc:`read_tide() <api/functions>` with other methods
+such as :doc:`read_txt() <api/functions>` and :doc:`read_msgf()
+<api/functions>`.
 
 Execute the desired FDR estimation method by calling the :doc:`assign_confidence <api/functions>` method on
 the dataset object that we created above.
@@ -142,14 +151,23 @@ This operation will return a :doc:`confidence <api/confidence>` object that we w
 
 .. code-block:: Python
 
-   >>> results =  psms.assign_confidence(score_column="combined p-value", desc=False, eval_fdr=0.01, method="tdc")
+   >>> results =  psms.assign_confidence(score_column="combined p-value", pep_fdr_type="psm-peptide")
 
 Note: The parameters passed here are optional and are only specified here for
-demonstration. Further details can be found in the documentation for the :doc:`dataset <api/dataset>` class.
+demonstration. Further details can be found in the documentation for the
+:doc:`dataset <api/dataset>` class.
+
+Note: The pep_fdr_type argument denotes the method used to estimate peptide-level
+FDR. There are 3 options: psm-only, peptide-only, and psm-peptide. A pairing
+file is required to run the peptide-only and psm-peptide. Also, note that
+peptide-only requires a separate target and decoy database search. If
+peptide-only is used in conjunction with a concatenated target-decoy search, then
+it becomes equivalent to the psm-peptide.
 
 Confidence objects contain a :doc:`to_txt() <api/confidence>` method that allows you to write your results to a txt file.
 Your results will be saved in your working directory (unless otherwise specified)
-as .txt files named "crema.psms.txt" and "crema.peptides.txt".
+as .txt files named "crema.psms.txt", "crema.peptides.txt", and
+"crema.proteins.txt".
 These files will contain an additional column ("crema q-value") that is appended to several columns
 (specifically those that identify the psm, peptide sequence, and score) parsed from the input file.
 

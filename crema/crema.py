@@ -6,7 +6,7 @@ import sys
 import time
 import logging
 
-from .parsers.crux import read_crux
+from .parsers.tide import read_tide
 from .parsers.msamanda import read_msamanda
 from .parsers.msfragger import read_msfragger
 from .parsers.msgf import read_msgf
@@ -42,7 +42,9 @@ def main():
     logging.getLogger().addHandler(logging.StreamHandler())
 
     logging.info("crema")
-    logging.info("Written by Donavan See and William E Fondrie in the ")
+    logging.info(
+        "Written by Andy Lin, Donavan See and William E Fondrie in the "
+    )
     logging.info(
         "Department of Genome Sciences at the University of Washington."
     )
@@ -54,7 +56,7 @@ def main():
 
     # Create dataset object
     readers = [
-        read_crux,
+        read_tide,
         read_msgf,
         read_msamanda,
         read_comet,

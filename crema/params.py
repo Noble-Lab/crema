@@ -36,7 +36,7 @@ def _configure_parser():
 
     desc = (
         f"crema version {__version__}\n\n"
-        "Written by Donavan See (seed99@cs.washington.edu) and \n"
+        "Written by Andy Lin, Donavan See (seed99@cs.washington.edu), and \n"
         "William E Fondrie (wfondrie@uw.edu) in the \n"
         "Department of Genome Sciences at the University of Washington\n\n"
         "Official code website: https://github.com/Noble-Lab/crema\n\n"
@@ -53,7 +53,7 @@ def _configure_parser():
         nargs="+",
         help=(
             "One or more collection of peptide-spectrum matches (PSMs) in the "
-            "mzTab or Crux tab-delimited formats."
+            "mzTab or Tide tab-delimited formats."
         ),
     )
 
@@ -110,11 +110,20 @@ def _configure_parser():
 
     parser.add_argument(
         "-p",
-        "--pep_fdr",
+        "--pep_fdr_type",
         type=str,
         default="psm-only",
         choices=["psm-only", "peptide-only", "psm-peptide"],
         help="The peptide-level FDR estimation method to use.",
+    )
+
+    parser.add_argument(
+        "-r",
+        "--prot_fdr_type",
+        type=str,
+        default="best",
+        choices=["best", "combine"],
+        help="The protein-level FDR estimation method to use.",
     )
     return parser
 

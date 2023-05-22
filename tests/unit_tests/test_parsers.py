@@ -7,9 +7,9 @@ import pandas as pd
 import crema
 
 
-def test_read_crux(real_crux_txt):
-    """Test that we parse crux files correctly"""
-    psms = crema.read_crux(real_crux_txt)
+def test_read_tide(real_tide_txt):
+    """Test that we parse Tide files correctly"""
+    psms = crema.read_tide(real_tide_txt)
     assert isinstance(psms.data, pd.DataFrame)
     assert psms.data.shape == (21818, 12)
     assert list(psms.spectra.columns) == ["file", "scan"]
@@ -30,16 +30,16 @@ def test_read_crux(real_crux_txt):
     assert (~psms.targets).sum() == 10909
 
 
-def test_read_crux_peptide_pairing(mod_target_crux_txt, mod_decoy_crux_txt):
-    """Test that peptide pairing is correctly created when parsing crux files"""
+def test_read_tide_peptide_pairing(mod_target_tide_txt, mod_decoy_tide_txt):
+    """Test that peptide pairing is correctly created when parsing Tide files"""
     expected_peptide_pairing = {
         "ALLSLR": "ALLLSR",
         "QTPPAR": "QTAPPR",
         "GEVPN[0.98]R": "GN[0.98]PEVR",
         "GGHMDR": "GDMGHR",
     }
-    psms = crema.read_crux(
-        [mod_decoy_crux_txt, mod_target_crux_txt],
+    psms = crema.read_tide(
+        [mod_decoy_tide_txt, mod_target_tide_txt],
     )
     assert expected_peptide_pairing == psms.peptide_pairing
 
@@ -64,10 +64,10 @@ def test_read_comet_peptide_pariring(mod_comet_txt):
     assert expected_peptide_pairing == psms.peptide_pairing
 
 
-def test_read_txt(basic_crux_csv):
+def test_read_txt(basic_tide_csv):
     """Test that we can read generic delimited files"""
     psms = crema.read_txt(
-        basic_crux_csv,
+        basic_tide_csv,
         target_column="target/decoy",
         spectrum_columns="scan",
         score_columns=["combined p-value", "x"],

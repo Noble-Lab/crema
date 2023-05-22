@@ -29,7 +29,7 @@ def read_txt(
         The column that indicates whether a PSM is a target or a decoy.
     spectrum_columns : str or tuple of str
         One or more columns that together define a unique mass spectrum.
-    score_columns : str or tuple of str, optional
+    score_columns : str or tuple of str
         One or more columns that indicate scores by which crema can rank PSMs.
     peptide_column : str
         The column that defines a unique peptide. Modifications should be
@@ -89,7 +89,7 @@ def _parse_psms(txt_file, sep, cols):
     Parameters
     ----------
     txt_file : str
-        The crux tab-delimited file to read.
+        The Crux tab-delimited file to read.
     sep : str
         The delimiter to use.
     cols : list of str
