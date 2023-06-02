@@ -74,7 +74,8 @@ Basic Usage
 Use **crema** from the Command Line
 ###################################
 
-If your input files are in the mzTab or Tide tab-delimited formats, then simple crema analyses can be performed
+If your input files are in a file format that is supported, such mzTab or
+Tide tab-delimited, then simple crema analyses can be performed
 straight from the command line!
 
 Suppose your mzTab file is located at the directory "data/psms.mztab". Simply run the following command:
@@ -100,7 +101,7 @@ These files will contain an additional column ("crema q-value") that is appended
 
 For a full list of parameters, see the :doc:`Command Line Interface <cli>`.
 
-Use **crema** as a Python package
+Use **crema** as a Python Package
 ###################################
 
 Here is a simple demonstration of how to use crema as an API:
@@ -180,3 +181,11 @@ demonstration. Further details can be found in the documentation for the :doc:`c
 
 That's all there is to it! You have successfully used crema as an API to
 calculate confidence estimates for your data.
+
+Supported Database Search Engines
+###################################
+
+crema currently supports output generated from Tide, MSGF+, MSAmanda, Comet, MSFragger.
+
+In addition, crema supports input files, from any search engine, that are in the
+follow file formats: mzTab, pepXML, and generic delmited text files.

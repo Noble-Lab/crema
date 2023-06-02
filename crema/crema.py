@@ -61,6 +61,7 @@ def main():
         read_msamanda,
         read_comet,
         read_msfragger,
+        read_pepxml,
         read_mztab,
     ]
 
