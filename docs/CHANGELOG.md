@@ -1,6 +1,8 @@
 # Changelog for crema  
 
 ## [Unreleased]
+
+## [0.0.6] - 2023-06-02
 ### Added
 - Added three peptide-level FDR procedures: psm-only, peptide-only, and
   psm-peptide
