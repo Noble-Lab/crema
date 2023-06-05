@@ -144,7 +144,7 @@ that we will save as "psms" in this example:
 
 Note that you can replace :doc:`read_tide() <api/functions>` with other methods
 such as :doc:`read_txt() <api/functions>` and :doc:`read_msgf()
-<api/functions>`. Also note that while, in this example, the target and decoy PSMs are 
+<api/functions>`. Also note that while, in this example, the target and decoy PSMs are
 separate files, they can combined together and passed as a single file.
 
 Execute the desired FDR estimation method by calling the :doc:`assign_confidence <api/functions>` method on
