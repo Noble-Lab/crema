@@ -130,7 +130,7 @@ Next, import crema as a package:
    >>> import crema
 
 Call the :doc:`read_tide() <api/functions>` method and pass in the desired input
-files. The files "data/target_psms.txt" and "data/decoy_psms.txt" contais PSMs
+files. The files "data/target_psms.txt" and "data/decoy_psms.txt" contains PSMs
 and are in the required Tide file format. In addition, the pairing_file is an
 optional argument that explicitly pairs target and decoy peptides.
 The :doc:`read_tide() <api/functions>` method will return a :doc:`dataset <api/dataset>` object
@@ -144,7 +144,8 @@ that we will save as "psms" in this example:
 
 Note that you can replace :doc:`read_tide() <api/functions>` with other methods
 such as :doc:`read_txt() <api/functions>` and :doc:`read_msgf()
-<api/functions>`.
+<api/functions>`. Also note that while, in this example, the target and decoy PSMs are 
+separate files, they can combined together and passed as a single file.
 
 Execute the desired FDR estimation method by calling the :doc:`assign_confidence <api/functions>` method on
 the dataset object that we created above.
