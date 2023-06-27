@@ -113,6 +113,7 @@ def read_comet(
         peptide_column=peptide,
         protein_column=protein,
         protein_delim=protein_delim,
+        pairing_file_name=pairing_file_name,
         sep="\t",
         copy_data=False,
     )
@@ -124,14 +125,11 @@ def read_comet(
     psms.set_peptide_column(new_peptide_column)
 
     # always pair target and decoys for Comet
+    # explicit pairing done in read_txt
     if pairing_file_name == None:
         # implicit pairing based off fact that Comet reverses peptides
         psms._peptide_pairing = _create_pairing(
             data, peptide, protein, decoy_prefix
-        )
-    else:  # explicit pairing
-        psms._peptide_pairing = utils.create_pairing_from_file(
-            pairing_file_name
         )
 
     # Remove decoy prefix from protein ID

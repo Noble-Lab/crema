@@ -3,7 +3,7 @@ import logging
 
 import pandas as pd
 from ..dataset import PsmDataset
-from ..utils import listify
+from .. import utils
 
 LOGGER = logging.getLogger(__name__)
 
@@ -65,8 +65,8 @@ def read_txt(
     fields = [target_column, peptide_column, protein_column]
 
     # Verify some arguments are lists:
-    spectrum_columns = listify(spectrum_columns)
-    score_columns = listify(score_columns)
+    spectrum_columns = utils.listify(spectrum_columns)
+    score_columns = utils.listify(score_columns)
     fields += spectrum_columns + score_columns
 
     # Parse the data
@@ -74,7 +74,7 @@ def read_txt(
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
         data = pd.concat(
-            [_parse_psms(f, sep, fields) for f in listify(txt_files)]
+            [_parse_psms(f, sep, fields) for f in utils.listify(txt_files)]
         )
 
     data[target_column] = _convert_target_col(data[target_column])

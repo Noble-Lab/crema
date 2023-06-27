@@ -97,16 +97,14 @@ def read_tide(
         protein_column=protein,
         protein_delim=protein_delim,
         sep="\t",
+        pairing_file_name=pairing_file_name,
         copy_data=False,
     )
 
     # always pair target and decoys for Tide
+    # explicit pairing done in read_txt
     if pairing_file_name == None:  # implicit pairing
         psms._peptide_pairing = _create_pairing(data)
-    else:  # explicit pairing
-        psms._peptide_pairing = utils.create_pairing_from_file(
-            pairing_file_name
-        )
 
     # Remove the start position of peptide in protein if present
     # This looks like "protName(XX)"
