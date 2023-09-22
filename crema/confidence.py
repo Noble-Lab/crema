@@ -44,6 +44,7 @@ def assign_confidence(
     eval_fdr : float, optional
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
+        Default is 0.01.
     method : {"tdc"}, optional
         The method for crema to use when calculating the confidence estimates.
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
