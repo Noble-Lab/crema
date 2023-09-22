@@ -1,6 +1,9 @@
 # Changelog for crema  
 
 ## [Unreleased]
+### Fixed
+- Added the pairing\_file\_name paramter to read\_txt parser
+
 
 ## [0.0.6] - 2023-06-02
 ### Added
