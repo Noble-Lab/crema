@@ -95,7 +95,8 @@ def _configure_parser():
         default=0.01,
         help=(
             "The FDR threshold by which to choose the best score column and "
-            "to report in logging messages."
+            "to report in logging messages. This should range from 0 to 1. "
+            "Default value is 0.01."
         ),
     )
 
