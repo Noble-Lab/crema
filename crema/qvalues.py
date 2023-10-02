@@ -194,7 +194,13 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
     pval_list = np.array(pval_list) / n_decoys
 
     # calculate pi0
-    pi0 = estimate_pi0(pval_list)
+    if len(pval_list) > 0:
+        pi0 = estimate_pi0(pval_list)
+    else:
+        # Corner case: if pval_list is empty there are no targets.
+        # In this case pi0 is undefined, but we set it to 1.0, as all
+        # provided targets are incorrect, and we avoid zeroes.
+        pi0 = 1.0
 
     if pi0 == 1.0:
         # All targets are assumed to be incorrect! Algorithm 1, line 5-6
