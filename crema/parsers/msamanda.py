@@ -3,6 +3,7 @@ import re
 import logging
 
 import pandas as pd
+from pathlib import Path
 
 from .txt import read_txt
 from .. import utils
@@ -60,6 +61,10 @@ def read_msamanda(
     else:
         txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
+            # check file type
+            if Path(txt_file).suffix != ".txt":
+                raise ValueError(f"{txt_file} must be in .txt format.")
+
             with open(txt_file) as txt_ref:
                 # First line of MSAmanda output consists only of version line
                 # If statement below in case first line is removed

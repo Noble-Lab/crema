@@ -3,6 +3,7 @@ import re
 import logging
 
 import pandas as pd
+from pathlib import Path
 
 from .txt import read_txt
 from .. import utils
@@ -67,6 +68,10 @@ def read_tide(
     else:
         txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
+            # check file type
+            if Path(txt_file).suffix != ".txt":
+                raise ValueError(f"{txt_file} must be .txt format.")
+
             with open(txt_file) as txt_ref:
                 cols = txt_ref.readline().rstrip().split("\t")
                 scores = scores.intersection(set(cols))

@@ -3,6 +3,7 @@ import re
 import logging
 
 import pandas as pd
+from pathlib import Path
 
 from .txt import read_txt
 from .. import utils
@@ -65,6 +66,10 @@ def read_comet(
         txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
             with open(txt_file) as txt_ref:
+                # check file type
+                if Path(txt_file).suffix != ".txt":
+                    raise ValueError(f"{txt_file} must be in .txt format.")
+
                 # First line of Comet output consists only of version
                 # If statement below in case first line is removed
                 line = txt_ref.readline().rstrip()
