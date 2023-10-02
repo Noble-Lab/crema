@@ -195,7 +195,7 @@ benchmarking. One common way to perform this task is to plot the number of
 detections as a function of FDR threshold. We have opted not to create a plot
 function within Crema as it would add a dependency and there are existing user
 friendly libraries for plotting. In lieu of a plot function, we provide example
-code to show user how to plot crema output.
+code to show users how to create such a plot.
 
 Below is a simple demonstration of how to run crema and plot the number of
 detections as a function of FDR threshold. 
