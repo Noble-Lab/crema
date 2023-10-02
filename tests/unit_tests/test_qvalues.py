@@ -208,3 +208,18 @@ def test_mixmax_nonsingular(mixmax_scores):
         pi0, qvals = do_mixmax(scores, target.astype(dtype), desc=False)
         assert pi0 != 1.0
         assert any(q != 1.0 for q in qvals)
+
+
+def test_mixmax_empty():
+    """Test that q-values can be computed for pi0 != 1.0"""
+    scores, target = np.array([], dtype=float), np.array([], dtype=float)
+
+    dtypes = [np.float64, np.uint8, np.int8, np.float32]
+    for dtype in dtypes:
+        pi0, qvals = do_mixmax(scores.astype(dtype), target, desc=False)
+        assert pi0 != 1.0
+        assert any(q != 1.0 for q in qvals)
+
+        pi0, qvals = do_mixmax(scores, target.astype(dtype), desc=False)
+        assert pi0 != 1.0
+        assert any(q != 1.0 for q in qvals)
