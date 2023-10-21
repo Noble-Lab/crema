@@ -25,7 +25,7 @@ def read_msfragger(
     pairing_file_name : str, optional
         A tab-delimited file that explicity pairs target and decoy peptide
         sequences. Requires one column labled 'target' that contains target
-        sequences and a second colun labeled 'decoy' that contains decoy
+        sequences and a second column labeled 'decoy' that contains decoy
         sequences.
     decoy_prefix : str, optional
         The prefix used to indicate a decoy protein in the protein column.
