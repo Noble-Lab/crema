@@ -12,6 +12,7 @@
    self
    cli.rst
    api/index.rst
+   faq.rst
    Changelog <CHANGELOG.md>
 
 
