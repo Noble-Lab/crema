@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 
 from . import qvalues
 from . import utils
+from . import protein_tdc
 from .writers.txt import to_txt
 
 np.random.seed(0)
@@ -50,7 +51,7 @@ def assign_confidence(
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for Crema to use when calculating peptide level confidence
         estimates.
-    prot_fdr_type : {"best", "combine"}, optional
+    prot_fdr_type : {"best", "combine", "protein-group"}, optional
         The method for crema to use when calculating protein level confidence
         estimates. Default is "best".
     threshold : float or "q-value", optional
@@ -180,7 +181,7 @@ class Confidence(ABC):
         if pep_fdr_type not in pep_fdr_type_option:
             raise ValueError("%s not valid pep_fdr_type" % (pep_fdr_type))
 
-        prot_fdr_type_option = ["best", "combine"]
+        prot_fdr_type_option = ["best", "combine", "protein-group"]
         if prot_fdr_type not in prot_fdr_type_option:
             raise ValueError("%s not valid prot_fdr_type" % (prot_fdr_type))
 
@@ -485,39 +486,44 @@ class TdcConfidence(Confidence):
                 # Perform PSM level FDR
                 df = self._compete(df, self.dataset._spectrum_columns)
 
-                # Remove peptides found in multiple proteins
-                df = df[
-                    ~df[self.dataset._protein_column].str.contains(
-                        self.dataset._protein_delim
-                    )
-                ]
+                if self._prot_fdr_type != "protein-group":
+                    # Remove peptides found in multiple proteins
+                    df = df[
+                        ~df[self.dataset._protein_column].str.contains(
+                            self.dataset._protein_delim
+                        )
+                    ]
 
-                # Determines how to aggregate protein score
-                if self._prot_fdr_type == "best" and self._desc == True:
-                    # larger score is better
-                    agg_val = "max"
-                elif self._prot_fdr_type == "best" and self._desc == False:
-                    # smaller score is better
-                    agg_val = "min"
-                elif self._prot_fdr_type == "combine" and self._desc == True:
-                    agg_val = "sum"
-                elif self._prot_fdr_type == "combine" and self._desc == False:
-                    agg_val = "prod"
+                    # Determines how to aggregate protein score
+                    if self._prot_fdr_type == "best" and self._desc == True:
+                        # larger score is better
+                        agg_val = "max"
+                    elif self._prot_fdr_type == "best" and self._desc == False:
+                        # smaller score is better
+                        agg_val = "min"
+                    elif self._prot_fdr_type == "combine" and self._desc == True:
+                        agg_val = "sum"
+                    elif self._prot_fdr_type == "combine" and self._desc == False:
+                        agg_val = "prod"
 
-                df2 = df.groupby(
-                    [
+                    df2 = df.groupby(
+                        [
+                            self.dataset._protein_column,
+                            self.dataset._target_column,
+                        ]
+                    ).agg({self._score_column: [agg_val]})
+
+                    df2 = df2.reset_index()
+                    df2.columns = [
                         self.dataset._protein_column,
                         self.dataset._target_column,
+                        self._score_column,
                     ]
-                ).agg({self._score_column: [agg_val]})
-
-                df2 = df2.reset_index()
-                df2.columns = [
-                    self.dataset._protein_column,
-                    self.dataset._target_column,
-                    self._score_column,
-                ]
-                df = df2
+                    df = df2
+                else:
+                    protein_tdc.protein_group(df,
+self.dataset.peptide_to_protein)
+                    
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
