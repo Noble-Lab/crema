@@ -501,9 +501,14 @@ class TdcConfidence(Confidence):
                     elif self._prot_fdr_type == "best" and self._desc == False:
                         # smaller score is better
                         agg_val = "min"
-                    elif self._prot_fdr_type == "combine" and self._desc == True:
+                    elif (
+                        self._prot_fdr_type == "combine" and self._desc == True
+                    ):
                         agg_val = "sum"
-                    elif self._prot_fdr_type == "combine" and self._desc == False:
+                    elif (
+                        self._prot_fdr_type == "combine"
+                        and self._desc == False
+                    ):
                         agg_val = "prod"
 
                     df2 = df.groupby(
@@ -521,9 +526,9 @@ class TdcConfidence(Confidence):
                     ]
                     df = df2
                 else:
-                    protein_tdc.protein_group(df,
-self.dataset.peptide_to_protein)
-                    
+                    protein_tdc.protein_group(
+                        df, self.dataset.peptide_to_protein
+                    )
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]

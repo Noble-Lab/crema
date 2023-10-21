@@ -42,9 +42,10 @@ class PsmDataset:
         where decoy sequences are shuffled versions of target sequences.
     peptide_to_protein: dict[str, set of str]
         A map of peptide sequences to protein IDs that is used for
-        protein-level FDR. This should be in the form
-        {key=peptide_sequence:value=protein_ids} where protein_ids is a list of
-        protein IDs that each peptide is found in.
+        protein-level FDR.
+    protein_to_peptide: dict[str, set of str]
+        A map of protein IDs to peptide sequences that is used for
+        protein-level FDR.
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
@@ -78,6 +79,7 @@ class PsmDataset:
         protein_delim,
         peptide_pairing=None,
         peptide_to_protein=None,
+        protein_to_peptide=None,
         copy_data=True,
     ):
         """Initialize a PsmDataset object."""
@@ -89,6 +91,7 @@ class PsmDataset:
         self._protein_delim = protein_delim
         self._peptide_pairing = peptide_pairing
         self._peptide_to_protein = peptide_to_protein
+        self._protein_to_peptide = protein_to_peptide
 
         fields = sum(
             [
@@ -161,8 +164,12 @@ class PsmDataset:
 
     @property
     def peptide_to_protein(self):
-        """A dictionary peptide to protein pairs"""
+        """A dictionary mapping a peptide to proteins"""
         return self._peptide_to_protein
+
+    @property
+    def protein_to_peptide(self):
+        """A dictionary mapping a protein to peptides"""
 
     def __getitem__(self, column):
         """Return the specified column"""
