@@ -90,9 +90,11 @@ def read_txt(
     )
 
     if pairing_file_name != None:
-        psms._peptide_pairing = utils.create_pairing_from_file(
+        peptide_pairing, peptide_to_protein = utils.create_pairing_from_file(
             pairing_file_name
         )
+        psms._peptide_pairing = peptide_pairing
+        psms._peptide_to_protein = peptide_to_protein
 
     return psms
 
