@@ -19,7 +19,7 @@ def read_mztab(mztab_files, pairing_file_name=None):
         One or more collections of PSMs in the mzTab format.
     pairing_file_name : str, optional
         A tab-delimited file that explicity pairs target and decoy peptide
-        sequences. Requires one column labled 'target' that contains target
+        sequences. Requires one column labeled 'target' that contains target
         sequences and a second colun labeled 'decoy' that contains decoy
         sequences.
 
