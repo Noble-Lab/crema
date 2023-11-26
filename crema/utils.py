@@ -68,7 +68,7 @@ def create_pairing_from_file(pairing_file_name):
         miss = ", ".join(set(req_fields) - set(pairing_file.columns))
         raise ValueError(
             f"Required columns for peptide pairing were not detected: {miss}"
-        ) 
+        )
 
     # Remove the start position of peptide in protein if present
     # This looks like "protName(XX)" and is used in Crux

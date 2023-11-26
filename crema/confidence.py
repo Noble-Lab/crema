@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 from . import qvalues
 from . import utils
-from . import protein_tdc
+#from . import protein_tdc
 from .writers.txt import to_txt
 
 np.random.seed(0)
@@ -204,6 +204,7 @@ class Confidence(ABC):
         )
         self._pep_fdr_type = pep_fdr_type
         self._prot_fdr_type = prot_fdr_type
+        self._threshold = threshold
         self.confidence_estimates = {}
         self.decoy_confidence_estimates = {}
 
@@ -269,10 +270,18 @@ class Confidence(ABC):
             elif level == "proteins":
                 self.confidence_estimates[level] = df.loc[:, prot_cols]
 
-        # Remove q-value column for decoy files
-        cols.pop()
-        prot_cols.pop()
+        # TODO decide whether to remove q-value column for decoy files
+        # uncomment next two lines if decide to remove q-value column
+        #cols.pop()
+        #prot_cols.pop()
         for level, df in self.decoy_confidence_estimates.items():
+            # use 'accept' column if threshold != 'q-value'
+            if threshold != "q-value":
+                df[last_col] = df["crema q-value"] <= threshold
+
+            # reverse order so best score is begining of df
+            df = df.iloc[::-1]
+
             if level != "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, cols]
             elif level == "proteins":
@@ -483,7 +492,7 @@ class TdcConfidence(Confidence):
                         "pep_fdr_type "
                     )
             elif level == "proteins":
-                # Perform PSM level FDR
+                # Perform PSM level TDC
                 df = self._compete(df, self.dataset._spectrum_columns)
 
                 if self._prot_fdr_type != "protein-group":
@@ -526,9 +535,35 @@ class TdcConfidence(Confidence):
                     ]
                     df = df2
                 else:
-                    protein_tdc.protein_group(
-                        df, self.dataset.peptide_to_protein
-                    )
+                    #TODO
+                    # Step 1: get peptide level detections 
+                    # If threshold==qvalue - get detections at 1% FDR
+                    # STep 2: group peptides into group
+                    # Step 3: discard shared peptides
+                    # Step 4: picked TDC
+                    pep_tar = self.confidence_estimates['peptides']
+                    conf_pep_tar = pep_tar[pep_tar['crema q-value'] <= 0.01]
+
+                    pep_dec = self.decoy_confidence_estimates['peptides']
+                    conf_pep_dec = pep_dec[pep_dec['crema q-value'] <= 0.01]
+
+                    print(conf_pep_tar)
+                    print(conf_pep_tar.columns)
+                    print(self.dataset._protein_delim)
+
+                    # create peptide to protein mapping
+                    # assumes that search engine output does mapping
+                    pep_to_prot = {}
+                    for pep,prot in zip(conf_pep_tar.sequence, conf_pep_tar['protein id']):
+                        prot_sep = prot.split(self.dataset._protein_delim)
+
+                        pep_to_prot[pep] = prot_sep
+                        print(pep,prot,prot_sep)
+                        break
+                       
+                    #protein_tdc.protein_group(
+                    #    df, self.dataset.peptide_to_protein
+                    #)
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
