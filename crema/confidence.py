@@ -8,7 +8,8 @@ from abc import ABC, abstractmethod
 
 from . import qvalues
 from . import utils
-#from . import protein_tdc
+
+# from . import protein_tdc
 from .writers.txt import to_txt
 
 np.random.seed(0)
@@ -272,8 +273,8 @@ class Confidence(ABC):
 
         # TODO decide whether to remove q-value column for decoy files
         # uncomment next two lines if decide to remove q-value column
-        #cols.pop()
-        #prot_cols.pop()
+        # cols.pop()
+        # prot_cols.pop()
         for level, df in self.decoy_confidence_estimates.items():
             # use 'accept' column if threshold != 'q-value'
             if threshold != "q-value":
@@ -535,35 +536,55 @@ class TdcConfidence(Confidence):
                     ]
                     df = df2
                 else:
-                    #TODO
-                    # Step 1: get peptide level detections 
-                    # If threshold==qvalue - get detections at 1% FDR
-                    # STep 2: group peptides into group
+                    # TODO
+                    # TODO decide if self._peptide_to_protein and
+                    # and self._protein_to_peptide are required
                     # Step 3: discard shared peptides
                     # Step 4: picked TDC
-                    pep_tar = self.confidence_estimates['peptides']
-                    conf_pep_tar = pep_tar[pep_tar['crema q-value'] <= 0.01]
 
-                    pep_dec = self.decoy_confidence_estimates['peptides']
-                    conf_pep_dec = pep_dec[pep_dec['crema q-value'] <= 0.01]
+                    # obtain peptides at 1% peptid-level FDR
+                    pep_tar = self.confidence_estimates["peptides"]
+                    conf_pep_tar = pep_tar[pep_tar["crema q-value"] <= 0.01]
 
-                    print(conf_pep_tar)
-                    print(conf_pep_tar.columns)
-                    print(self.dataset._protein_delim)
+                    pep_dec = self.decoy_confidence_estimates["peptides"]
+                    conf_pep_dec = pep_dec[pep_dec["crema q-value"] <= 0.01]
 
                     # create peptide to protein mapping
-                    # assumes that search engine output does mapping
+                    # create protein to peptide mapping
+                    # assumes that search engine output has mapping
                     pep_to_prot = {}
-                    for pep,prot in zip(conf_pep_tar.sequence, conf_pep_tar['protein id']):
+                    prot_to_pep = {}
+                    for pep, prot in zip(
+                        conf_pep_tar.sequence, conf_pep_tar["protein id"]
+                    ):
                         prot_sep = prot.split(self.dataset._protein_delim)
+                        pep_to_prot[pep] = set(prot_sep)
 
-                        pep_to_prot[pep] = prot_sep
-                        print(pep,prot,prot_sep)
+                        for cur_prot in prot_sep:
+                            if cur_prot not in prot_to_pep:
+                                prot_to_pep[cur_prot] = {pep}
+                            else:
+                                prot_to_pep[cur_prot].add(pep)
+
+                    # create protein grouping
+                    grouped = {}
+                    for prot, peps in sorted(
+                        prot_to_pep.items(), key=lambda item: -len(item[1])
+                    ):
+                        print(prot, peps)
+                        if not grouped:
+                            grouped[prot] = peps
+                            continue
+
+                        matches = set.intersection(
+                            *[pep_to_prot[p] for p in peps]
+                        )
+                        print(matches)
                         break
-                       
-                    #protein_tdc.protein_group(
+
+                    # protein_tdc.protein_group(
                     #    df, self.dataset.peptide_to_protein
-                    #)
+                    # )
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
