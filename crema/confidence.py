@@ -470,7 +470,7 @@ class TdcConfidence(Confidence):
 
         if pairing == None and self._pep_fdr_type != "psm-only":
             raise ValueError(
-                "Must provide paired target decoy peptide infomation."
+                "Must provide paired target decoy peptide infomation (see FAQ)."
             )
         LOGGER.warning(
             "PSM-level FDR estimates are not guaranteed to control "

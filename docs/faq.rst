@@ -19,3 +19,7 @@ column must be labeled 'target' must contain target sequences, a second
 column labeled 'decoy(s)' must contain decoy sequences, and a third column
 labeled 'proteins' must contain a comma separated list of proteins the target
 peptide could originate from.
+
+Alternatively you can set pep_fdr_type argument within the assign_confidence
+function to "psm-only". Note that this method obtains worse performance
+compared to when paired information is used.
