@@ -52,7 +52,7 @@ def assign_confidence(
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
         The method for Crema to use when calculating peptide level confidence
         estimates.
-    prot_fdr_type : {"best", "combine", "protein-group"}, optional
+    prot_fdr_type : {"best", "combine"}, optional
         The method for crema to use when calculating protein level confidence
         estimates. Default is "best".
     threshold : float or "q-value", optional
@@ -144,6 +144,7 @@ class Confidence(ABC):
         "psms": "PSMs",
         "peptides": "Peptides",
         "proteins": "Proteins",
+        "protein_groups": "ProteinGroups",
     }
 
     @abstractmethod
@@ -182,7 +183,7 @@ class Confidence(ABC):
         if pep_fdr_type not in pep_fdr_type_option:
             raise ValueError("%s not valid pep_fdr_type" % (pep_fdr_type))
 
-        prot_fdr_type_option = ["best", "combine", "protein-group"]
+        prot_fdr_type_option = ["best", "combine"]
         if prot_fdr_type not in prot_fdr_type_option:
             raise ValueError("%s not valid prot_fdr_type" % (prot_fdr_type))
 
@@ -197,7 +198,7 @@ class Confidence(ABC):
         self._score_column = score_column
         self._desc = desc
         self._eval_fdr = eval_fdr
-        self._levels = ("psms", "peptides", "proteins")
+        self._levels = ("psms", "peptides", "proteins", "protein_groups")
         self._level_columns = (
             self.dataset._spectrum_columns,
             self.dataset._peptide_column,
@@ -346,7 +347,7 @@ class Confidence(ABC):
             An optional prefix for the confidence estimate files. The suffix
             will always be "crema.{level}.txt", where "{level}" indicates the
             level at which confidence estimation was performed (i.e. PSMs,
-            peptides, proteins).
+            peptides, proteins, and protein groups).
         sep : str, optional
             The delimiter to use.
         decoys : bool, optional
@@ -463,8 +464,15 @@ class TdcConfidence(Confidence):
             raise ValueError(
                 "Must provide paired target decoy peptide infomation."
             )
+        LOGGER.warning(
+            "PSM-level FDR estimates are not guaranteed to control "
+            "the FDR. We suggest avoiding PSM-level FDR and using "
+            "peptide-level FDR estimates."
+        )
 
         for level, group_cols in zip(self.levels, self._level_columns):
+            print(level)
+            print(group_cols)
             # NOTE line below can removed if psm-only and peptide-only methods are removed
             df = self.data
             pair_col = utils.new_column("pairing", df)
@@ -492,11 +500,11 @@ class TdcConfidence(Confidence):
                         f"'{self._pep_fdr_type}' is not a valid value for "
                         "pep_fdr_type "
                     )
-            elif level == "proteins":
-                # Perform PSM level TDC
-                df = self._compete(df, self.dataset._spectrum_columns)
+            elif level == "proteins" or level == "protein_groups":
+                if level == "proteins":
+                    # Perform PSM level TDC
+                    df = self._compete(df, self.dataset._spectrum_columns)
 
-                if self._prot_fdr_type != "protein-group":
                     # Remove peptides found in multiple proteins
                     df = df[
                         ~df[self.dataset._protein_column].str.contains(
@@ -504,87 +512,76 @@ class TdcConfidence(Confidence):
                         )
                     ]
 
-                    # Determines how to aggregate protein score
-                    if self._prot_fdr_type == "best" and self._desc == True:
-                        # larger score is better
-                        agg_val = "max"
-                    elif self._prot_fdr_type == "best" and self._desc == False:
-                        # smaller score is better
-                        agg_val = "min"
-                    elif (
-                        self._prot_fdr_type == "combine" and self._desc == True
-                    ):
+                elif level == "protein_groups":
+                    # obtain peptides at 1% peptide-level FDR
+                    pep_tar = self.confidence_estimates["peptides"]
+                    conf_tar = pep_tar[pep_tar["crema q-value"] <= 0.01].copy()
+
+                    pep_dec = self.decoy_confidence_estimates["peptides"]
+                    conf_dec = pep_dec[pep_dec["crema q-value"] <= 0.01].copy()
+
+                    LOGGER.info("Building protein groups...")
+                    protein_group, pep_to_prot = _group_proteins(
+                        conf_tar, conf_dec, self.dataset._protein_delim
+                    )
+
+                    LOGGER.info("Discarding shared peptides...")
+                    unique_peptides = {}
+                    for pep, prots in pep_to_prot.items():
+                        if len(prots) == 1:
+                            unique_peptides[pep] = next(iter(prots))
+
+                    conf_tar["protein group"] = conf_tar.sequence.apply(
+                        lambda x: next(iter(pep_to_prot.get(x)))
+                    )
+                    conf_dec["protein group"] = conf_dec.sequence.apply(
+                        lambda x: next(iter(pep_to_prot.get(x)))
+                    )
+
+                    conf_tar = conf_tar.drop(
+                        columns=["pairing", "protein id", "crema q-value"]
+                    )
+                    conf_dec = conf_dec.drop(
+                        columns=["pairing", "protein id", "crema q-value"],
+                    )
+
+                    df = pd.concat([conf_tar, conf_dec])
+
+                # Determines how to aggregate protein score
+                if self._prot_fdr_type == "best":
+                    if self._desc == True:
+                        agg_val = "max"  # larger score is better
+                    else:
+                        agg_val = "min"  # smaller score is better
+                else:  # prot_fdr_type == combine
+                    if self._desc == True:
                         agg_val = "sum"
-                    elif (
-                        self._prot_fdr_type == "combine"
-                        and self._desc == False
-                    ):
+                    else:
                         agg_val = "prod"
 
+                if level == "proteins":
                     df2 = df.groupby(
                         [
                             self.dataset._protein_column,
                             self.dataset._target_column,
                         ]
                     ).agg({self._score_column: [agg_val]})
+                elif level == "protein_groups":
+                    df2 = df.groupby(
+                        [
+                            "protein group",
+                            self.dataset._target_column,
+                        ]
+                    ).agg({self._score_column: [agg_val]})
 
-                    df2 = df2.reset_index()
-                    df2.columns = [
-                        self.dataset._protein_column,
-                        self.dataset._target_column,
-                        self._score_column,
-                    ]
-                    df = df2
-                else:
-                    # TODO
-                    # TODO decide if self._peptide_to_protein and
-                    # and self._protein_to_peptide are required
-                    # Step 3: discard shared peptides
-                    # Step 4: picked TDC
-
-                    # obtain peptides at 1% peptid-level FDR
-                    pep_tar = self.confidence_estimates["peptides"]
-                    conf_pep_tar = pep_tar[pep_tar["crema q-value"] <= 0.01]
-
-                    pep_dec = self.decoy_confidence_estimates["peptides"]
-                    conf_pep_dec = pep_dec[pep_dec["crema q-value"] <= 0.01]
-
-                    # create peptide to protein mapping
-                    # create protein to peptide mapping
-                    # assumes that search engine output has mapping
-                    pep_to_prot = {}
-                    prot_to_pep = {}
-                    for pep, prot in zip(
-                        conf_pep_tar.sequence, conf_pep_tar["protein id"]
-                    ):
-                        prot_sep = prot.split(self.dataset._protein_delim)
-                        pep_to_prot[pep] = set(prot_sep)
-
-                        for cur_prot in prot_sep:
-                            if cur_prot not in prot_to_pep:
-                                prot_to_pep[cur_prot] = {pep}
-                            else:
-                                prot_to_pep[cur_prot].add(pep)
-
-                    # create protein grouping
-                    grouped = {}
-                    for prot, peps in sorted(
-                        prot_to_pep.items(), key=lambda item: -len(item[1])
-                    ):
-                        print(prot, peps)
-                        if not grouped:
-                            grouped[prot] = peps
-                            continue
-
-                        matches = set.intersection(
-                            *[pep_to_prot[p] for p in peps]
-                        )
-                        print(matches)
-                        break
-
-                    # protein_tdc.protein_group(
-                    #    df, self.dataset.peptide_to_protein
-                    # )
+                df2 = df2.reset_index()
+                df2.columns = [
+                    self.dataset._protein_column,
+                    self.dataset._target_column,
+                    self._score_column,
+                ]
+                df = df2
+                print(df)
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
@@ -706,7 +703,13 @@ class MixmaxConfidence(Confidence):
             targets = df[df[self.dataset._target_column]]
             decoys = df[~df[self.dataset._target_column]]
 
-            # TODO add following warning ""The mix-max procedure is not well behaved when # targets (%d) != # of decoys (%d).","
+            if targets.shape[1] != decoys.shape[1]:
+                LOGGER.warning(
+                    "The mix-max procedure is not well behaved when "
+                    "# targets (%i) != # decoys (%i).",
+                    targets.shape[0],
+                    decoys.shape[0],
+                )
 
             if self._desc:
                 keep = "last"
@@ -777,3 +780,87 @@ class MixmaxConfidence(Confidence):
                     targets_sorted[self._score_column] * -1.0
                 )
             self.confidence_estimates[level] = targets_sorted
+
+
+def _group_proteins(conf_pep_tar, conf_pep_dec, protein_delim):
+    """Group proteins when one's peptides are a subset of another's.
+
+    Note that this function is mostly a copy of Mokapot.
+    Function assumes that search engine output has peptide to protein mapping.
+
+    Parameters
+    ----------
+    conf_pep_tar : df
+        A df of the target peptides detected at 1% FDR
+    conf_pep_dec: df
+        A df of the decoy peptides detected at 1% FDR
+    protein_delim : str
+        Delimiter used for protein ID column
+
+    Returns
+    -------
+    protein groups : dict[str, set of str]
+        A map of protein groups to their peptides
+    peptides : dict[str, set of str]
+        A map of peptides to their protein groups.
+    """
+    # create peptide to protein mapping
+    # create protein to peptide mapping
+    pep_to_prot = {}
+    prot_to_pep = {}
+    for pep, prot in zip(conf_pep_tar.sequence, conf_pep_tar["protein id"]):
+        prot_sep = prot.split(protein_delim)
+        pep_to_prot[pep] = set(prot_sep)
+
+        for cur_prot in prot_sep:
+            if cur_prot not in prot_to_pep:
+                prot_to_pep[cur_prot] = {pep}
+            else:
+                prot_to_pep[cur_prot].add(pep)
+
+    for pep, prot in zip(conf_pep_dec.sequence, conf_pep_dec["protein id"]):
+        prot_sep = prot.split(protein_delim)
+
+        # TODO not sure what to do if peptide is
+        # in both a target and decoy
+        assert pep not in pep_to_prot
+        pep_to_prot[pep] = set(prot_sep)
+
+        for cur_prot in prot_sep:
+            if cur_prot not in prot_to_pep:
+                prot_to_pep[cur_prot] = {pep}
+            else:
+                prot_to_pep[cur_prot].add(pep)
+
+    # create protein grouping
+    grouped = {}
+    for prot, peps in sorted(
+        prot_to_pep.items(), key=lambda item: -len(item[1])
+    ):
+        if not grouped:
+            grouped[prot] = peps
+            continue
+
+        matches = set.intersection(*[pep_to_prot[p] for p in peps])
+        matches = [m for m in matches if m in grouped.keys()]
+
+        # if the entry is unique:
+        if not matches:
+            grouped[prot] = peps
+            continue
+
+        # create new entries from subsets:
+        for match in matches:
+            new_prot = ",".join([match, prot])
+            # update grouped proteins:
+            grouped[new_prot] = grouped.pop(match)
+
+            # update peptides:
+            for pep in grouped[new_prot]:
+                pep_to_prot[pep].remove(match)
+                if prot in pep_to_prot[pep]:
+                    pep_to_prot[pep].remove(prot)
+
+                pep_to_prot[pep].add(new_prot)
+
+    return (grouped, pep_to_prot)
