@@ -203,6 +203,7 @@ class Confidence(ABC):
             self.dataset._spectrum_columns,
             self.dataset._peptide_column,
             self.dataset._protein_column,
+            "protein group",
         )
         self._pep_fdr_type = pep_fdr_type
         self._prot_fdr_type = prot_fdr_type
@@ -256,8 +257,11 @@ class Confidence(ABC):
             self.dataset._protein_column,
             self._score_column,
         ]
+        prot_group_cols = ["protein group", self._score_column]
+
         cols.append(last_col)
         prot_cols.append(last_col)
+        prot_group_cols.append(last_col)
 
         for level, df in self.confidence_estimates.items():
             # use 'accept' column if threshold != 'q-value'
@@ -267,10 +271,12 @@ class Confidence(ABC):
             # reverse order so best score is begining of df
             df = df.iloc[::-1]
 
-            if level != "proteins":
-                self.confidence_estimates[level] = df.loc[:, cols]
+            if level == "protein_groups":
+                self.confidence_estimates[level] = df.loc[:, prot_group_cols]
             elif level == "proteins":
                 self.confidence_estimates[level] = df.loc[:, prot_cols]
+            else:  # PSM and peptide
+                self.confidence_estimates[level] = df.loc[:, cols]
 
         # TODO decide whether to remove q-value column for decoy files
         # uncomment next two lines if decide to remove q-value column
@@ -284,10 +290,12 @@ class Confidence(ABC):
             # reverse order so best score is begining of df
             df = df.iloc[::-1]
 
-            if level != "proteins":
-                self.decoy_confidence_estimates[level] = df.loc[:, cols]
+            if level == "protein_groups":
+                self.confidence_estimates[level] = df.loc[:, prot_group_cols]
             elif level == "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, prot_cols]
+            else:  # PSM and peptide
+                self.decoy_confidence_estimates[level] = df.loc[:, cols]
 
     def _compete(self, df, group_columns):
         """Perform target-decoy competition
@@ -471,8 +479,6 @@ class TdcConfidence(Confidence):
         )
 
         for level, group_cols in zip(self.levels, self._level_columns):
-            print(level)
-            print(group_cols)
             # NOTE line below can removed if psm-only and peptide-only methods are removed
             df = self.data
             pair_col = utils.new_column("pairing", df)
@@ -511,7 +517,6 @@ class TdcConfidence(Confidence):
                             self.dataset._protein_delim
                         )
                     ]
-
                 elif level == "protein_groups":
                     # obtain peptides at 1% peptide-level FDR
                     pep_tar = self.confidence_estimates["peptides"]
@@ -566,6 +571,7 @@ class TdcConfidence(Confidence):
                             self.dataset._target_column,
                         ]
                     ).agg({self._score_column: [agg_val]})
+                    df2.to_csv("asdf.txt", sep="\t")
                 elif level == "protein_groups":
                     df2 = df.groupby(
                         [
@@ -573,15 +579,22 @@ class TdcConfidence(Confidence):
                             self.dataset._target_column,
                         ]
                     ).agg({self._score_column: [agg_val]})
+                    df2.to_csv("asdf1.txt", sep="\t")
 
                 df2 = df2.reset_index()
-                df2.columns = [
-                    self.dataset._protein_column,
-                    self.dataset._target_column,
-                    self._score_column,
-                ]
+                if level == "proteins":
+                    df2.columns = [
+                        self.dataset._protein_column,
+                        self.dataset._target_column,
+                        self._score_column,
+                    ]
+                elif level == "protein_groups":
+                    df2.columns = [
+                        "protein group",
+                        self.dataset._target_column,
+                        self._score_column,
+                    ]
                 df = df2
-                print(df)
 
             df = self._compete(df, group_cols)
             targets = df[self.dataset._target_column]
