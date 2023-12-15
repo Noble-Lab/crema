@@ -277,7 +277,7 @@ class Confidence(ABC):
                 self.confidence_estimates[level] = df.loc[:, prot_cols]
             else:  # PSM and peptide
                 self.confidence_estimates[level] = df.loc[:, cols]
-        
+
         # TODO decide whether to remove q-value column for decoy files
         # uncomment next two lines if decide to remove q-value column
         # cols.pop()
@@ -291,7 +291,9 @@ class Confidence(ABC):
             df = df.iloc[::-1]
 
             if level == "protein_groups":
-                self.decoy_confidence_estimates[level] = df.loc[:, prot_group_cols]
+                self.decoy_confidence_estimates[level] = df.loc[
+                    :, prot_group_cols
+                ]
             elif level == "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, prot_cols]
             else:  # PSM and peptide
