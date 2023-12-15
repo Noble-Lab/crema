@@ -277,7 +277,7 @@ class Confidence(ABC):
                 self.confidence_estimates[level] = df.loc[:, prot_cols]
             else:  # PSM and peptide
                 self.confidence_estimates[level] = df.loc[:, cols]
-
+        
         # TODO decide whether to remove q-value column for decoy files
         # uncomment next two lines if decide to remove q-value column
         # cols.pop()
@@ -291,7 +291,7 @@ class Confidence(ABC):
             df = df.iloc[::-1]
 
             if level == "protein_groups":
-                self.confidence_estimates[level] = df.loc[:, prot_group_cols]
+                self.decoy_confidence_estimates[level] = df.loc[:, prot_group_cols]
             elif level == "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, prot_cols]
             else:  # PSM and peptide
@@ -544,10 +544,10 @@ class TdcConfidence(Confidence):
                     )
 
                     conf_tar = conf_tar.drop(
-                        columns=["pairing", "protein id", "crema q-value"]
+                        columns=["protein id", "crema q-value"]
                     )
                     conf_dec = conf_dec.drop(
-                        columns=["pairing", "protein id", "crema q-value"],
+                        columns=["protein id", "crema q-value"],
                     )
 
                     df = pd.concat([conf_tar, conf_dec])
@@ -571,7 +571,6 @@ class TdcConfidence(Confidence):
                             self.dataset._target_column,
                         ]
                     ).agg({self._score_column: [agg_val]})
-                    df2.to_csv("asdf.txt", sep="\t")
                 elif level == "protein_groups":
                     df2 = df.groupby(
                         [
@@ -579,7 +578,6 @@ class TdcConfidence(Confidence):
                             self.dataset._target_column,
                         ]
                     ).agg({self._score_column: [agg_val]})
-                    df2.to_csv("asdf1.txt", sep="\t")
 
                 df2 = df2.reset_index()
                 if level == "proteins":
