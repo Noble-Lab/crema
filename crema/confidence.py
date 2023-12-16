@@ -529,7 +529,11 @@ class TdcConfidence(Confidence):
 
                     LOGGER.info("Building protein groups...")
                     protein_group, pep_to_prot = _group_proteins(
-                        conf_tar, conf_dec, self.dataset._protein_delim
+                        conf_tar,
+                        conf_dec,
+                        self.dataset._protein_delim,
+                        self.dataset._protein_column,
+                        self.dataset._peptide_column,
                     )
 
                     LOGGER.info("Discarding shared peptides...")
@@ -538,18 +542,21 @@ class TdcConfidence(Confidence):
                         if len(prots) == 1:
                             unique_peptides[pep] = next(iter(prots))
 
-                    conf_tar["protein group"] = conf_tar.sequence.apply(
-                        lambda x: next(iter(pep_to_prot.get(x)))
-                    )
-                    conf_dec["protein group"] = conf_dec.sequence.apply(
-                        lambda x: next(iter(pep_to_prot.get(x)))
-                    )
+                    conf_tar["protein group"] = conf_tar[
+                        self.dataset._peptide_column
+                    ].apply(lambda x: next(iter(pep_to_prot.get(x))))
+                    conf_dec["protein group"] = conf_dec[
+                        self.dataset._peptide_column
+                    ].apply(lambda x: next(iter(pep_to_prot.get(x))))
 
                     conf_tar = conf_tar.drop(
-                        columns=["protein id", "crema q-value"]
+                        columns=[self.dataset._protein_column, "crema q-value"]
                     )
                     conf_dec = conf_dec.drop(
-                        columns=["protein id", "crema q-value"],
+                        columns=[
+                            self.dataset._protein_column,
+                            "crema q-value",
+                        ],
                     )
 
                     df = pd.concat([conf_tar, conf_dec])
@@ -795,7 +802,7 @@ class MixmaxConfidence(Confidence):
             self.confidence_estimates[level] = targets_sorted
 
 
-def _group_proteins(conf_pep_tar, conf_pep_dec, protein_delim):
+def _group_proteins(conf_pep_tar, conf_pep_dec, prot_delim, prot_col, pep_col):
     """Group proteins when one's peptides are a subset of another's.
 
     Note that this function is mostly a copy of Mokapot.
@@ -807,8 +814,12 @@ def _group_proteins(conf_pep_tar, conf_pep_dec, protein_delim):
         A df of the target peptides detected at 1% FDR
     conf_pep_dec: df
         A df of the decoy peptides detected at 1% FDR
-    protein_delim : str
+    prot_delim : str
         Delimiter used for protein ID column
+    prot_col : str
+        Column header for protein ID column
+    pep_col : str
+        Column header for peptide sequence column
 
     Returns
     -------
@@ -821,8 +832,8 @@ def _group_proteins(conf_pep_tar, conf_pep_dec, protein_delim):
     # create protein to peptide mapping
     pep_to_prot = {}
     prot_to_pep = {}
-    for pep, prot in zip(conf_pep_tar.sequence, conf_pep_tar["protein id"]):
-        prot_sep = prot.split(protein_delim)
+    for pep, prot in zip(conf_pep_tar[pep_col], conf_pep_tar[prot_col]):
+        prot_sep = prot.split(prot_delim)
         pep_to_prot[pep] = set(prot_sep)
 
         for cur_prot in prot_sep:
@@ -831,8 +842,8 @@ def _group_proteins(conf_pep_tar, conf_pep_dec, protein_delim):
             else:
                 prot_to_pep[cur_prot].add(pep)
 
-    for pep, prot in zip(conf_pep_dec.sequence, conf_pep_dec["protein id"]):
-        prot_sep = prot.split(protein_delim)
+    for pep, prot in zip(conf_pep_dec[pep_col], conf_pep_dec[prot_col]):
+        prot_sep = prot.split(prot_delim)
 
         # TODO not sure what to do if peptide is
         # in both a target and decoy
