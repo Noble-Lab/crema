@@ -62,8 +62,8 @@ def read_msamanda(
         txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
             # check file type
-            if Path(txt_file).suffix != ".txt":
-                raise ValueError(f"{txt_file} must be in .txt format.")
+            if Path(txt_file).suffix != ".csv":
+                raise ValueError(f"{txt_file} must be in .csv format.")
 
             with open(txt_file) as txt_ref:
                 # First line of MSAmanda output consists only of version line

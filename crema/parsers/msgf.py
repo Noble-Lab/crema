@@ -64,8 +64,8 @@ def read_msgf(
         txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
             # check file type
-            if Path(txt_file).suffix != ".txt":
-                raise ValueError(f"{txt_file} must be in .txt format.")
+            if Path(txt_file).suffix != ".tsv":
+                raise ValueError(f"{txt_file} must be in .tsv format.")
 
             with open(txt_file) as txt_ref:
                 cols = txt_ref.readline().rstrip().split("\t")
