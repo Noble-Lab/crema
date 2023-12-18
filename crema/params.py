@@ -53,7 +53,8 @@ def _configure_parser():
         nargs="+",
         help=(
             "One or more collection of peptide-spectrum matches (PSMs) in the "
-            "mzTab or Tide tab-delimited formats."
+            "mzTab, Tide tab-delimited formats, MSGF+ tsv file, MSAmanda csv "
+            "output, Morpheus txt output, or generic delimited text format."
         ),
     )
 
