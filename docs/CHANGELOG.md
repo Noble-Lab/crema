@@ -4,8 +4,7 @@
 ### Fixed
 - Added the pairing\_file\_name paramter to read\_txt parser
 - Added a FAQ to the readthedocs
-- Added protein group level FDR. 
-
+- Added protein group level FDR
 
 ## [0.0.6] - 2023-06-02
 ### Added

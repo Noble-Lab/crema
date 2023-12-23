@@ -278,10 +278,10 @@ class Confidence(ABC):
             else:  # PSM and peptide
                 self.confidence_estimates[level] = df.loc[:, cols]
 
-        # TODO decide whether to remove q-value column for decoy files
-        # uncomment next two lines if decide to remove q-value column
-        # cols.pop()
-        # prot_cols.pop()
+        # omment next three lines if decide to keep q-value column
+        cols.pop()
+        prot_cols.pop()
+        prot_group_cols.pop()
         for level, df in self.decoy_confidence_estimates.items():
             # use 'accept' column if threshold != 'q-value'
             if threshold != "q-value":
@@ -714,7 +714,7 @@ class MixmaxConfidence(Confidence):
 
         # TODO check if separate target-decoy search is done
         for level, group_cols in zip(self.levels, self._level_columns):
-            if level == "peptides" or level == "proteins":
+            if level != "psms":
                 continue
 
             df = self.data
