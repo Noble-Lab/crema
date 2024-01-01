@@ -25,7 +25,7 @@ def read_txt(
     Parameters
     ----------
     txt_files : str, panda.DataFrame, or tuple of str
-        One or more collection of PSMs in a tabular text format.
+        One or more collection of PSMs in a delimited text format.
     target_column : str
         The column header that indicates whether a PSM is a target or a decoy.
     spectrum_columns : str or tuple of str
