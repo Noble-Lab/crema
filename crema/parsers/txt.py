@@ -27,18 +27,19 @@ def read_txt(
     txt_files : str, panda.DataFrame, or tuple of str
         One or more collection of PSMs in a tabular text format.
     target_column : str
-        The column that indicates whether a PSM is a target or a decoy.
+        The column header that indicates whether a PSM is a target or a decoy.
     spectrum_columns : str or tuple of str
-        One or more columns that together define a unique mass spectrum.
+        One or more columns header that together define a unique mass spectrum.
     score_columns : str or tuple of str
-        One or more columns that indicate scores by which crema can rank PSMs.
+        One or more columns header that indicate scores by which crema can rank
+        PSMs.
     peptide_column : str
-        The column that defines a unique peptide. Modifications should be
-        indicated either in square brackets :code:`[]` or parentheses
+        The column header that defines a unique peptide. Modifications should
+        be indicated either in square brackets :code:`[]` or parentheses
         :code:`()`. The exact modification format within these entities does
         not matter, so long as it is consistent.
     protein_column : str
-        The column that defines a unique protein.
+        The column header that defines a unique protein.
     protein_delim : str
         The delimiter to separate protein IDs.
     sep : str, optional
