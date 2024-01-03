@@ -201,6 +201,9 @@ code to show users how to create such a plot.
 Below is a simple demonstration of how to run crema and plot the number of
 detections as a function of FDR threshold. 
 
+Note that this plot should only be used for only benchmarking studies and
+should not be used for experiments that result in some biological claim.
+
 .. code-block:: Python
 
     >>> import crema
