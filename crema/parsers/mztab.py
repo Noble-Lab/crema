@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 from pyteomics.mztab import MzTab
 
-from ..utils import listify
+from .. import utils
 from ..dataset import PsmDataset
 
 LOGGER = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ def read_mztab(mztab_files, pairing_file_name=None):
         A :py:class:`~crema.dataset.PsmDataset` object
         containing the PSMs from the mzTab file.
     """
-    mztab_files = listify(mztab_files)
+    mztab_files = utils.listify(mztab_files)
 
     # Create a dataframe from the PSMs in the mzTab files.
     data = pd.concat([_parse_psms(f) for f in mztab_files])
