@@ -62,13 +62,6 @@ def create_pairing_from_file(pairing_file_name):
             f"Required columns for peptide pairing were not detected: {miss}"
         )
 
-    # Remove the start position of peptide in protein if present
-    # This looks like "protName(XX)" and is used in Crux
-    new_protein_field = pairing_file[protein_field].str.replace(
-        "\\([^()]*\\)", "", regex=True
-    )
-    pairing_file[protein_field] = new_protein_field
-
     # drop targets that do not have corresponding decoys
     pairing_file = pairing_file[pairing_file[decoy_field] != ""]
     return dict(zip(pairing_file[target_field], pairing_file[decoy_field]))
