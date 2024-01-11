@@ -233,7 +233,7 @@ result in some biological claim.
     >>> plt.savefig("plot.pdf")
     >>> plt.close() 
 
-The differencs bewteen this code snippet and the original code snippet above 
+The difference between this code snippet and the original code snippet above 
 is that we have also imported the plotting packages matplotlib
 and seaborn. In addition, we have given the threshold argument in the 
 :doc:`assign_confidence <api/functions>` call a value of
