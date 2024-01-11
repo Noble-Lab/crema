@@ -476,7 +476,7 @@ class TdcConfidence(Confidence):
         LOGGER.warning(
             "PSM-level FDR estimates are not guaranteed to control "
             "the FDR. We suggest avoiding PSM-level FDR and using "
-            "peptide-level FDR estimates."
+            "peptide-level FDR estimates (see FAQ)."
         )
 
         for level, group_cols in zip(self.levels, self._level_columns):
