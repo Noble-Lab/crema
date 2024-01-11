@@ -205,9 +205,6 @@ However, we emphasize that this type of PSM-level plot should only be used
 for benchmarking studies and should not be used for experiments that
 result in some biological claim.
 
-Note that this plot should only be used for only benchmarking studies and
-should not be used for experiments that result in some biological claim.
-
 .. code-block:: Python
 
     >>> import crema
