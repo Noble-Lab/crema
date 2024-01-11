@@ -277,7 +277,7 @@ class Confidence(ABC):
             else:  # PSM and peptide
                 self.confidence_estimates[level] = df.loc[:, cols]
 
-        # omment next three lines if decide to keep q-value column
+        # comment next three lines if decide to keep q-value column
         cols.pop()
         prot_cols.pop()
         prot_group_cols.pop()
