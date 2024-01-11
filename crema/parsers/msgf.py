@@ -22,7 +22,7 @@ def read_msgf(
         One or more collection of PSMs in the MSGF+ tab-delimited format.
     pairing_file_name : str, optional
         A tab-delimited file that explicity pairs target and decoy peptide
-        sequences. Requires one column labled 'target' that contains target
+        sequences. Requires one column labeled 'target' that contains target
         sequences and a second column labeled 'decoy' that contains decoy
         sequences.
     decoy_prefix : str, optional
