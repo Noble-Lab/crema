@@ -23,3 +23,18 @@ peptide could originate from.
 Alternatively you can set pep_fdr_type argument within the assign_confidence
 function to "psm-only". Note that this method obtains worse performance
 compared to when paired information is used.
+
+Why are PSM-level FDR estimates not guaranteed to control the FDR?
+-------
+The target-decoy competition (TDC) framework has been provably shown to control
+the FDR under two assumptions (see 
+`He et al. <https://arxiv.org/abs/1501.00537`_). First, an incorrect match is 
+equally likely match a target or decoy peptide, and second,
+PSMs are independent from each other. When estimating the FDR at the PSM-level,
+this second assumption is violated because the same peptide can generate 
+multiple spectra. We note that while dynamic exclusion reduces the magnitude of
+problem it does not solve it.
+
+Empirical evidence that PSM-level FDR do not necessarily control the FDR can be 
+found at `Lin et al. <https://pubs.acs.org/doi/abs/10.1021/acs.jproteome.2c00282>`_
+and `He et al. <https://arxiv.org/abs/1501.00537`_
