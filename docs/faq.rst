@@ -37,4 +37,4 @@ problem it does not solve it.
 
 Empirical evidence that PSM-level FDR do not necessarily control the FDR can be 
 found at `Lin et al. <https://pubs.acs.org/doi/abs/10.1021/acs.jproteome.2c00282>`_
-and `He et al. <https://arxiv.org/abs/1501.00537`_
+and `He et al. <https://arxiv.org/abs/1501.00537`_.
