@@ -9,7 +9,6 @@ from abc import ABC, abstractmethod
 from . import qvalues
 from . import utils
 
-# from . import protein_tdc
 from .writers.txt import to_txt
 
 np.random.seed(0)

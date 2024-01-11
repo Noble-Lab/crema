@@ -47,22 +47,13 @@ def create_pairing_from_file(pairing_file_name):
     pairing : dict[str, str]
         A map of target and decoy peptide sequence pairings. Targets with
         missing decoys will not be included among the keys.
-    pep_to_prot : dict[str, set of str]
-        A map of peptide sequences to protein IDs that is used for
-        protein-level FDR.
-    pep_to_prot : dic[str, set of str]
-        A map of protein IDs to peptide sequences that is used for
-        protein-level FDR.
-
     """
     pairing_file = pd.read_csv(pairing_file_name, sep="\t")
 
     # ensure pairing_file dataframe contains all necessary columns
     target_field = "target"
     decoy_field = "decoy(s)"
-    protein_field = "proteins"
-    protein_split = "proteins_list"
-    req_fields = [target_field, decoy_field, protein_field]
+    req_fields = [target_field, decoy_field]
 
     if not set(req_fields).issubset(pairing_file.columns):
         miss = ", ".join(set(req_fields) - set(pairing_file.columns))
@@ -77,27 +68,9 @@ def create_pairing_from_file(pairing_file_name):
     )
     pairing_file[protein_field] = new_protein_field
 
-    # create pep_to_prot and prot_to_pep dic
-    # NOTE does not include decoys right now
-    pairing_file[protein_split] = pairing_file[protein_field].str.split(",")
-    pep_to_prot = dict(
-        zip(pairing_file[target_field], pairing_file[protein_split])
-    )
-
-    prot_to_pep = {}
-    for pep, prots in pep_to_prot.items():
-        for prot in prots:
-            if prot not in prot_to_pep:
-                prot_to_pep[prot] = {pep}
-            else:
-                prot_to_pep[prot].add(pep)
-
     # drop targets that do not have corresponding decoys
     pairing_file = pairing_file[pairing_file[decoy_field] != ""]
-    pairing_dic = dict(
-        zip(pairing_file[target_field], pairing_file[decoy_field])
-    )
-    return pairing_dic, pep_to_prot, prot_to_pep
+    return dict(zip(pairing_file[target_field], pairing_file[decoy_field]))
 
 
 def parse_psms_txt(txt_file, cols, skip_line):
