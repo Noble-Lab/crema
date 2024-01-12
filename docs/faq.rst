@@ -29,7 +29,7 @@ Why are PSM-level FDR estimates not guaranteed to control the FDR?
 The target-decoy competition (TDC) framework has been provably shown to control
 the FDR under two assumptions (see 
 `He et al. <https://arxiv.org/abs/1501.00537`_). First, an incorrect match is 
-equally likely match a target or decoy peptide, and second,
+equally likely to match a target or decoy peptide, and second,
 PSMs are independent from each other. When estimating the FDR at the PSM-level,
 this second assumption is violated because the same peptide can generate 
 multiple spectra. We note that while dynamic exclusion reduces the magnitude of
