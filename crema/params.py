@@ -53,7 +53,8 @@ def _configure_parser():
         nargs="+",
         help=(
             "One or more collection of peptide-spectrum matches (PSMs) in the "
-            "mzTab or Tide tab-delimited formats."
+            "mzTab, Tide tab-delimited formats, MSGF+ tsv file, MSAmanda csv "
+            "output, Morpheus txt output, or generic delimited text format."
         ),
     )
 
@@ -95,7 +96,8 @@ def _configure_parser():
         default=0.01,
         help=(
             "The FDR threshold by which to choose the best score column and "
-            "to report in logging messages."
+            "to report in logging messages. This should range from 0 to 1. "
+            "Default value is 0.01."
         ),
     )
 

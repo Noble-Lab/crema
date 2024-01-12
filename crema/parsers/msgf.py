@@ -3,6 +3,7 @@ import re
 import logging
 
 import pandas as pd
+from pathlib import Path
 
 from .txt import read_txt
 from .. import utils
@@ -21,8 +22,8 @@ def read_msgf(
         One or more collection of PSMs in the MSGF+ tab-delimited format.
     pairing_file_name : str, optional
         A tab-delimited file that explicity pairs target and decoy peptide
-        sequences. Requires one column labled 'target' that contains target
-        sequences and a second colun labeled 'decoy' that contains decoy
+        sequences. Requires one column labeled 'target' that contains target
+        sequences and a second column labeled 'decoy' that contains decoy
         sequences.
     decoy_prefix : str, optional
         The prefix used to indicate a decoy protein in the protein column.
@@ -62,6 +63,10 @@ def read_msgf(
     else:
         txt_files = utils.listify(txt_files)
         for txt_file in txt_files:
+            # check file type
+            if Path(txt_file).suffix != ".tsv":
+                raise ValueError(f"{txt_file} must be in .tsv format.")
+
             with open(txt_file) as txt_ref:
                 cols = txt_ref.readline().rstrip().split("\t")
                 scores = scores.intersection(set(cols))

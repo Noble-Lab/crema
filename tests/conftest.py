@@ -307,9 +307,9 @@ def basic_tide_csv(basic_tide_df, tmp_path):
 
 
 @pytest.fixture
-def basic_msamanda_txt(basic_msamanda_df, tmp_path):
+def basic_msamanda_csv(basic_msamanda_df, tmp_path):
     """A simple MSAmanda-like txt file"""
-    out_file = tmp_path / "msamanda.txt"
+    out_file = tmp_path / "msamanda.csv"
     print(tmp_path)
     with open(out_file, "w") as tmp_file:
         tmp_file.write("#version: 2.0.0.18350\n")
@@ -318,9 +318,9 @@ def basic_msamanda_txt(basic_msamanda_df, tmp_path):
 
 
 @pytest.fixture
-def basic_msgf_txt(basic_msgf_df, tmp_path):
+def basic_msgf_tsv(basic_msgf_df, tmp_path):
     "A simple MSGF+-liek tsv file" ""
-    out_file = tmp_path / "msgf.txt"
+    out_file = tmp_path / "msgf.tsv"
     basic_msgf_df.to_csv(out_file, sep="\t", index=False)
     return out_file
 

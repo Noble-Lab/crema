@@ -12,6 +12,7 @@
    self
    cli.rst
    api/index.rst
+   faq.rst
    Changelog <CHANGELOG.md>
 
 
@@ -58,8 +59,6 @@ Crema also depends on several Python packages:
 - `pandas <https://pandas.pydata.org/>`_
 - `lxml <https://lxml.de/>`_
 - `pyteomics <https://pyteomics.readthedocs.io/en/latest/>`_
-
-
 
 
 We recommend using `pip` to install crema. Missing dependencies will also
@@ -109,10 +108,12 @@ Here is a simple demonstration of how to use crema as an API:
 .. code-block:: Python
 
     >>> import crema
-    >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
+    >>> input_files = ["data/example_psms_target.txt",
+    >>>                "decoy_psms/example_psms_decoy.txt"]
     >>> pairing_file = "pairing_file.txt"
     >>> psms = crema.read_tide(input_files, pairing_file_name=pairing_file)
-    >>> results =  psms.assign_confidence(score_column="combined p-value", pep_fdr_type="psm-peptide")
+    >>> results = psms.assign_confidence(score_column="combined p-value",
+    >>>           pep_fdr_type="psm-peptide", threshold=0.01)
     >>> results.to_txt(output_dir="example_output_dir", file_root="test", sep="\t", decoys=False)
 
 Let's break this down and see what's really happening.
@@ -130,7 +131,8 @@ Next, import crema as a package:
    >>> import crema
 
 Call the :doc:`read_tide() <api/functions>` method and pass in the desired input
-files. The files "data/target_psms.txt" and "data/decoy_psms.txt" contains PSMs
+files. The files "data/example_psms_target.txt" and
+"data/example_psms_decoys.txt" contains PSMs
 and are in the required Tide file format. In addition, the pairing_file is an
 optional argument that explicitly pairs target and decoy peptides.
 The :doc:`read_tide() <api/functions>` method will return a :doc:`dataset <api/dataset>` object
@@ -138,7 +140,8 @@ that we will save as "psms" in this example:
 
 .. code-block:: Python
 
-   >>> input_files = ["data/target_psms.txt", "decoy_psms/decoys.txt"]
+   >>> input_files = ["data/example_psms_target.txt",
+   >>>                "decoy_psms/example_psms_target.txt"]
    >>> pairing_file = "pairing_file.txt"
    >>> psms = crema.read_tide(input_files. pairing_file_name=pairing_file)
 
@@ -153,11 +156,14 @@ This operation will return a :doc:`confidence <api/confidence>` object that we w
 
 .. code-block:: Python
 
-   >>> results =  psms.assign_confidence(score_column="combined p-value", pep_fdr_type="psm-peptide")
+   >>> results =  psms.assign_confidence(score_column="combined p-value",
+   >>>            pep_fdr_type="psm-peptide", threshold=0.01)
 
 Note that the parameters passed here are optional and are only specified here for
-demonstration. Further details can be found in the documentation for the
-:doc:`dataset <api/dataset>` class.
+demonstration. In this command, the score_column argument specifies which column
+contains the PSM scores and the threshold argument specifies the FDR threshold
+for which to accept a PSM. A full list of the parameters and further details
+can be found in the documentation for the :doc:`dataset <api/dataset>` class.
 
 Also note that the pep_fdr_type argument denotes the method used to estimate peptide-level
 FDR. This argument supports three options: psm-only, peptide-only, and psm-peptide. A pairing
@@ -182,6 +188,58 @@ demonstration. Further details can be found in the documentation for the :doc:`c
 
 That's all there is to it. You have successfully used crema as an API to
 calculate confidence estimates for your data.
+
+Plotting performance curves
+###################################
+Instead of outputting a list of discoveries, Crema can also be used for
+benchmarking. One common way to perform this task is to plot the number of
+detections as a function of FDR threshold. We have opted not to create a plot
+function within Crema as it would add a dependency and there are existing user
+friendly libraries for plotting. In lieu of a plot function, we provide example
+code to show users how to create such a plot.
+
+Below is a simple demonstration of how to run crema and plot the number of
+detections as a function of FDR threshold. 
+
+However, we emphasize that this type of PSM-level plot should only be used
+for benchmarking studies and should not be used for experiments that
+result in some biological claim.
+
+.. code-block:: Python
+
+    >>> import crema
+    >>> from matplotlib import pyplot as plt
+    >>> import seaborn as sns
+    >>>
+    >>> input_files = ["data/example_psms_target.txt",
+    >>>                "decoy_psms/example_psms_decoy.txt"]
+    >>> pairing_file = "pairing_file.txt"
+    >>> psms = crema.read_tide(input_files, pairing_file_name=pairing_file)
+    >>> results = psms.assign_confidence(score_column="combined p-value",
+    >>>           pep_fdr_type="psm-peptide", threshold="q-value")
+    >>>
+    >>> # extract peptide-level q-values
+    >>> detections = results.confidence_estimates['peptides']['crema q-value']
+    >>> # remove detections with a q-value > 0.11
+    >>> detections = detections[detections <= 0.11]
+    >>> 
+    >>> # create plot
+    >>> fig,ax = plt.subplots()
+    >>> sns.ecdfplot(detections,ax=ax,stat='count') 
+    >>> plt.xlim(0,.10)
+    >>> plt.ylabel("# of confident IDs")
+    >>> plt.xlabel("crema q-value")
+    >>> plt.tight_layout()
+    >>> plt.savefig("plot.pdf")
+    >>> plt.close() 
+
+The difference between this code snippet and the original code snippet above 
+is that we have also imported the plotting packages matplotlib
+and seaborn. In addition, we have given the threshold argument in the 
+:doc:`assign_confidence <api/functions>` call a value of
+"q-value" instead of a float. This is required for crema to output q-values.
+Finally, we have added eight lines of code to create and save the performance
+curve. 
 
 Supported Database Search Engines
 ###################################

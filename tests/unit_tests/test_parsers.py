@@ -87,8 +87,8 @@ def test_read_txt(basic_tide_csv):
     assert (~psms.targets).sum() == 4
 
 
-def test_read_msgf(basic_msgf_txt):
-    psms = crema.read_msgf(basic_msgf_txt)
+def test_read_msgf(basic_msgf_tsv):
+    psms = crema.read_msgf(basic_msgf_tsv)
     assert isinstance(psms.data, pd.DataFrame)
     assert psms.data.shape == (10, 9)
     assert list(psms.spectra.columns) == ["#SpecFile", "ScanNum"]
@@ -106,8 +106,8 @@ def test_read_msgf(basic_msgf_txt):
     assert (~psms.targets).sum() == 3
 
 
-def test_read_msamanda(basic_msamanda_txt):
-    psms = crema.read_msamanda(basic_msamanda_txt)
+def test_read_msamanda(basic_msamanda_csv):
+    psms = crema.read_msamanda(basic_msamanda_csv)
     assert psms.data.shape == (10, 7)
     assert list(psms.spectra.columns) == ["Filename", "Scan Number"]
 

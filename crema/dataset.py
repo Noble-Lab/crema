@@ -36,7 +36,7 @@ class PsmDataset:
     protein_delim : str
         The string delimiter that is needed to separate multiple proteins found
         in the protein column.
-    peptide_pairing: dict
+    peptide_pairing: dict[str, str]
         A map of target and decoy peptide sequence pairings to be used for TDC.
         This should be in the form {key=target_sequence:value=decoy_sequence}
         where decoy sequences are shuffled versions of target sequences.

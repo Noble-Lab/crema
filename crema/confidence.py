@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 
 from . import qvalues
 from . import utils
+
 from .writers.txt import to_txt
 
 np.random.seed(0)
@@ -44,6 +45,7 @@ def assign_confidence(
     eval_fdr : float, optional
         The false discovery rate threshold used to evaluate the best
         `score_column` and `desc` to choose. This should range from 0 to 1.
+        Default is 0.01.
     method : {"tdc"}, optional
         The method for crema to use when calculating the confidence estimates.
     pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
@@ -141,6 +143,7 @@ class Confidence(ABC):
         "psms": "PSMs",
         "peptides": "Peptides",
         "proteins": "Proteins",
+        "protein_groups": "ProteinGroups",
     }
 
     @abstractmethod
@@ -194,14 +197,16 @@ class Confidence(ABC):
         self._score_column = score_column
         self._desc = desc
         self._eval_fdr = eval_fdr
-        self._levels = ("psms", "peptides", "proteins")
+        self._levels = ("psms", "peptides", "proteins", "protein_groups")
         self._level_columns = (
             self.dataset._spectrum_columns,
             self.dataset._peptide_column,
             self.dataset._protein_column,
+            "protein group",
         )
         self._pep_fdr_type = pep_fdr_type
         self._prot_fdr_type = prot_fdr_type
+        self._threshold = threshold
         self.confidence_estimates = {}
         self.decoy_confidence_estimates = {}
 
@@ -251,8 +256,11 @@ class Confidence(ABC):
             self.dataset._protein_column,
             self._score_column,
         ]
+        prot_group_cols = ["protein group", self._score_column]
+
         cols.append(last_col)
         prot_cols.append(last_col)
+        prot_group_cols.append(last_col)
 
         for level, df in self.confidence_estimates.items():
             # use 'accept' column if threshold != 'q-value'
@@ -262,19 +270,33 @@ class Confidence(ABC):
             # reverse order so best score is begining of df
             df = df.iloc[::-1]
 
-            if level != "proteins":
-                self.confidence_estimates[level] = df.loc[:, cols]
+            if level == "protein_groups":
+                self.confidence_estimates[level] = df.loc[:, prot_group_cols]
             elif level == "proteins":
                 self.confidence_estimates[level] = df.loc[:, prot_cols]
+            else:  # PSM and peptide
+                self.confidence_estimates[level] = df.loc[:, cols]
 
-        # Remove q-value column for decoy files
+        # comment next three lines if decide to keep q-value column
         cols.pop()
         prot_cols.pop()
+        prot_group_cols.pop()
         for level, df in self.decoy_confidence_estimates.items():
-            if level != "proteins":
-                self.decoy_confidence_estimates[level] = df.loc[:, cols]
+            # use 'accept' column if threshold != 'q-value'
+            if threshold != "q-value":
+                df[last_col] = df["crema q-value"] <= threshold
+
+            # reverse order so best score is begining of df
+            df = df.iloc[::-1]
+
+            if level == "protein_groups":
+                self.decoy_confidence_estimates[level] = df.loc[
+                    :, prot_group_cols
+                ]
             elif level == "proteins":
                 self.decoy_confidence_estimates[level] = df.loc[:, prot_cols]
+            else:  # PSM and peptide
+                self.decoy_confidence_estimates[level] = df.loc[:, cols]
 
     def _compete(self, df, group_columns):
         """Perform target-decoy competition
@@ -334,7 +356,7 @@ class Confidence(ABC):
             An optional prefix for the confidence estimate files. The suffix
             will always be "crema.{level}.txt", where "{level}" indicates the
             level at which confidence estimation was performed (i.e. PSMs,
-            peptides, proteins).
+            peptides, proteins, and protein groups).
         sep : str, optional
             The delimiter to use.
         decoys : bool, optional
@@ -449,8 +471,13 @@ class TdcConfidence(Confidence):
 
         if pairing == None and self._pep_fdr_type != "psm-only":
             raise ValueError(
-                "Must provide paired target decoy peptide infomation."
+                "Must provide paired target decoy peptide infomation (see FAQ)."
             )
+        LOGGER.warning(
+            "PSM-level FDR estimates are not guaranteed to control "
+            "the FDR. We suggest avoiding PSM-level FDR and using "
+            "peptide-level FDR estimates (see FAQ)."
+        )
 
         for level, group_cols in zip(self.levels, self._level_columns):
             # NOTE line below can removed if psm-only and peptide-only methods are removed
@@ -480,42 +507,99 @@ class TdcConfidence(Confidence):
                         f"'{self._pep_fdr_type}' is not a valid value for "
                         "pep_fdr_type "
                     )
-            elif level == "proteins":
-                # Perform PSM level FDR
-                df = self._compete(df, self.dataset._spectrum_columns)
+            elif level == "proteins" or level == "protein_groups":
+                if level == "proteins":
+                    # Perform PSM level TDC
+                    df = self._compete(df, self.dataset._spectrum_columns)
 
-                # Remove peptides found in multiple proteins
-                df = df[
-                    ~df[self.dataset._protein_column].str.contains(
-                        self.dataset._protein_delim
+                    # Remove peptides found in multiple proteins
+                    df = df[
+                        ~df[self.dataset._protein_column].str.contains(
+                            self.dataset._protein_delim
+                        )
+                    ]
+                elif level == "protein_groups":
+                    # obtain peptides at 1% peptide-level FDR
+                    pep_tar = self.confidence_estimates["peptides"]
+                    conf_tar = pep_tar[pep_tar["crema q-value"] <= 0.01].copy()
+
+                    pep_dec = self.decoy_confidence_estimates["peptides"]
+                    conf_dec = pep_dec[pep_dec["crema q-value"] <= 0.01].copy()
+
+                    LOGGER.info("Building protein groups...")
+                    protein_group, pep_to_prot = _group_proteins(
+                        conf_tar,
+                        conf_dec,
+                        self.dataset._protein_delim,
+                        self.dataset._protein_column,
+                        self.dataset._peptide_column,
                     )
-                ]
+
+                    LOGGER.info("Discarding shared peptides...")
+                    unique_peptides = {}
+                    for pep, prots in pep_to_prot.items():
+                        if len(prots) == 1:
+                            unique_peptides[pep] = next(iter(prots))
+
+                    conf_tar["protein group"] = conf_tar[
+                        self.dataset._peptide_column
+                    ].apply(lambda x: next(iter(pep_to_prot.get(x))))
+                    conf_dec["protein group"] = conf_dec[
+                        self.dataset._peptide_column
+                    ].apply(lambda x: next(iter(pep_to_prot.get(x))))
+
+                    conf_tar = conf_tar.drop(
+                        columns=[self.dataset._protein_column, "crema q-value"]
+                    )
+                    conf_dec = conf_dec.drop(
+                        columns=[
+                            self.dataset._protein_column,
+                            "crema q-value",
+                        ],
+                    )
+
+                    df = pd.concat([conf_tar, conf_dec])
 
                 # Determines how to aggregate protein score
-                if self._prot_fdr_type == "best" and self._desc == True:
-                    # larger score is better
-                    agg_val = "max"
-                elif self._prot_fdr_type == "best" and self._desc == False:
-                    # smaller score is better
-                    agg_val = "min"
-                elif self._prot_fdr_type == "combine" and self._desc == True:
-                    agg_val = "sum"
-                elif self._prot_fdr_type == "combine" and self._desc == False:
-                    agg_val = "prod"
+                if self._prot_fdr_type == "best":
+                    if self._desc == True:
+                        agg_val = "max"  # larger score is better
+                    else:
+                        agg_val = "min"  # smaller score is better
+                else:  # prot_fdr_type == combine
+                    if self._desc == True:
+                        agg_val = "sum"
+                    else:
+                        agg_val = "prod"
 
-                df2 = df.groupby(
-                    [
-                        self.dataset._protein_column,
-                        self.dataset._target_column,
-                    ]
-                ).agg({self._score_column: [agg_val]})
+                if level == "proteins":
+                    df2 = df.groupby(
+                        [
+                            self.dataset._protein_column,
+                            self.dataset._target_column,
+                        ]
+                    ).agg({self._score_column: [agg_val]})
+                elif level == "protein_groups":
+                    df2 = df.groupby(
+                        [
+                            "protein group",
+                            self.dataset._target_column,
+                        ]
+                    ).agg({self._score_column: [agg_val]})
 
                 df2 = df2.reset_index()
-                df2.columns = [
-                    self.dataset._protein_column,
-                    self.dataset._target_column,
-                    self._score_column,
-                ]
+                if level == "proteins":
+                    df2.columns = [
+                        self.dataset._protein_column,
+                        self.dataset._target_column,
+                        self._score_column,
+                    ]
+                elif level == "protein_groups":
+                    df2.columns = [
+                        "protein group",
+                        self.dataset._target_column,
+                        self._score_column,
+                    ]
                 df = df2
 
             df = self._compete(df, group_cols)
@@ -629,7 +713,7 @@ class MixmaxConfidence(Confidence):
 
         # TODO check if separate target-decoy search is done
         for level, group_cols in zip(self.levels, self._level_columns):
-            if level == "peptides" or level == "proteins":
+            if level != "psms":
                 continue
 
             df = self.data
@@ -638,7 +722,13 @@ class MixmaxConfidence(Confidence):
             targets = df[df[self.dataset._target_column]]
             decoys = df[~df[self.dataset._target_column]]
 
-            # TODO add following warning ""The mix-max procedure is not well behaved when # targets (%d) != # of decoys (%d).","
+            if targets.shape[1] != decoys.shape[1]:
+                LOGGER.warning(
+                    "The mix-max procedure is not well behaved when "
+                    "# targets (%i) != # decoys (%i).",
+                    targets.shape[0],
+                    decoys.shape[0],
+                )
 
             if self._desc:
                 keep = "last"
@@ -709,3 +799,91 @@ class MixmaxConfidence(Confidence):
                     targets_sorted[self._score_column] * -1.0
                 )
             self.confidence_estimates[level] = targets_sorted
+
+
+def _group_proteins(conf_pep_tar, conf_pep_dec, prot_delim, prot_col, pep_col):
+    """Group proteins when one's peptides are a subset of another's.
+
+    Note that this function is mostly a copy of Mokapot.
+    Function assumes that search engine output has peptide to protein mapping.
+
+    Parameters
+    ----------
+    conf_pep_tar : df
+        A df of the target peptides detected at 1% FDR
+    conf_pep_dec: df
+        A df of the decoy peptides detected at 1% FDR
+    prot_delim : str
+        Delimiter used for protein ID column
+    prot_col : str
+        Column header for protein ID column
+    pep_col : str
+        Column header for peptide sequence column
+
+    Returns
+    -------
+    protein groups : dict[str, set of str]
+        A map of protein groups to their peptides
+    peptides : dict[str, set of str]
+        A map of peptides to their protein groups.
+    """
+    # create peptide to protein mapping
+    # create protein to peptide mapping
+    pep_to_prot = {}
+    prot_to_pep = {}
+    for pep, prot in zip(conf_pep_tar[pep_col], conf_pep_tar[prot_col]):
+        prot_sep = prot.split(prot_delim)
+        pep_to_prot[pep] = set(prot_sep)
+
+        for cur_prot in prot_sep:
+            if cur_prot not in prot_to_pep:
+                prot_to_pep[cur_prot] = {pep}
+            else:
+                prot_to_pep[cur_prot].add(pep)
+
+    for pep, prot in zip(conf_pep_dec[pep_col], conf_pep_dec[prot_col]):
+        prot_sep = prot.split(prot_delim)
+
+        # TODO not sure what to do if peptide is
+        # in both a target and decoy
+        assert pep not in pep_to_prot
+        pep_to_prot[pep] = set(prot_sep)
+
+        for cur_prot in prot_sep:
+            if cur_prot not in prot_to_pep:
+                prot_to_pep[cur_prot] = {pep}
+            else:
+                prot_to_pep[cur_prot].add(pep)
+
+    # create protein grouping
+    grouped = {}
+    for prot, peps in sorted(
+        prot_to_pep.items(), key=lambda item: -len(item[1])
+    ):
+        if not grouped:
+            grouped[prot] = peps
+            continue
+
+        matches = set.intersection(*[pep_to_prot[p] for p in peps])
+        matches = [m for m in matches if m in grouped.keys()]
+
+        # if the entry is unique:
+        if not matches:
+            grouped[prot] = peps
+            continue
+
+        # create new entries from subsets:
+        for match in matches:
+            new_prot = ",".join([match, prot])
+            # update grouped proteins:
+            grouped[new_prot] = grouped.pop(match)
+
+            # update peptides:
+            for pep in grouped[new_prot]:
+                pep_to_prot[pep].remove(match)
+                if prot in pep_to_prot[pep]:
+                    pep_to_prot[pep].remove(prot)
+
+                pep_to_prot[pep].add(new_prot)
+
+    return (grouped, pep_to_prot)
