@@ -3,7 +3,11 @@
 ## [Unreleased]
 ### Fixed
 
-## [0.0.9] - 2023-01-10
+## [0.0.10] - 2024-02-01
+- Updated CLI documentation
+- Removed protein field requirement from create\_pairing\_from\_file function
+
+## [0.0.9] - 2024-01-10
 - Added the pairing\_file\_name paramter to read\_txt parser
 - Added a FAQ to the readthedocs
 - Added protein group level FDR

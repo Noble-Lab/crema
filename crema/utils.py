@@ -53,8 +53,7 @@ def create_pairing_from_file(pairing_file_name):
     # ensure pairing_file dataframe contains all necessary columns
     target_field = "target"
     decoy_field = "decoy(s)"
-    protein_field = "proteins"
-    req_fields = [target_field, decoy_field, protein_field]
+    req_fields = [target_field, decoy_field]
 
     if not set(req_fields).issubset(pairing_file.columns):
         miss = ", ".join(set(req_fields) - set(pairing_file.columns))

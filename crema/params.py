@@ -36,9 +36,9 @@ def _configure_parser():
 
     desc = (
         f"crema version {__version__}\n\n"
-        "Written by Andy Lin, Donavan See (seed99@cs.washington.edu), and \n"
-        "William E Fondrie (wfondrie@uw.edu) in the \n"
-        "Department of Genome Sciences at the University of Washington\n\n"
+        "Written by Andy Lin (linandy@uw.edu), Donavan See (seed99@cs.washington.edu), "
+        "and William E Fondrie (wfondrie@uw.edu) in the "
+        "Department of Genome Sciences at the University of Washington "
         "Official code website: https://github.com/Noble-Lab/crema\n\n"
         "More documentation and examples: https://crema-ms.readthedocs.io/"
     )
@@ -73,6 +73,38 @@ def _configure_parser():
     )
 
     parser.add_argument(
+        "-t",
+        "--threshold",
+        type=float,
+        default=0.01,
+        help=(
+            "The FDR threshold for accepting discoveries. Default is 0.01. "
+            "If 'q-value' is chosen, then “ accept”  column is replaced "
+            "with 'crema q-value'."
+        ),
+    )
+
+    parser.add_argument(
+        "-p",
+        "--pep_fdr_type",
+        type=str,
+        default="psm-only",
+        choices=["psm-only", "peptide-only", "psm-peptide"],
+        help="The peptide-level FDR estimation method to use."
+        "Default is 'psm-peptide'",
+    )
+
+    parser.add_argument(
+        "-r",
+        "--prot_fdr_type",
+        type=str,
+        default="best",
+        choices=["best", "combine"],
+        help="The protein-level FDR estimation method to use. "
+        "Default is 'best'",
+    )
+
+    parser.add_argument(
         "-f",
         "--file_root",
         type=str,
@@ -86,6 +118,21 @@ def _configure_parser():
         help=(
             "The directory where output files will be created. Defaults to "
             "the current working directory."
+        ),
+    )
+
+    parser.add_argument(
+        "-d",
+        "--desc",
+        type=str,
+        default="None",
+        choices=["True", "False", "None"],
+        help=(
+            "True if higher scores better, False if lower scores are better. "
+            "If None, crema will try both and use the choice that yields the "
+            "most PSMs at the specified false discovery rate threshold "
+            "(eval_fdr). If score_column is None, this parameter is ignored. "
+            "Default is 'None'."
         ),
     )
 
@@ -108,24 +155,6 @@ def _configure_parser():
         default="tdc",
         choices=["tdc"],
         help="The confidence estimation method to use.",
-    )
-
-    parser.add_argument(
-        "-p",
-        "--pep_fdr_type",
-        type=str,
-        default="psm-only",
-        choices=["psm-only", "peptide-only", "psm-peptide"],
-        help="The peptide-level FDR estimation method to use.",
-    )
-
-    parser.add_argument(
-        "-r",
-        "--prot_fdr_type",
-        type=str,
-        default="best",
-        choices=["best", "combine"],
-        help="The protein-level FDR estimation method to use.",
     )
     return parser
 

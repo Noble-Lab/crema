@@ -158,12 +158,12 @@ class PsmDataset:
     def assign_confidence(
         self,
         score_column=None,
+        threshold=0.01,
+        pep_fdr_type="psm-peptide",
+        prot_fdr_type="best",
         desc=None,
         eval_fdr=0.01,
         method="tdc",
-        pep_fdr_type="psm-peptide",
-        prot_fdr_type="best",
-        threshold=0.01,
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
 
@@ -173,6 +173,16 @@ class PsmDataset:
             The score by which to rank the PSMs for confidence estimation. If
             :code:`None`, the score that yields the most PSMs at the specified
             false discovery rate threshold (`eval_fdr`), will be used.
+        threshold : float or "q-value", optional
+            The FDR threshold for accepting discoveries. Default is 0.01. If
+            "q-value" is chosen, then "accept" column is replaced with
+            "crema q-value".
+        pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
+            The method for crema to use when calculating peptide level confidence
+            estimates. Default is "psm-peptide".
+        prot_fdr_type : {"best", "combine"}, optional
+            The method for crema to use when calculating protein level confidence
+            estimates. Default is "best".
         desc : bool, optional
             True if higher scores better, False if lower scores are better.
             If None, crema will try both and use the
@@ -184,16 +194,6 @@ class PsmDataset:
             `score_column` and `desc` to choose. This should range from 0 to 1.
         method : {"tdc"}, optional
             The method for crema to use when calculating the confidence estimates.
-        pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
-            The method for crema to use when calculating peptide level confidence
-            estimates. Default is "psm-peptide".
-        prot_fdr_type : {"best", "combine"}, optional
-            The method for crema to use when calculating protein level confidence
-            estimates. Default is "best".
-        threshold : float or "q-value", optional
-            The FDR threshold for accepting discoveries. Default is 0.01. If
-            "q-value" is chosen, then "accept" column is replaced with
-            "crema q-value".
 
         Returns
         -------

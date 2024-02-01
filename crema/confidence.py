@@ -19,12 +19,12 @@ LOGGER = logging.getLogger(__name__)
 def assign_confidence(
     psms,
     score_column=None,
+    threshold=0.01,
+    pep_fdr_type="psm-peptide",
+    prot_fdr_type="best",
     desc=None,
     eval_fdr=0.01,
     method="tdc",
-    pep_fdr_type="psm-peptide",
-    prot_fdr_type="best",
-    threshold=0.01,
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -36,6 +36,16 @@ def assign_confidence(
         The score by which to rank the PSMs for confidence estimation. If
         :code:`None`, the score that yields the most PSMs at the specified
         false discovery rate threshold (`eval_fdr`), will be used.
+    threshold : float or "q-value", optional
+        The FDR threshold for accepting discoveries. Default is 0.01. If
+        "q-value" is chosen, then "accept" column is replaced with
+        "crema q-value".
+    pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
+        The method for Crema to use when calculating peptide level confidence
+        estimates.
+    prot_fdr_type : {"best", "combine"}, optional
+        The method for crema to use when calculating protein level confidence
+        estimates. Default is "best".
     desc : bool, optional
         True if higher scores better, False if lower scores are better.
         If None, crema will try both and use the
@@ -48,16 +58,6 @@ def assign_confidence(
         Default is 0.01.
     method : {"tdc"}, optional
         The method for crema to use when calculating the confidence estimates.
-    pep_fdr_type : {"psm-only","peptide-only",psm-peptide"}, optional
-        The method for Crema to use when calculating peptide level confidence
-        estimates.
-    prot_fdr_type : {"best", "combine"}, optional
-        The method for crema to use when calculating protein level confidence
-        estimates. Default is "best".
-    threshold : float or "q-value", optional
-        The FDR threshold for accepting discoveries. Default is 0.01. If
-        "q-value" is chosen, then "accept" column is replaced with
-        "crema q-value".
 
     Returns
     -------
@@ -77,12 +77,12 @@ def assign_confidence(
     for dset in psms:
         conf = dset.assign_confidence(
             score_column=score_column,
+            threshold=threshold,
+            pep_fdr_type=pep_fdr_type,
+            prot_fdr_type=prot_fdr_type,
             desc=desc,
             eval_fdr=eval_fdr,
             method=method,
-            pep_fdr_type=pep_fdr_type,
-            prot_fdr_type=prot_fdr_type,
-            threshold=threshold,
         )
         confs.append(conf)
 

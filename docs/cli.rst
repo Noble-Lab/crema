@@ -8,15 +8,15 @@ Command Line Interface
 
 Output
 ---------
-Crema will produce three output files:
+Crema will produce five output files:
 
 #. A text file named "crema.psms.txt" containing an additional column (crema q-value) of PSM-level confidence estimate results appended to the spectrum, peptide, and score columns from the input file.
 
 #. A text file named "crema.peptides.txt" containing an additional column (crema q-value) of peptide-level confidence estimate results appended to the spectrum, peptide, and score columns from the input file.
 
-#. A text file named "crema.proteins.txt" containing an additional column (crema
-q-value) of protein-level confidence estimate results appended to the protein ID
-and score columns from the input file.
+#. A text file named "crema.proteins.txt" containing an additional column (crema q-value) of protein-level confidence estimate results appended to the protein ID and score columns from the input file.
+
+#. A text file named "crema.protein_groups.txt" containing an additional column (crema q-value) of protein-level confidence estimate results appended to the protein ID and score columns from the input file.
 
 #. A text file named "crema.log.txt" containing the logging information from using crema. Note that this file is only created when running crema through via the command line.
 

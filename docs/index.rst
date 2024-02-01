@@ -94,9 +94,9 @@ That's it. The software will run the target-decoy competition FDR estimation met
 to calculate confidence estimates for the given data.
 
 Your results will be saved in your working directory as .txt files named
-"crema.psms.txt", "crema.peptides.txt", and "crema.proteins.txt".
+"crema.psms.txt", "crema.peptides.txt", "crema.proteins.txt", and "crema.protein_groups.txt".
 These files will contain an additional column ("crema q-value") that is appended to several columns
-(specifically those that identify the PSM, peptide sequence, and score) parsed from the input file.
+parsed from the input file. A log file will also be saved "crema.log.txt".
 
 For a full list of parameters, see the :doc:`Command Line Interface <cli>`.
 
@@ -172,12 +172,12 @@ peptide-only requires a separate target and decoy database search. If
 peptide-only is used in conjunction with a concatenated target-decoy search, then
 it becomes equivalent to psm-peptide.
 
-Confidence objects contain a :doc:`to_txt() <api/confidence>` method that allows you to write your results to a text file.
-Your results will be saved in your working directory (unless otherwise specified)
-as text files named "crema.psms.txt", "crema.peptides.txt", and
-"crema.proteins.txt".
-These files will contain an additional column ("crema q-value") that is appended to several columns
-(specifically those that identify the PSM, peptide sequence, and score) parsed from the input file.
+Confidence objects contain a :doc:`to_txt() <api/confidence>` method that allows
+you to write your results to a text file. Your results will be saved in your
+working directory (unless otherwise specified) as text files named
+"crema.psms.txt", "crema.peptides.txt", "crema.proteins.txt",
+and "crema.protein_groups.txt". These files will contain an additional column
+("crema q-value") that is appended to several columns parsed from the input file.
 
 .. code-block:: Python
 
