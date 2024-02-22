@@ -1,4 +1,5 @@
 """A parser for the MSAmanda tab-delimited format"""
+
 import re
 import logging
 

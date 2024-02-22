@@ -2,6 +2,7 @@
 This module contains the parser for PSMs in pepXML format.
 This code is heavily based on Will Fondrie's Mokapot pepxml parser code
 """
+
 import logging
 from lxml import etree
 from functools import partial

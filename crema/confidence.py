@@ -1,6 +1,7 @@
 """The :py:class:`Confidence` class is used to define a collection of
 peptide-spectrum matches with calculated false discovery rates (FDR) and q-values.
 """
+
 import logging
 import numpy as np
 import pandas as pd

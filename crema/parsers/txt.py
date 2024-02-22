@@ -1,4 +1,5 @@
 """A parser for generic delmited text files."""
+
 import logging
 
 import pandas as pd

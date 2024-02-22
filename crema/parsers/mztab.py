@@ -1,4 +1,5 @@
 """This module contains the parser for PSMs in mzTab format"""
+
 import logging
 
 import pandas as pd

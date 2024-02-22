@@ -1,6 +1,7 @@
 """
 These tests verify the confidence implementations function as expected
 """
+
 import pytest
 import numpy as np
 

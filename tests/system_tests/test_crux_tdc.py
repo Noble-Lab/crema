@@ -1,4 +1,5 @@
 """These tests verify that confidence estimates are correctly produced via tdc through various parsers"""
+
 import unittest
 
 import numpy as np

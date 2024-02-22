@@ -1,6 +1,7 @@
 """
 This module estimates q-values.
 """
+
 import logging
 
 import numpy as np

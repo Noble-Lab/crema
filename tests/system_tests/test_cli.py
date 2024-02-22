@@ -1,4 +1,5 @@
 """These tests verify that the crema CLI works as expected."""
+
 from pathlib import Path
 import subprocess
 
