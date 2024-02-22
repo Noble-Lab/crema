@@ -1,4 +1,5 @@
 """A parser for Comet output"""
+
 import re
 import logging
 

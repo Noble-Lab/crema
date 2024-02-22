@@ -3,7 +3,8 @@
 ## [Unreleased]
 ### Fixed
 
-## [0.0.10] - 2024-02-01
+## [0.0.10] - 2024-02-21
+- Upgraded Github action versions
 - Updated CLI documentation
 - Removed protein field requirement from create\_pairing\_from\_file function
 

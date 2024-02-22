@@ -1,4 +1,5 @@
 """Fixtures that are used in multiple tests"""
+
 from pathlib import Path
 
 import pytest

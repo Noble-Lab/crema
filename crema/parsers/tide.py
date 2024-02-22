@@ -1,4 +1,5 @@
 """A parser for the Tide tab-delimited format"""
+
 import re
 import logging
 

@@ -1,4 +1,5 @@
 """A parser for the MSFragger tab-delimited format"""
+
 import re
 import logging
 

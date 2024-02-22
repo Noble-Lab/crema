@@ -1,6 +1,7 @@
 """The :py:class:`Params` class is used to define the details and arguments
 necessary for running crema from the command line.
 """
+
 import argparse
 import textwrap
 from . import __version__

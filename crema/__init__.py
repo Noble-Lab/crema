@@ -1,4 +1,5 @@
 """Initialize the crema package."""
+
 try:
     from importlib.metadata import version, PackageNotFoundError
 

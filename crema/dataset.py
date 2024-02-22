@@ -1,6 +1,7 @@
 """The :py:class:`PsmDataset` class is used to define a collection of
 peptide-spectrum matches.
 """
+
 import logging
 
 from .confidence import TdcConfidence
