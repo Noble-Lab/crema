@@ -45,6 +45,7 @@ def read_tide(
     target = "target/decoy"
     peptide = "sequence"
     spectrum = ["file", "scan"]
+    charge = "charge"
     pairing = "original target sequence"
     protein = "protein id"
     protein_delim = ","
@@ -98,6 +99,7 @@ def read_tide(
         data,
         target_column=target,
         spectrum_columns=spectrum,
+        charge=charge,
         score_columns=scores,
         peptide_column=peptide,
         protein_column=protein,

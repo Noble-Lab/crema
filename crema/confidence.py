@@ -142,6 +142,7 @@ class Confidence(ABC):
 
     _level_labs = {
         "psms": "PSMs",
+        "precursors": "Precursor",
         "peptides": "Peptides",
         "proteins": "Proteins",
         "protein_groups": "ProteinGroups",
@@ -198,7 +199,7 @@ class Confidence(ABC):
         self._score_column = score_column
         self._desc = desc
         self._eval_fdr = eval_fdr
-        self._levels = ("psms", "peptides", "proteins", "protein_groups")
+        self._levels = ("psms", "precursors", "peptides", "proteins", "protein_groups")
         self._level_columns = (
             self.dataset._spectrum_columns,
             self.dataset._peptide_column,

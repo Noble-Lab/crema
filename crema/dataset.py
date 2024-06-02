@@ -25,6 +25,8 @@ class PsmDataset:
         :code:`False` indicates a decoy.
     spectrum_columns : str or tuple of str
         One or more columns that together define a unique mass spectrum.
+    charge_column : str
+        The column for charge.
     score_columns : str or tuple of str, optional
         One or more columns that indicate scores by which crema can rank PSMs.
     peptide_column : str
@@ -67,6 +69,7 @@ class PsmDataset:
         psms,
         target_column,
         spectrum_columns,
+        charge_column,
         score_columns,
         peptide_column,
         protein_column,
@@ -77,6 +80,7 @@ class PsmDataset:
         """Initialize a PsmDataset object."""
         self.score_columns = listify(score_columns)
         self._spectrum_columns = listify(spectrum_columns)
+        self._charge_column = charge_column
         self._target_column = target_column
         self._peptide_column = peptide_column
         self._protein_column = protein_column
@@ -86,6 +90,7 @@ class PsmDataset:
         fields = sum(
             [
                 self._spectrum_columns,
+                [self._charge_column],
                 self.score_columns,
                 [self._target_column],
                 [self._peptide_column],
@@ -121,6 +126,11 @@ class PsmDataset:
     def spectra(self):
         """The mass spectrum identifiers as a :py:class:`pandas.DataFrame`."""
         return self[self._spectrum_columns]
+
+    @property
+    def charge(self):
+        """The column of PSM precursor charges"""
+        return self[self._charge_column]
 
     @property
     def peptides(self):

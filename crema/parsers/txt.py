@@ -13,6 +13,7 @@ def read_txt(
     txt_files,
     target_column,
     spectrum_columns,
+    charge_column,
     score_columns,
     peptide_column,
     protein_column,
@@ -31,6 +32,8 @@ def read_txt(
         The column header that indicates whether a PSM is a target or a decoy.
     spectrum_columns : str or tuple of str
         One or more columns header that together define a unique mass spectrum.
+    charge_column: str
+        The column header for charge.
     score_columns : str or tuple of str
         One or more columns header that indicate scores by which crema can rank
         PSMs.
@@ -84,6 +87,7 @@ def read_txt(
         psms=data,
         target_column=target_column,
         spectrum_columns=spectrum_columns,
+        charge_column=charge_column,
         score_columns=score_columns,
         peptide_column=peptide_column,
         protein_column=protein_column,
