@@ -29,6 +29,7 @@ def read_txt(
         One or more collection of PSMs in a delimited text format.
     target_column : str
         The column header that indicates whether a PSM is a target or a decoy.
+        Values in this columns are Booleans, where True = target and False = decoy.
     spectrum_columns : str or tuple of str
         One or more columns header that together define a unique mass spectrum.
     score_columns : str or tuple of str
