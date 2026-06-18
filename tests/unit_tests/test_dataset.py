@@ -100,8 +100,8 @@ def test_find_best_score(simple_df):
 # Validation and error handling ---------------------------------------------------
 def test_no_decoys_raises(simple_df):
     """PsmDataset with only target PSMs must raise ValueError."""
-    targets_only = simple_df[simple_df["target"] == True].copy()
-    with pytest.raises(ValueError, match="[Nn]o decoy"):
+    targets_only = simple_df[simple_df["target"]].copy()
+    with pytest.raises(ValueError, match=r"[Nn]o decoy"):
         PsmDataset(
             psms=targets_only,
             target_column="target",
@@ -115,8 +115,8 @@ def test_no_decoys_raises(simple_df):
 
 def test_no_targets_raises(simple_df):
     """PsmDataset with only decoy PSMs must raise ValueError."""
-    decoys_only = simple_df[simple_df["target"] == False].copy()
-    with pytest.raises(ValueError, match="[Nn]o target"):
+    decoys_only = simple_df[~simple_df["target"]].copy()
+    with pytest.raises(ValueError, match=r"[Nn]o target"):
         PsmDataset(
             psms=decoys_only,
             target_column="target",

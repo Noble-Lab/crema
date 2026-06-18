@@ -270,7 +270,7 @@ def test_pep_fdr_type_with_pairing(psms_with_pairing, pep_fdr_type):
         threshold="q-value",
     )
     assert "peptides" in conf.confidence_estimates
-    assert len(conf.confidence_estimates["peptides"]) >= 0
+    assert len(conf.confidence_estimates["peptides"]) > 0
 
 
 # ---------------------------------------------------------------------------
@@ -357,23 +357,32 @@ def test_mixmax_only_psm_level(simple_psms):
 # ---------------------------------------------------------------------------
 
 def test_confidence_estimates_contains_only_targets(clean_psms):
-    """confidence_estimates must contain only target PSMs."""
+    """confidence_estimates must contain only target PSMs.
+
+    Note: _prettify_tables strips the target column from output DataFrames,
+    so we use the peptide column to distinguish targets (PEP1-PEP6) from
+    decoys (PEP1D-PEP6D) in the clean_psms fixture.
+    """
     conf = clean_psms.assign_confidence(
         score_column="score", method="tdc", desc=True,
         pep_fdr_type="psm-only", threshold="q-value",
     )
-    # All rows in confidence_estimates come from targets=True
-    # We can verify by checking scan numbers (targets: scans 1-4)
     psm_df = conf.confidence_estimates["psms"]
-    assert set(psm_df["scan"].values).issubset({1, 2, 3, 4})
+    # In clean_psm_df, decoy peptides all end in "D" (e.g. PEP1D)
+    assert not psm_df["peptide"].str.endswith("D").any()
 
 
 def test_decoy_confidence_estimates_contains_only_decoys(clean_psms):
-    """decoy_confidence_estimates must contain only decoy PSMs."""
+    """decoy_confidence_estimates must contain only decoy PSMs.
+
+    Note: _prettify_tables strips the target column from output DataFrames,
+    so we use the peptide column to distinguish targets (PEP1-PEP6) from
+    decoys (PEP1D-PEP6D) in the clean_psms fixture.
+    """
     conf = clean_psms.assign_confidence(
         score_column="score", method="tdc", desc=True,
         pep_fdr_type="psm-only", threshold="q-value",
     )
-    # Decoys that win: scan 5 (PEP5D) and scan 6 (PEP6D)
     dec_df = conf.decoy_confidence_estimates["psms"]
-    assert set(dec_df["scan"].values).issubset({5, 6})
+    # In clean_psm_df, decoy peptides all end in "D" (e.g. PEP5D, PEP6D)
+    assert dec_df["peptide"].str.endswith("D").all()

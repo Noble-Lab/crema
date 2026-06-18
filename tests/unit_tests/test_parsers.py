@@ -158,7 +158,7 @@ def test_read_tide_two_separate_files(target_tide_txt, decoy_tide_txt):
 
 def test_read_tide_target_only_raises(target_tide_txt):
     """A file containing only target PSMs must raise ValueError (no decoys)."""
-    with pytest.raises(ValueError, match="[Nn]o decoy"):
+    with pytest.raises(ValueError, match=r"[Nn]o decoy"):
         crema.read_tide(target_tide_txt)
 
 
