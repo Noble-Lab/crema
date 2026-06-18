@@ -5,6 +5,8 @@ from pathlib import Path
 import pytest
 import pandas as pd
 
+from crema import PsmDataset
+
 
 @pytest.fixture
 def basic_tide_df():
@@ -358,3 +360,48 @@ def mod_comet_txt(basic_comet_df, tmp_path):
     out_file = tmp_path / "mod_comet.txt"
     basic_comet_df.to_csv(out_file, sep="\t", index=False)
     return out_file
+
+
+@pytest.fixture
+def clean_psm_df():
+    """Deterministic PSM dataset for testing TDC correctness.
+
+    6 spectra, each with 1 target and 1 decoy; all scores unique.
+    Targets win spectra 1-4 (higher scores); decoys win spectra 5-6.
+
+    Expected PSM-level q-values after competition (desc=True):
+      Targets 1-4: q = 0.25
+      Decoy 5:     q = 0.50
+      Decoy 6:     q = 0.75
+    """
+    return pd.DataFrame(
+        [
+            ["f1", 1, 0.95, True,  "PEP1",  "PROT1"],
+            ["f1", 1, 0.10, False, "PEP1D", "PROT1"],
+            ["f1", 2, 0.90, True,  "PEP2",  "PROT2"],
+            ["f1", 2, 0.20, False, "PEP2D", "PROT2"],
+            ["f1", 3, 0.85, True,  "PEP3",  "PROT3"],
+            ["f1", 3, 0.30, False, "PEP3D", "PROT3"],
+            ["f1", 4, 0.80, True,  "PEP4",  "PROT4"],
+            ["f1", 4, 0.40, False, "PEP4D", "PROT4"],
+            ["f1", 5, 0.35, True,  "PEP5",  "PROT5"],
+            ["f1", 5, 0.75, False, "PEP5D", "PROT5"],
+            ["f1", 6, 0.25, True,  "PEP6",  "PROT6"],
+            ["f1", 6, 0.70, False, "PEP6D", "PROT6"],
+        ],
+        columns=["file", "scan", "score", "target", "peptide", "protein"],
+    )
+
+
+@pytest.fixture
+def clean_psms(clean_psm_df):
+    """PsmDataset backed by clean_psm_df."""
+    return PsmDataset(
+        psms=clean_psm_df,
+        target_column="target",
+        spectrum_columns=["file", "scan"],
+        score_columns=["score"],
+        peptide_column="peptide",
+        protein_column="protein",
+        protein_delim=",",
+    )

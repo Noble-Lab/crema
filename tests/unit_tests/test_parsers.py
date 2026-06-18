@@ -145,3 +145,67 @@ def test_read_pepxml(real_pepxml):
         psms = crema.read_pepxml(real_pepxml, "decoy_")
     except Exception as exc:
         assert False, f"'test_read_pepxml' raised an exception {exc}"
+
+
+# Multi-file and error-handling tests ---------------------------------------------
+def test_read_tide_two_separate_files(target_tide_txt, decoy_tide_txt):
+    """Passing two files concatenates their PSMs into one dataset."""
+    psms = crema.read_tide([target_tide_txt, decoy_tide_txt])
+    assert psms.data.shape[0] == 20  # 10 targets + 10 decoys
+    assert psms.targets.sum() == 10
+    assert (~psms.targets).sum() == 10
+
+
+def test_read_tide_target_only_raises(target_tide_txt):
+    """A file containing only target PSMs must raise ValueError (no decoys)."""
+    with pytest.raises(ValueError, match="[Nn]o decoy"):
+        crema.read_tide(target_tide_txt)
+
+
+def test_read_txt_missing_score_column_raises(basic_tide_csv):
+    """Requesting a score column absent from the file must raise."""
+    with pytest.raises((KeyError, ValueError)):
+        crema.read_txt(
+            basic_tide_csv,
+            target_column="target/decoy",
+            spectrum_columns="scan",
+            score_columns=["nonexistent_score"],
+            peptide_column="sequence",
+            protein_column="protein id",
+            protein_delim=",",
+            sep=",",
+        )
+
+
+def test_read_txt_copy_data_false(basic_tide_csv):
+    """copy_data=False must still return a fully-functional PsmDataset."""
+    psms = crema.read_txt(
+        basic_tide_csv,
+        target_column="target/decoy",
+        spectrum_columns="scan",
+        score_columns=["combined p-value", "x"],
+        peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=",",
+        sep=",",
+        copy_data=False,
+    )
+    assert isinstance(psms.data, pd.DataFrame)
+    assert psms.data.shape == (10, 6)
+    assert psms.targets.sum() == 6
+    assert (~psms.targets).sum() == 4
+
+
+def test_read_txt_protein_delim_stored(basic_tide_csv):
+    """The protein_delim passed to read_txt must be stored on the dataset."""
+    psms = crema.read_txt(
+        basic_tide_csv,
+        target_column="target/decoy",
+        spectrum_columns="scan",
+        score_columns=["combined p-value", "x"],
+        peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=";",
+        sep=",",
+    )
+    assert psms._protein_delim == ";"
