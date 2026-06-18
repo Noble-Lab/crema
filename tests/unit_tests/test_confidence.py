@@ -15,10 +15,10 @@ from crema.dataset import PsmDataset
 
 from .test_dataset import simple_df
 
-
 # ---------------------------------------------------------------------------
 # Shared fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def simple_psms(simple_df):
@@ -42,6 +42,7 @@ def psms_with_pairing(mod_target_tide_txt, mod_decoy_tide_txt):
 # ---------------------------------------------------------------------------
 # Existing type-check tests (preserved)
 # ---------------------------------------------------------------------------
+
 
 def test_tdc_confidence(simple_psms: PsmDataset):
     conf = simple_psms.assign_confidence(
@@ -76,6 +77,7 @@ def test_mixmax_confidence_desc(simple_psms: PsmDataset):
 # ---------------------------------------------------------------------------
 # Numerical correctness – PSM level (uses clean_psms from conftest.py)
 # ---------------------------------------------------------------------------
+
 
 def test_tdc_psm_qvalues_exact(clean_psms):
     """All four winning targets must have q-value == 0.25 (hand-computed)."""
@@ -152,6 +154,7 @@ def test_tdc_psm_scores_descending(clean_psms):
 # Q-value invariants across all levels
 # ---------------------------------------------------------------------------
 
+
 def _assert_qvals_valid(df, qval_col="crema q-value"):
     """Helper: q-values in [0,1] and non-decreasing as score decreases."""
     qvals = df[qval_col].values
@@ -167,24 +170,33 @@ def _assert_qvals_valid(df, qval_col="crema q-value"):
 
 def test_psm_qvalues_valid(clean_psms):
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     _assert_qvals_valid(conf.confidence_estimates["psms"])
 
 
 def test_peptide_qvalues_valid(clean_psms):
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     _assert_qvals_valid(conf.confidence_estimates["peptides"])
 
 
 def test_protein_qvalues_valid(clean_psms):
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     prot_df = conf.confidence_estimates["proteins"]
     qvals = prot_df["crema q-value"].values
@@ -196,11 +208,15 @@ def test_protein_qvalues_valid(clean_psms):
 # Protein level correctness
 # ---------------------------------------------------------------------------
 
+
 def test_protein_level_unique_proteins(clean_psms):
     """Each protein must appear at most once in protein-level estimates."""
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     prot_df = conf.confidence_estimates["proteins"]
     assert prot_df["protein"].nunique() == len(prot_df)
@@ -209,8 +225,11 @@ def test_protein_level_unique_proteins(clean_psms):
 def test_protein_level_has_score_column(clean_psms):
     """Protein-level results must include the score column used."""
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     assert "score" in conf.confidence_estimates["proteins"].columns
 
@@ -219,8 +238,11 @@ def test_protein_level_has_score_column(clean_psms):
 def test_protein_score_aggregation(clean_psms, prot_fdr_type):
     """Both protein aggregation methods must run without error."""
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", prot_fdr_type=prot_fdr_type,
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        prot_fdr_type=prot_fdr_type,
         threshold="q-value",
     )
     assert "proteins" in conf.confidence_estimates
@@ -230,11 +252,14 @@ def test_protein_score_aggregation(clean_psms, prot_fdr_type):
 # pep_fdr_type parameter handling
 # ---------------------------------------------------------------------------
 
+
 def test_pep_fdr_type_psm_only_no_pairing_required(clean_psms):
     """psm-only must work when no peptide_pairing is provided."""
     assert clean_psms.peptide_pairing is None
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
+        score_column="score",
+        method="tdc",
+        desc=True,
         pep_fdr_type="psm-only",
     )
     assert "peptides" in conf.confidence_estimates
@@ -244,7 +269,9 @@ def test_pep_fdr_type_psm_peptide_requires_pairing(clean_psms):
     """psm-peptide without peptide_pairing must raise ValueError."""
     with pytest.raises(ValueError):
         clean_psms.assign_confidence(
-            score_column="score", method="tdc", desc=True,
+            score_column="score",
+            method="tdc",
+            desc=True,
             pep_fdr_type="psm-peptide",
         )
 
@@ -253,12 +280,16 @@ def test_pep_fdr_type_peptide_only_requires_pairing(clean_psms):
     """peptide-only without peptide_pairing must raise ValueError."""
     with pytest.raises(ValueError):
         clean_psms.assign_confidence(
-            score_column="score", method="tdc", desc=True,
+            score_column="score",
+            method="tdc",
+            desc=True,
             pep_fdr_type="peptide-only",
         )
 
 
-@pytest.mark.parametrize("pep_fdr_type", ["psm-only", "psm-peptide", "peptide-only"])
+@pytest.mark.parametrize(
+    "pep_fdr_type", ["psm-only", "psm-peptide", "peptide-only"]
+)
 def test_pep_fdr_type_with_pairing(psms_with_pairing, pep_fdr_type):
     """All pep_fdr_type options must produce a peptides level result."""
     conf = psms_with_pairing.assign_confidence(
@@ -277,10 +308,12 @@ def test_pep_fdr_type_with_pairing(psms_with_pairing, pep_fdr_type):
 # Invalid parameter validation
 # ---------------------------------------------------------------------------
 
+
 def test_invalid_pep_fdr_type_raises(clean_psms):
     with pytest.raises(ValueError):
         clean_psms.assign_confidence(
-            score_column="score", method="tdc",
+            score_column="score",
+            method="tdc",
             pep_fdr_type="invalid_option",
         )
 
@@ -288,7 +321,8 @@ def test_invalid_pep_fdr_type_raises(clean_psms):
 def test_invalid_prot_fdr_type_raises(clean_psms):
     with pytest.raises(ValueError):
         clean_psms.assign_confidence(
-            score_column="score", method="tdc",
+            score_column="score",
+            method="tdc",
             pep_fdr_type="psm-only",
             prot_fdr_type="invalid_option",
         )
@@ -297,7 +331,8 @@ def test_invalid_prot_fdr_type_raises(clean_psms):
 def test_eval_fdr_out_of_range_raises(clean_psms):
     with pytest.raises(ValueError):
         clean_psms.assign_confidence(
-            score_column="score", method="tdc",
+            score_column="score",
+            method="tdc",
             pep_fdr_type="psm-only",
             eval_fdr=1.5,
         )
@@ -307,11 +342,15 @@ def test_eval_fdr_out_of_range_raises(clean_psms):
 # Threshold parameter: "q-value" vs float
 # ---------------------------------------------------------------------------
 
+
 def test_threshold_float_gives_accept_column(clean_psms):
     """threshold=0.5 must produce an 'accept' boolean column."""
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold=0.5,
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold=0.5,
     )
     assert "accept" in conf.confidence_estimates["psms"].columns
     assert conf.confidence_estimates["psms"]["accept"].dtype == bool
@@ -320,8 +359,11 @@ def test_threshold_float_gives_accept_column(clean_psms):
 def test_threshold_qvalue_gives_qvalue_column(clean_psms):
     """threshold='q-value' must produce a 'crema q-value' float column."""
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     assert "crema q-value" in conf.confidence_estimates["psms"].columns
     assert "accept" not in conf.confidence_estimates["psms"].columns
@@ -331,10 +373,13 @@ def test_threshold_qvalue_gives_qvalue_column(clean_psms):
 # Confidence levels present
 # ---------------------------------------------------------------------------
 
+
 def test_tdc_all_four_levels_present(clean_psms):
     """TDC must populate all four confidence levels."""
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
+        score_column="score",
+        method="tdc",
+        desc=True,
         pep_fdr_type="psm-only",
     )
     for level in ("psms", "peptides", "proteins", "protein_groups"):
@@ -344,7 +389,8 @@ def test_tdc_all_four_levels_present(clean_psms):
 def test_mixmax_only_psm_level(simple_psms):
     """MixmaxConfidence must only produce PSM-level estimates."""
     conf = simple_psms.assign_confidence(
-        score_column="x", method="mixmax",
+        score_column="x",
+        method="mixmax",
         pep_fdr_type="psm-only",
     )
     assert "psms" in conf.confidence_estimates
@@ -356,6 +402,7 @@ def test_mixmax_only_psm_level(simple_psms):
 # Targets only in confidence_estimates; decoys in decoy_confidence_estimates
 # ---------------------------------------------------------------------------
 
+
 def test_confidence_estimates_contains_only_targets(clean_psms):
     """confidence_estimates must contain only target PSMs.
 
@@ -364,8 +411,11 @@ def test_confidence_estimates_contains_only_targets(clean_psms):
     decoys (PEP1D-PEP6D) in the clean_psms fixture.
     """
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     psm_df = conf.confidence_estimates["psms"]
     # In clean_psm_df, decoy peptides all end in "D" (e.g. PEP1D)
@@ -380,8 +430,11 @@ def test_decoy_confidence_estimates_contains_only_decoys(clean_psms):
     decoys (PEP1D-PEP6D) in the clean_psms fixture.
     """
     conf = clean_psms.assign_confidence(
-        score_column="score", method="tdc", desc=True,
-        pep_fdr_type="psm-only", threshold="q-value",
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold="q-value",
     )
     dec_df = conf.decoy_confidence_estimates["psms"]
     # In clean_psm_df, decoy peptides all end in "D" (e.g. PEP5D, PEP6D)

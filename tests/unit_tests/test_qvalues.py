@@ -266,11 +266,20 @@ def test_tdc_four_targets_two_decoys():
     "scores,target",
     [
         # All targets, then all decoys
-        (np.array([5.0, 4.0, 3.0, 2.0, 1.0]), np.array([True, True, False, False, False])),
+        (
+            np.array([5.0, 4.0, 3.0, 2.0, 1.0]),
+            np.array([True, True, False, False, False]),
+        ),
         # Alternating
-        (np.array([5.0, 4.0, 3.0, 2.0, 1.0]), np.array([True, False, True, False, True])),
+        (
+            np.array([5.0, 4.0, 3.0, 2.0, 1.0]),
+            np.array([True, False, True, False, True]),
+        ),
         # Decoys first
-        (np.array([5.0, 4.0, 3.0, 2.0, 1.0]), np.array([False, False, True, True, True])),
+        (
+            np.array([5.0, 4.0, 3.0, 2.0, 1.0]),
+            np.array([False, False, True, True, True]),
+        ),
     ],
 )
 def test_tdc_qvalues_non_decreasing(scores, target):

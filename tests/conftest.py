@@ -376,17 +376,17 @@ def clean_psm_df():
     """
     return pd.DataFrame(
         [
-            ["f1", 1, 0.95, True,  "PEP1",  "PROT1"],
+            ["f1", 1, 0.95, True, "PEP1", "PROT1"],
             ["f1", 1, 0.10, False, "PEP1D", "PROT1"],
-            ["f1", 2, 0.90, True,  "PEP2",  "PROT2"],
+            ["f1", 2, 0.90, True, "PEP2", "PROT2"],
             ["f1", 2, 0.20, False, "PEP2D", "PROT2"],
-            ["f1", 3, 0.85, True,  "PEP3",  "PROT3"],
+            ["f1", 3, 0.85, True, "PEP3", "PROT3"],
             ["f1", 3, 0.30, False, "PEP3D", "PROT3"],
-            ["f1", 4, 0.80, True,  "PEP4",  "PROT4"],
+            ["f1", 4, 0.80, True, "PEP4", "PROT4"],
             ["f1", 4, 0.40, False, "PEP4D", "PROT4"],
-            ["f1", 5, 0.35, True,  "PEP5",  "PROT5"],
+            ["f1", 5, 0.35, True, "PEP5", "PROT5"],
             ["f1", 5, 0.75, False, "PEP5D", "PROT5"],
-            ["f1", 6, 0.25, True,  "PEP6",  "PROT6"],
+            ["f1", 6, 0.25, True, "PEP6", "PROT6"],
             ["f1", 6, 0.70, False, "PEP6D", "PROT6"],
         ],
         columns=["file", "scan", "score", "target", "peptide", "protein"],
