@@ -3,6 +3,8 @@ peptide-spectrum matches with calculated false discovery rates (FDR) and q-value
 """
 
 import logging
+from typing import ClassVar
+
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -140,7 +142,7 @@ class Confidence(ABC):
 
     """
 
-    _level_labs = {
+    _level_labs: ClassVar[dict] = {
         "psms": "PSMs",
         "peptides": "Peptides",
         "proteins": "Proteins",
@@ -328,12 +330,12 @@ class Confidence(ABC):
         # Shuffle dataframe so ties are broken randomly.
         out_df = (
             df.sample(frac=1)
-            .sort_values([self._score_column] + group_columns)
+            .sort_values([self._score_column, *group_columns])
             .drop_duplicates(group_columns, keep=keep)
         )
 
         # This ensures that best score is at top of dataframe
-        if self._desc == False:
+        if not self._desc:
             out_df = out_df[::-1]
         return out_df
 
@@ -470,7 +472,7 @@ class TdcConfidence(Confidence):
         """Assign confidence estimates using target-decoy competition"""
         pairing = self.dataset.peptide_pairing
 
-        if pairing == None and self._pep_fdr_type != "psm-only":
+        if pairing is None and self._pep_fdr_type != "psm-only":
             raise ValueError(
                 "Must provide paired target decoy peptide infomation (see FAQ)."
             )
@@ -501,7 +503,7 @@ class TdcConfidence(Confidence):
                     df[pair_col] = df[self.dataset._peptide_column].map(
                         lambda x: pairing.get(x, x)
                     )
-                    group_cols = utils.listify(group_cols) + [pair_col]
+                    group_cols = [*utils.listify(group_cols), pair_col]
                     group_cols.remove(self.dataset._peptide_column)
                 else:
                     raise ValueError(
@@ -528,7 +530,7 @@ class TdcConfidence(Confidence):
                     conf_dec = pep_dec[pep_dec["crema q-value"] <= 0.01].copy()
 
                     LOGGER.info("Building protein groups...")
-                    protein_group, pep_to_prot = _group_proteins(
+                    _protein_group, pep_to_prot = _group_proteins(
                         conf_tar,
                         conf_dec,
                         self.dataset._protein_delim,
@@ -563,12 +565,12 @@ class TdcConfidence(Confidence):
 
                 # Determines how to aggregate protein score
                 if self._prot_fdr_type == "best":
-                    if self._desc == True:
+                    if self._desc:
                         agg_val = "max"  # larger score is better
                     else:
                         agg_val = "min"  # smaller score is better
                 else:  # prot_fdr_type == combine
-                    if self._desc == True:
+                    if self._desc:
                         agg_val = "sum"
                     else:
                         agg_val = "prod"
@@ -709,7 +711,7 @@ class MixmaxConfidence(Confidence):
         # TODO maybe better way to do this
         # can not infer desc value as the wrong value will
         # result in a divide by zero error
-        if self._desc == None:
+        if self._desc is None:
             raise ValueError("'desc' has to be set for mix-max.")
 
         # TODO check if separate target-decoy search is done
@@ -739,14 +741,14 @@ class MixmaxConfidence(Confidence):
             # sort targets by score column and keep top rank
             targets_sorted = (
                 targets.sample(frac=1)
-                .sort_values([self._score_column] + group_cols)
+                .sort_values([self._score_column, *group_cols])
                 .drop_duplicates(group_cols, keep=keep, ignore_index=True)
             )
 
             # sort decoys by score column and keep top rank
             decoys_sorted = (
                 decoys.sample(frac=1)
-                .sort_values([self._score_column] + group_cols)
+                .sort_values([self._score_column, *group_cols])
                 .drop_duplicates(group_cols, keep=keep, ignore_index=True)
             )
 
@@ -795,7 +797,7 @@ class MixmaxConfidence(Confidence):
             targets_sorted = targets_sorted[::-1]
 
             # undo previous multipliation by -1.0
-            if self._desc == False:
+            if not self._desc:
                 targets_sorted[self._score_column] = (
                     targets_sorted[self._score_column] * -1.0
                 )

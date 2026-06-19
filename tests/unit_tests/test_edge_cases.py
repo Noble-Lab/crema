@@ -3,7 +3,6 @@ Edge-case tests that cut across multiple modules.
 """
 
 import pytest
-import numpy as np
 import pandas as pd
 
 from crema import PsmDataset
@@ -314,7 +313,7 @@ def test_all_targets_raises():
             },
         ]
     )
-    with pytest.raises(ValueError, match="[Nn]o decoy"):
+    with pytest.raises(ValueError, match=r"[Nn]o decoy"):
         PsmDataset(
             psms=df,
             target_column="target",
@@ -348,7 +347,7 @@ def test_all_decoys_raises():
             },
         ]
     )
-    with pytest.raises(ValueError, match="[Nn]o target"):
+    with pytest.raises(ValueError, match=r"[Nn]o target"):
         PsmDataset(
             psms=df,
             target_column="target",

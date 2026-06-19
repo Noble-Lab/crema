@@ -70,7 +70,7 @@ def main():
         try:
             psms = read_fn(args.psm_files)
             break
-        except:
+        except Exception:
             raise ValueError("Unrecognized file type.")
 
     conf = psms.assign_confidence(

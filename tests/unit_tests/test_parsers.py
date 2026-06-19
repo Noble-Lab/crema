@@ -137,12 +137,12 @@ def test_read_mztab(real_mztab):
     # This test suposed to raise error as mzID file does not
     # contain decoy PSMs
     with pytest.raises(ValueError):
-        psms = crema.read_mztab(real_mztab)
+        crema.read_mztab(real_mztab)
 
 
 def test_read_pepxml(real_pepxml):
     try:
-        psms = crema.read_pepxml(real_pepxml, "decoy_")
+        crema.read_pepxml(real_pepxml, "decoy_")
     except Exception as exc:
         assert False, f"'test_read_pepxml' raised an exception {exc}"
 

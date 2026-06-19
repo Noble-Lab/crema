@@ -7,13 +7,12 @@ correctness tests, invariant checks, and parameter-validation tests.
 
 import pytest
 import numpy as np
-import pandas as pd
 
 import crema
 from crema.confidence import TdcConfidence, MixmaxConfidence
 from crema.dataset import PsmDataset
 
-from .test_dataset import simple_df
+from .test_dataset import simple_df  # noqa: F401
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -21,7 +20,7 @@ from .test_dataset import simple_df
 
 
 @pytest.fixture
-def simple_psms(simple_df):
+def simple_psms(simple_df):  # noqa: F811
     return PsmDataset(
         psms=simple_df,
         target_column="target",
@@ -75,7 +74,7 @@ def test_mixmax_confidence_desc(simple_psms: PsmDataset):
 
 
 # ---------------------------------------------------------------------------
-# Numerical correctness – PSM level (uses clean_psms from conftest.py)
+# Numerical correctness - PSM level (uses clean_psms from conftest.py)
 # ---------------------------------------------------------------------------
 
 

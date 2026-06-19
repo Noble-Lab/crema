@@ -5,8 +5,6 @@ import logging
 
 import pandas as pd
 
-from .txt import read_txt
-from .pepxml import read_pepxml
 from .pepxml import _parse_pepxml
 from ..dataset import PsmDataset
 from .. import utils
@@ -48,7 +46,6 @@ def read_msfragger(
     # TODO well annoying the column names for pepXML and tsv output are different
     # spectrum = ["Filename", "start scan"] # check this - is this for TSV?
     spectrum = ["ms_data_file", "scan"]
-    pairing = ""
     # protein = "protein" # check for TSV
     protein = "proteins"
     protein_delim = ";"
@@ -101,7 +98,7 @@ def read_msfragger(
         copy_data=False,
     )
 
-    if pairing_file_name != None:
+    if pairing_file_name is not None:
         psms._peptide_pairing = utils.create_pairing_from_file(
             pairing_file_name
         )

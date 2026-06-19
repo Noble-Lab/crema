@@ -2,7 +2,6 @@
 Tests for writers/txt.py (the to_txt output writer).
 """
 
-import pytest
 import pandas as pd
 from pathlib import Path
 
