@@ -20,6 +20,7 @@ def read_txt(
     sep="\t",
     pairing_file_name=None,
     copy_data=False,
+    chunk_size=None,
 ):
     """Read peptide-spectrum matches (PSMs) from delimited text files.
 
@@ -57,12 +58,23 @@ def read_txt(
         is safer because it prevents accidental modification of the underlying
         data. This argument only has an effect when `pin_files` is a
         :py:class:`pandas.DataFrame`
+    chunk_size : int or None, optional
+        When set, the parser operates in streaming mode: instead of loading all
+        files into memory at once, it returns a generator that yields one
+        :py:class:`pandas.DataFrame` per chunk of ``chunk_size`` rows. This is
+        useful for feeding data into a DuckDB relation or a Parquet writer
+        without ever holding the full dataset in RAM. When ``None`` (default),
+        the existing behaviour is preserved and a
+        :py:class:`~crema.dataset.PsmDataset` is returned.
 
     Returns
     -------
-    PsmDataset
-        A :py:class:`~crema.dataset.PsmDataset` object containing the parsed
-        PSMs.
+    PsmDataset or generator of pandas.DataFrame
+        When ``chunk_size`` is ``None``, a
+        :py:class:`~crema.dataset.PsmDataset` object containing the parsed
+        PSMs.  When ``chunk_size`` is set, a generator of
+        :py:class:`pandas.DataFrame` chunks (each with the target column
+        already converted to bool).
     """
     # Store column names in a list to be used by read_csv function
     fields = [target_column, peptide_column, protein_column]
@@ -71,6 +83,12 @@ def read_txt(
     spectrum_columns = utils.listify(spectrum_columns)
     score_columns = utils.listify(score_columns)
     fields += spectrum_columns + score_columns
+
+    # Streaming mode: yield chunks without constructing a PsmDataset
+    if chunk_size is not None and not isinstance(txt_files, pd.DataFrame):
+        return _read_txt_chunked(
+            utils.listify(txt_files), sep, fields, target_column, chunk_size
+        )
 
     # Parse the data
     if isinstance(txt_files, pd.DataFrame):
@@ -98,6 +116,38 @@ def read_txt(
         )
 
     return psms
+
+
+def _read_txt_chunked(txt_files, sep, cols, target_column, chunk_size):
+    """Yield DataFrames of ``chunk_size`` rows from one or more text files.
+
+    Parameters
+    ----------
+    txt_files : list of str
+        The files to read.
+    sep : str
+        The delimiter.
+    cols : list of str
+        The columns to retain.
+    target_column : str
+        The column containing target/decoy labels (converted to bool per chunk).
+    chunk_size : int
+        Number of rows per chunk.
+
+    Yields
+    ------
+    pandas.DataFrame
+        A chunk with the target column already converted to bool.
+    """
+    for txt_file in txt_files:
+        LOGGER.info(
+            "Reading PSMs from %s in chunks of %d...", txt_file, chunk_size
+        )
+        for chunk in pd.read_csv(
+            txt_file, sep=sep, usecols=cols, chunksize=chunk_size
+        ):
+            chunk[target_column] = _convert_target_col(chunk[target_column])
+            yield chunk
 
 
 def _parse_psms(txt_file, sep, cols):

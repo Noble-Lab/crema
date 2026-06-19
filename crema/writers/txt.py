@@ -3,8 +3,6 @@
 from pathlib import Path
 from collections import defaultdict
 
-import pandas as pd
-
 
 def to_txt(
     conf, output_dir=None, file_root=None, sep="\t", decoys=False, precision=6
@@ -64,9 +62,17 @@ def to_txt(
     out_files = []
     for level, qval_list in results.items():
         out_file = str(file_base) + f".{level}.txt"
-        pd.concat(qval_list).to_csv(
-            out_file, sep=sep, index=False, float_format=f"%.{precision}f"
-        )
+        first = True
+        for df in qval_list:
+            df.to_csv(
+                out_file,
+                sep=sep,
+                index=False,
+                float_format=f"%.{precision}f",
+                header=first,
+                mode="w" if first else "a",
+            )
+            first = False
         out_files.append(out_file)
 
     return out_files
