@@ -12,7 +12,9 @@ class CremaHelpFormatter(argparse.HelpFormatter):
 
     def _fill_text(self, text, width, indent):
         text_list = text.splitlines(keepends=True)
-        return "\n".join(_process_line(line, width, indent) for line in text_list)
+        return "\n".join(
+            _process_line(line, width, indent) for line in text_list
+        )
 
 
 class Params:

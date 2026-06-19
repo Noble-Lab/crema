@@ -61,7 +61,10 @@ class PsmDataset:
     peptide_pairing : dict
     """
 
-    methods: ClassVar[dict] = {"tdc": TdcConfidence, "mixmax": MixmaxConfidence}
+    methods: ClassVar[dict] = {
+        "tdc": TdcConfidence,
+        "mixmax": MixmaxConfidence,
+    }
 
     def __init__(
         self,
