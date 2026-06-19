@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def read_msfragger(
-    txt_files, pairing_file_name=None, decoy_prefix="rev_", copy_data=True
+    txt_files, pairing_file_name=None, decoy_prefix="rev_", copy_data=False
 ):
     """Read peptide-spectrum matches (PSMs) from MSFragger pepXML files.
 

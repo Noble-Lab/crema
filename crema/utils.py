@@ -85,9 +85,10 @@ def parse_psms_txt(txt_file, cols, skip_line):
     LOGGER.info("Reading PSMs from %s...", txt_file)
 
     # Because skip_line is a boolean:
-    return pd.read_csv(
-        txt_file,
-        sep="\t",
-        skiprows=int(skip_line),
-        usecols=lambda c: c in cols,
+    kwargs = dict(
+        sep="\t", skiprows=int(skip_line), usecols=lambda c: c in cols
     )
+    try:
+        return pd.read_csv(txt_file, engine="pyarrow", **kwargs)
+    except ImportError:
+        return pd.read_csv(txt_file, **kwargs)

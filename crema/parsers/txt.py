@@ -19,7 +19,7 @@ def read_txt(
     protein_delim,
     sep="\t",
     pairing_file_name=None,
-    copy_data=True,
+    copy_data=False,
 ):
     """Read peptide-spectrum matches (PSMs) from delimited text files.
 
@@ -118,7 +118,10 @@ def _parse_psms(txt_file, sep, cols):
         A :py:class:`pandas.DataFrame` containing the parsed PSMs
     """
     LOGGER.info("Reading PSMs from %s...", txt_file)
-    return pd.read_csv(txt_file, sep=sep, usecols=cols)
+    try:
+        return pd.read_csv(txt_file, sep=sep, usecols=cols, engine="pyarrow")
+    except ImportError:
+        return pd.read_csv(txt_file, sep=sep, usecols=cols)
 
 
 def _convert_target_col(data):

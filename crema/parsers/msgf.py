@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def read_msgf(
-    txt_files, pairing_file_name=None, decoy_prefix="XXX_", copy_data=True
+    txt_files, pairing_file_name=None, decoy_prefix="XXX_", copy_data=False
 ):
     """Read peptide-spectrum matches (PSMs) from MSGF+ tab-delimited files.
 
