@@ -85,14 +85,25 @@ def parse_psms_txt(txt_file, cols, skip_line):
     LOGGER.info("Reading PSMs from %s...", txt_file)
 
     # Because skip_line is a boolean:
-    # pyarrow engine doesn't support callable usecols, so pass an explicit list.
-    # Fall back to the default C engine if pyarrow is missing or the pandas
-    # version doesn't support engine="pyarrow" (raises ImportError or ValueError).
-    with open(txt_file) as fh:
-        if skip_line:
-            fh.readline()
-        header = fh.readline().rstrip("\n").split("\t")
-    explicit_cols = [c for c in header if c in cols]
+    # pyarrow engine doesn't support callable usecols, so pass an explicit list
+    # built from the file header.  Open with UTF-8 (pandas' default encoding)
+    # so column names are decoded the same way read_csv will decode them.
+    # If reading the header fails (e.g. non-UTF-8 locale file), fall back to
+    # the C engine with a callable usecols filter.
+    fallback_kwargs = dict(
+        sep="\t",
+        skiprows=int(skip_line),
+        usecols=lambda c: c in cols,
+    )
+    try:
+        with open(txt_file, encoding="utf-8") as fh:
+            if skip_line:
+                fh.readline()
+            header = fh.readline().rstrip("\n").split("\t")
+        explicit_cols = [c for c in header if c in cols]
+    except UnicodeDecodeError:
+        return pd.read_csv(txt_file, **fallback_kwargs)
+
     try:
         return pd.read_csv(
             txt_file,
@@ -102,9 +113,4 @@ def parse_psms_txt(txt_file, cols, skip_line):
             engine="pyarrow",
         )
     except (ImportError, ValueError):
-        return pd.read_csv(
-            txt_file,
-            sep="\t",
-            skiprows=int(skip_line),
-            usecols=lambda c: c in cols,
-        )
+        return pd.read_csv(txt_file, **fallback_kwargs)
