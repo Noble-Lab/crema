@@ -62,9 +62,18 @@ def to_txt(
     out_files = []
     for level, qval_list in results.items():
         out_file = str(file_base) + f".{level}.txt"
+        # Determine the union of all columns in first-seen order so that
+        # appended DataFrames (which may come from different Confidence objects
+        # with different score columns) are always aligned to the same header.
+        seen: dict = {}
+        for df in qval_list:
+            for c in df.columns:
+                seen.setdefault(c, None)
+        all_cols = list(seen)
+
         first = True
         for df in qval_list:
-            df.to_csv(
+            df.reindex(columns=all_cols).to_csv(
                 out_file,
                 sep=sep,
                 index=False,

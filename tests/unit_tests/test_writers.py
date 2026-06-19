@@ -176,3 +176,22 @@ def test_to_txt_threshold_filters_accept_column(clean_psms, tmp_path):
     conf2.to_txt(output_dir=tmp_path, file_root="strict")
     result2 = pd.read_csv(tmp_path / "strict.crema.psms.txt", sep="\t")
     assert result2["accept"].sum() == 0
+
+
+def test_to_txt_multi_confidence_row_count(clean_psms, tmp_path):
+    """Writing a tuple of Confidence objects must produce the combined row count."""
+    import crema
+
+    conf = clean_psms.assign_confidence(
+        score_column="score",
+        method="tdc",
+        desc=True,
+        pep_fdr_type="psm-only",
+        threshold=0.5,
+    )
+    conf.to_txt(output_dir=tmp_path, file_root="single")
+    crema.to_txt((conf, conf), output_dir=tmp_path, file_root="combined")
+
+    single = pd.read_csv(tmp_path / "single.crema.psms.txt", sep="\t")
+    combined = pd.read_csv(tmp_path / "combined.crema.psms.txt", sep="\t")
+    assert len(combined) == 2 * len(single)

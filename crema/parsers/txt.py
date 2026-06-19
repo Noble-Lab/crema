@@ -84,8 +84,15 @@ def read_txt(
     score_columns = utils.listify(score_columns)
     fields += spectrum_columns + score_columns
 
-    # Streaming mode: yield chunks without constructing a PsmDataset
-    if chunk_size is not None and not isinstance(txt_files, pd.DataFrame):
+    # Streaming mode: yield chunks without constructing a PsmDataset.
+    # DataFrame inputs are already fully in memory, so chunk_size is not
+    # supported for them — raise an error rather than silently ignoring it.
+    if chunk_size is not None:
+        if isinstance(txt_files, pd.DataFrame):
+            raise ValueError(
+                "chunk_size is not supported when txt_files is a DataFrame. "
+                "Pass file path(s) instead to use streaming mode."
+            )
         return _read_txt_chunked(
             utils.listify(txt_files), sep, fields, target_column, chunk_size
         )
