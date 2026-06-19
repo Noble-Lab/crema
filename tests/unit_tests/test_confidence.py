@@ -61,10 +61,19 @@ def test_mixmax_confidence(simple_psms: PsmDataset):
     assert isinstance(conf, MixmaxConfidence)
 
 
-def test_mixmax_confidence_desc(simple_psms: PsmDataset):
-    # Use internal data to avoid the copy() on the .data property
-    simple_psms._data["x"] = -1.0 * simple_psms._data["x"]
-    conf = simple_psms.assign_confidence(
+def test_mixmax_confidence_desc(simple_df):  # noqa: F811
+    df = simple_df.copy()
+    df["x"] = -1.0 * df["x"]
+    psms = PsmDataset(
+        psms=df,
+        target_column="target",
+        spectrum_columns=["scan", "spectrum precursor m/z"],
+        score_columns=["combined p-value", "x"],
+        peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=",",
+    )
+    conf = psms.assign_confidence(
         score_column="x",
         method="mixmax",
         pep_fdr_type="psm-only",
