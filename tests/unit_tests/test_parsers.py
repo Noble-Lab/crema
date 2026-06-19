@@ -208,4 +208,4 @@ def test_read_txt_protein_delim_stored(basic_tide_csv):
         protein_delim=";",
         sep=",",
     )
-    assert psms._protein_delim == ";"
+    assert psms.protein_delim == ";"

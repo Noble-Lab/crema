@@ -135,7 +135,7 @@ class PsmDataset:
     @property
     def protein_delim(self):
         """The delimiter to split protein IDs as a string."""
-        return self[self._protein_delim]
+        return self._protein_delim
 
     @property
     def scores(self):
