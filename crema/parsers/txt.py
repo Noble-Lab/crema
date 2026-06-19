@@ -118,9 +118,11 @@ def _parse_psms(txt_file, sep, cols):
         A :py:class:`pandas.DataFrame` containing the parsed PSMs
     """
     LOGGER.info("Reading PSMs from %s...", txt_file)
+    # Fall back to the default C engine if pyarrow is missing or the pandas
+    # version doesn't support engine="pyarrow" (raises ImportError or ValueError).
     try:
         return pd.read_csv(txt_file, sep=sep, usecols=cols, engine="pyarrow")
-    except ImportError:
+    except (ImportError, ValueError):
         return pd.read_csv(txt_file, sep=sep, usecols=cols)
 
 

@@ -85,10 +85,26 @@ def parse_psms_txt(txt_file, cols, skip_line):
     LOGGER.info("Reading PSMs from %s...", txt_file)
 
     # Because skip_line is a boolean:
-    kwargs = dict(
-        sep="\t", skiprows=int(skip_line), usecols=lambda c: c in cols
-    )
+    # pyarrow engine doesn't support callable usecols, so pass an explicit list.
+    # Fall back to the default C engine if pyarrow is missing or the pandas
+    # version doesn't support engine="pyarrow" (raises ImportError or ValueError).
+    with open(txt_file) as fh:
+        if skip_line:
+            fh.readline()
+        header = fh.readline().rstrip("\n").split("\t")
+    explicit_cols = [c for c in header if c in cols]
     try:
-        return pd.read_csv(txt_file, engine="pyarrow", **kwargs)
-    except ImportError:
-        return pd.read_csv(txt_file, **kwargs)
+        return pd.read_csv(
+            txt_file,
+            sep="\t",
+            skiprows=int(skip_line),
+            usecols=explicit_cols,
+            engine="pyarrow",
+        )
+    except (ImportError, ValueError):
+        return pd.read_csv(
+            txt_file,
+            sep="\t",
+            skiprows=int(skip_line),
+            usecols=lambda c: c in cols,
+        )
