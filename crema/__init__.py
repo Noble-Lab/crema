@@ -26,12 +26,13 @@ from .parsers.comet import read_comet
 from .parsers.txt import read_txt
 from .parsers.mztab import read_mztab
 from .parsers.pepxml import read_pepxml
-from .confidence import TdcConfidence, assign_confidence
+from .confidence import TdcConfidence, DuckdbTdcConfidence, assign_confidence
 from .writers.txt import to_txt
 
 __all__ = [
     "PsmDataset",
     "TdcConfidence",
+    "DuckdbTdcConfidence",
     "assign_confidence",
     "read_comet",
     "read_msamanda",
