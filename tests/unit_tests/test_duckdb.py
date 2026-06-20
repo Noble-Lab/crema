@@ -9,14 +9,15 @@ installed.
 import pytest
 import pandas as pd
 
-pytest.importorskip("duckdb", reason="duckdb not installed; skipping DuckDB tests")
+pytest.importorskip(
+    "duckdb", reason="duckdb not installed; skipping DuckDB tests"
+)
 
-from crema.confidence import DuckdbTdcConfidence  # noqa: E402
-from crema.dataset import PsmDataset  # noqa: E402
-from crema.confidence import TdcConfidence  # noqa: E402
+from crema.confidence import DuckdbTdcConfidence
+from crema.dataset import PsmDataset
+from crema.confidence import TdcConfidence
 
-from .test_dataset import simple_df  # noqa: F401, E402
-
+from .test_dataset import simple_df  # noqa: F401
 
 # ---------------------------------------------------------------------------
 # Shared fixtures

@@ -47,8 +47,7 @@ def _compete_into(con, src, dst, score_col, group_cols, desc):
     """
     direction = "DESC" if desc else "ASC"
     partition = ", ".join(f'"{c}"' for c in group_cols)
-    con.execute(
-        f"""
+    con.execute(f"""
         CREATE TABLE {dst} AS
         SELECT * EXCLUDE (_crema_rn)
         FROM (
@@ -60,8 +59,7 @@ def _compete_into(con, src, dst, score_col, group_cols, desc):
             FROM {src}
         )
         WHERE _crema_rn = 1
-        """
-    )
+        """)
 
 
 def _fetch_qvalues(con, table, score_col, target_col, desc):
@@ -92,8 +90,7 @@ def _fetch_qvalues(con, table, score_col, target_col, desc):
     cum_dir = "DESC" if desc else "ASC"
     qval_dir = "ASC" if desc else "DESC"
 
-    return con.execute(
-        f"""
+    return con.execute(f"""
         WITH cum_counts AS (
             SELECT *,
                 SUM(CAST("{target_col}" AS INT)) OVER (
@@ -123,8 +120,7 @@ def _fetch_qvalues(con, table, score_col, target_col, desc):
             ) AS "crema q-value"
         FROM group_fdr
         ORDER BY "{score_col}" {qval_dir}
-        """
-    ).df()
+        """).df()
 
 
 def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
@@ -196,7 +192,9 @@ def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
     _compete_into(
         con, "raw_psms", "competed_psms", score_column, spectrum_cols, desc
     )
-    psm_df = _fetch_qvalues(con, "competed_psms", score_column, target_col, desc)
+    psm_df = _fetch_qvalues(
+        con, "competed_psms", score_column, target_col, desc
+    )
     psm_df = psm_df.drop(columns=["_crema_rand"])
     mask = psm_df[target_col].values.astype(bool)
     conf["psms"] = psm_df[mask].reset_index(drop=True)
@@ -219,34 +217,34 @@ def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
     else:
         # psm-peptide: start from spectrum-competed PSMs
         # peptide-only: start from all PSMs
-        pep_src = "competed_psms" if pep_fdr_type == "psm-peptide" else "raw_psms"
+        pep_src = (
+            "competed_psms" if pep_fdr_type == "psm-peptide" else "raw_psms"
+        )
 
         # Load the pairing map (target_seq → decoy_seq)
         pairing_df = pd.DataFrame(
             list(pairing.items()), columns=["_seq", "_pair"]
         )
         con.register("_pairing_data", pairing_df)
-        con.execute(
-            "CREATE TABLE _pairing AS SELECT * FROM _pairing_data"
-        )
+        con.execute("CREATE TABLE _pairing AS SELECT * FROM _pairing_data")
 
         # Replace the peptide column with its paired counterpart so that
         # target/decoy pairs compete together.  Decoys (not in the map) keep
         # their own sequence.
-        con.execute(
-            f"""
+        con.execute(f"""
             CREATE TABLE with_pairing AS
             SELECT p.* EXCLUDE ("{pep_col}"),
                 COALESCE(m._pair, p."{pep_col}") AS "{pep_col}"
             FROM {pep_src} p
             LEFT JOIN _pairing m ON p."{pep_col}" = m._seq
-            """
-        )
+            """)
         _compete_into(
             con, "with_pairing", "competed_pep", score_column, [pep_col], desc
         )
 
-    pep_df = _fetch_qvalues(con, "competed_pep", score_column, target_col, desc)
+    pep_df = _fetch_qvalues(
+        con, "competed_pep", score_column, target_col, desc
+    )
     pep_df = pep_df.drop(columns=["_crema_rand"])
     mask_pep = pep_df[target_col].values.astype(bool)
     conf["peptides"] = pep_df[mask_pep].reset_index(drop=True)
@@ -264,13 +262,11 @@ def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
 
     # Escape any single quotes in the delimiter for the SQL literal.
     safe_delim = prot_delim.replace("'", "''")
-    con.execute(
-        f"""
+    con.execute(f"""
         CREATE TABLE unambig_psms AS
         SELECT * FROM competed_psms
         WHERE NOT CONTAINS("{prot_col}", '{safe_delim}')
-        """
-    )
+        """)
 
     if prot_fdr_type == "best":
         agg_expr = f'{"MAX" if desc else "MIN"}("{score_column}")'
@@ -281,8 +277,7 @@ def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
         else:
             agg_expr = f'EXP(SUM(LN(ABS("{score_column}") + 1e-300)))'
 
-    con.execute(
-        f"""
+    con.execute(f"""
         CREATE TABLE prot_scores AS
         SELECT
             "{prot_col}",
@@ -291,8 +286,7 @@ def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
             random()     AS _crema_rand
         FROM unambig_psms
         GROUP BY "{prot_col}", "{target_col}"
-        """
-    )
+        """)
     _compete_into(
         con, "prot_scores", "competed_prot", score_column, [prot_col], desc
     )
