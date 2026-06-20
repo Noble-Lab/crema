@@ -99,7 +99,7 @@ def parse_psms_txt(txt_file, cols, skip_line):
         with open(txt_file, encoding="utf-8") as fh:
             if skip_line:
                 fh.readline()
-            header = fh.readline().rstrip("\n").split("\t")
+            header = fh.readline().rstrip("\r\n").split("\t")
         explicit_cols = [c for c in header if c in cols]
     except UnicodeDecodeError:
         return pd.read_csv(txt_file, **fallback_kwargs)

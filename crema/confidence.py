@@ -196,7 +196,7 @@ class Confidence(ABC):
             desc = t_pass > f_pass
 
         self._dataset = psms
-        self._data = psms.data
+        self._data = psms.data.copy()
         self._score_column = score_column
         self._desc = desc
         self._eval_fdr = eval_fdr
