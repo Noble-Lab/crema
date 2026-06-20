@@ -13,6 +13,15 @@ import pandas as pd
 LOGGER = logging.getLogger(__name__)
 
 
+def _qid(name):
+    """Wrap *name* in double quotes, escaping any embedded double quotes.
+
+    DuckDB uses double-quoted identifiers.  Column names that themselves
+    contain a double-quote character must have that character doubled.
+    """
+    return '"' + name.replace('"', '""') + '"'
+
+
 def _require_duckdb():
     try:
         import duckdb
@@ -46,7 +55,7 @@ def _compete_into(con, src, dst, score_col, group_cols, desc):
         True if higher scores are better.
     """
     direction = "DESC" if desc else "ASC"
-    partition = ", ".join(f'"{c}"' for c in group_cols)
+    partition = ", ".join(_qid(c) for c in group_cols)
     con.execute(f"""
         CREATE TABLE {dst} AS
         SELECT * EXCLUDE (_crema_rn)
@@ -54,7 +63,7 @@ def _compete_into(con, src, dst, score_col, group_cols, desc):
             SELECT *,
                 ROW_NUMBER() OVER (
                     PARTITION BY {partition}
-                    ORDER BY "{score_col}" {direction}, _crema_rand
+                    ORDER BY {_qid(score_col)} {direction}, _crema_rand
                 ) AS _crema_rn
             FROM {src}
         )
@@ -90,15 +99,17 @@ def _fetch_qvalues(con, table, score_col, target_col, desc):
     cum_dir = "DESC" if desc else "ASC"
     qval_dir = "ASC" if desc else "DESC"
 
+    sc = _qid(score_col)
+    tc = _qid(target_col)
     return con.execute(f"""
         WITH cum_counts AS (
             SELECT *,
-                SUM(CAST("{target_col}" AS INT)) OVER (
-                    ORDER BY "{score_col}" {cum_dir}
+                SUM(CAST({tc} AS INT)) OVER (
+                    ORDER BY {sc} {cum_dir}
                     ROWS UNBOUNDED PRECEDING
                 ) AS _cum_t,
-                SUM(CAST(NOT "{target_col}" AS INT)) OVER (
-                    ORDER BY "{score_col}" {cum_dir}
+                SUM(CAST(NOT {tc} AS INT)) OVER (
+                    ORDER BY {sc} {cum_dir}
                     ROWS UNBOUNDED PRECEDING
                 ) AS _cum_d
             FROM {table}
@@ -106,20 +117,20 @@ def _fetch_qvalues(con, table, score_col, target_col, desc):
         group_fdr AS (
             SELECT *,
                 CASE
-                    WHEN MAX(_cum_t) OVER (PARTITION BY "{score_col}") = 0
+                    WHEN MAX(_cum_t) OVER (PARTITION BY {sc}) = 0
                         THEN 1.0
-                    ELSE (MAX(_cum_d) OVER (PARTITION BY "{score_col}") + 1.0)
-                         / MAX(_cum_t) OVER (PARTITION BY "{score_col}")
+                    ELSE (MAX(_cum_d) OVER (PARTITION BY {sc}) + 1.0)
+                         / MAX(_cum_t) OVER (PARTITION BY {sc})
                 END AS _group_fdr
             FROM cum_counts
         )
         SELECT * EXCLUDE (_cum_t, _cum_d, _group_fdr),
             MIN(_group_fdr) OVER (
-                ORDER BY "{score_col}" {qval_dir}
+                ORDER BY {sc} {qval_dir}
                 ROWS UNBOUNDED PRECEDING
             ) AS "crema q-value"
         FROM group_fdr
-        ORDER BY "{score_col}" {qval_dir}
+        ORDER BY {sc} {qval_dir}
         """).df()
 
 
@@ -231,12 +242,13 @@ def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
         # Replace the peptide column with its paired counterpart so that
         # target/decoy pairs compete together.  Decoys (not in the map) keep
         # their own sequence.
+        pc = _qid(pep_col)
         con.execute(f"""
             CREATE TABLE with_pairing AS
-            SELECT p.* EXCLUDE ("{pep_col}"),
-                COALESCE(m._pair, p."{pep_col}") AS "{pep_col}"
+            SELECT p.* EXCLUDE ({pc}),
+                COALESCE(m._pair, p.{pc}) AS {pc}
             FROM {pep_src} p
-            LEFT JOIN _pairing m ON p."{pep_col}" = m._seq
+            LEFT JOIN _pairing m ON p.{pc} = m._seq
             """)
         _compete_into(
             con, "with_pairing", "competed_pep", score_column, [pep_col], desc
@@ -262,30 +274,33 @@ def run_tdc(psms, score_column, desc, pep_fdr_type, prot_fdr_type, eval_fdr):
 
     # Escape any single quotes in the delimiter for the SQL literal.
     safe_delim = prot_delim.replace("'", "''")
+    prc = _qid(prot_col)
+    tc2 = _qid(target_col)
+    sc2 = _qid(score_column)
     con.execute(f"""
         CREATE TABLE unambig_psms AS
         SELECT * FROM competed_psms
-        WHERE NOT CONTAINS("{prot_col}", '{safe_delim}')
+        WHERE NOT CONTAINS({prc}, '{safe_delim}')
         """)
 
     if prot_fdr_type == "best":
-        agg_expr = f'{"MAX" if desc else "MIN"}("{score_column}")'
+        agg_expr = f'{"MAX" if desc else "MIN"}({sc2})'
     else:
         # combine: sum of scores (desc) or product via log trick (asc)
         if desc:
-            agg_expr = f'SUM("{score_column}")'
+            agg_expr = f"SUM({sc2})"
         else:
-            agg_expr = f'EXP(SUM(LN(ABS("{score_column}") + 1e-300)))'
+            agg_expr = f"EXP(SUM(LN(ABS({sc2}) + 1e-300)))"
 
     con.execute(f"""
         CREATE TABLE prot_scores AS
         SELECT
-            "{prot_col}",
-            "{target_col}",
-            {agg_expr} AS "{score_column}",
+            {prc},
+            {tc2},
+            {agg_expr} AS {sc2},
             random()     AS _crema_rand
         FROM unambig_psms
-        GROUP BY "{prot_col}", "{target_col}"
+        GROUP BY {prc}, {tc2}
         """)
     _compete_into(
         con, "prot_scores", "competed_prot", score_column, [prot_col], desc

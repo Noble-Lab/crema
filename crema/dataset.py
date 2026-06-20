@@ -229,7 +229,7 @@ class PsmDataset:
                 prot_fdr_type=prot_fdr_type,
                 threshold=threshold,
             )
-        else:
+        elif backend == "pandas":
             conf = self.methods[method](
                 psms=self,
                 score_column=score_column,
@@ -238,6 +238,10 @@ class PsmDataset:
                 pep_fdr_type=pep_fdr_type,
                 prot_fdr_type=prot_fdr_type,
                 threshold=threshold,
+            )
+        else:
+            raise ValueError(
+                f"Unknown backend '{backend}'. Choose 'pandas' or 'duckdb'."
             )
 
         return conf

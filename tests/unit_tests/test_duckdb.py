@@ -186,6 +186,7 @@ def test_duckdb_psm_qvalues_match_pandas(simple_psms):
         score_column="x",
         pep_fdr_type="psm-only",
         desc=True,
+        threshold="q-value",
     )
     p_df = (
         p_conf.confidence_estimates["psms"]
@@ -198,7 +199,10 @@ def test_duckdb_psm_qvalues_match_pandas(simple_psms):
         .reset_index(drop=True)
     )
     pd.testing.assert_series_equal(
-        p_df["x"], d_df["x"], check_names=False, atol=1e-6
+        p_df["crema q-value"],
+        d_df["crema q-value"],
+        check_names=False,
+        atol=1e-6,
     )
 
 
