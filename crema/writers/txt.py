@@ -3,8 +3,6 @@
 from pathlib import Path
 from collections import defaultdict
 
-import pandas as pd
-
 
 def to_txt(
     conf, output_dir=None, file_root=None, sep="\t", decoys=False, precision=6
@@ -64,9 +62,26 @@ def to_txt(
     out_files = []
     for level, qval_list in results.items():
         out_file = str(file_base) + f".{level}.txt"
-        pd.concat(qval_list).to_csv(
-            out_file, sep=sep, index=False, float_format=f"%.{precision}f"
-        )
+        # Determine the union of all columns in first-seen order so that
+        # appended DataFrames (which may come from different Confidence objects
+        # with different score columns) are always aligned to the same header.
+        seen: dict = {}
+        for df in qval_list:
+            for c in df.columns:
+                seen.setdefault(c, None)
+        all_cols = list(seen)
+
+        first = True
+        for df in qval_list:
+            df.reindex(columns=all_cols).to_csv(
+                out_file,
+                sep=sep,
+                index=False,
+                float_format=f"%.{precision}f",
+                header=first,
+                mode="w" if first else "a",
+            )
+            first = False
         out_files.append(out_file)
 
     return out_files

@@ -65,7 +65,7 @@ def create_pairing_from_file(pairing_file_name):
     return dict(zip(pairing_file[target_field], pairing_file[decoy_field]))
 
 
-def parse_psms_txt(txt_file, cols, skip_line):
+def parse_psms_txt(txt_file, cols, skip_line, chunk_size=None):
     """Parse a single tab-delimited file
 
     Parameters
@@ -76,11 +76,17 @@ def parse_psms_txt(txt_file, cols, skip_line):
         The columns to parse.
     skip_line : bool
         If true, skip reading the first line.
+    chunk_size : int or None, optional
+        When set, return a :py:class:`pandas.io.parsers.TextFileReader`
+        iterator that yields ``chunk_size``-row DataFrames instead of loading
+        the whole file.  When ``None`` (default), the full DataFrame is
+        returned.
 
     Returns
     -------
-    pandas.DataFrame
-        A :py:class:`pandas.DataFrame` containing the parsed PSMs
+    pandas.DataFrame or pandas.io.parsers.TextFileReader
+        A :py:class:`pandas.DataFrame` containing the parsed PSMs, or an
+        iterator of chunks when ``chunk_size`` is set.
     """
     LOGGER.info("Reading PSMs from %s...", txt_file)
 
@@ -102,15 +108,20 @@ def parse_psms_txt(txt_file, cols, skip_line):
             header = fh.readline().rstrip("\r\n").split("\t")
         explicit_cols = [c for c in header if c in cols]
     except UnicodeDecodeError:
+        if chunk_size is not None:
+            fallback_kwargs["chunksize"] = chunk_size
         return pd.read_csv(txt_file, **fallback_kwargs)
 
+    read_kwargs = dict(
+        sep="\t",
+        skiprows=int(skip_line),
+        usecols=explicit_cols,
+    )
+    if chunk_size is not None:
+        read_kwargs["chunksize"] = chunk_size
+        return pd.read_csv(txt_file, **read_kwargs)
+
     try:
-        return pd.read_csv(
-            txt_file,
-            sep="\t",
-            skiprows=int(skip_line),
-            usecols=explicit_cols,
-            engine="pyarrow",
-        )
+        return pd.read_csv(txt_file, engine="pyarrow", **read_kwargs)
     except (ImportError, ValueError):
         return pd.read_csv(txt_file, **fallback_kwargs)
