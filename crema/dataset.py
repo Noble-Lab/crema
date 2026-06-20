@@ -45,8 +45,9 @@ class PsmDataset:
     copy_data : bool, optional
         If true, a deep copy of the data is created. This uses more memory, but
         is safer because it prevents accidental modification of the underlying
-        data. This argument only has an effect when `pin_files` is a
-        :py:class:`pandas.DataFrame`
+        data. This argument only has an effect when `psms` is a
+        :py:class:`pandas.DataFrame`. Default is ``False`` to minimise memory
+        use; set to ``True`` if you need to protect the original DataFrame.
 
     Attributes
     ----------
@@ -76,7 +77,7 @@ class PsmDataset:
         protein_column,
         protein_delim,
         peptide_pairing=None,
-        copy_data=True,
+        copy_data=False,
     ):
         """Initialize a PsmDataset object."""
         self.score_columns = listify(score_columns)
@@ -115,8 +116,12 @@ class PsmDataset:
 
     @property
     def data(self):
-        """The collection of PSMs as a :py:class:`pandas.DataFrame`."""
-        return self._data.copy()
+        """The collection of PSMs as a :py:class:`pandas.DataFrame`.
+
+        Returns the internal DataFrame by reference. Callers that need an
+        independent copy should call ``.data.copy()`` explicitly.
+        """
+        return self._data
 
     @property
     def spectra(self):

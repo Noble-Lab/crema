@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def read_comet(
-    txt_files, pairing_file_name=None, decoy_prefix="DECOY_", copy_data=True
+    txt_files, pairing_file_name=None, decoy_prefix="DECOY_", copy_data=False
 ):
     """Read peptide-spectrum matches (PSMs) from Comet output.
     Can parse tab-delimited files.
