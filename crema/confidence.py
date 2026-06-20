@@ -13,6 +13,7 @@ from . import qvalues
 from . import utils
 
 from .writers.txt import to_txt
+from .writers.parquet import to_parquet as _to_parquet
 
 np.random.seed(0)
 
@@ -382,6 +383,34 @@ class Confidence(ABC):
             output_dir=output_dir,
             file_root=file_root,
             sep=sep,
+            decoys=decoys,
+        )
+
+    def to_parquet(self, output_dir=None, file_root=None, decoys=False):
+        """Save confidence estimates to Parquet files.
+
+        Requires the ``pyarrow`` package (``pip install crema[fast]``).
+
+        Parameters
+        ----------
+        output_dir : str or None, optional
+            The directory in which to save the files. ``None`` uses the
+            current working directory.
+        file_root : str or None, optional
+            An optional prefix for the output file names. Files are always
+            named ``[file_root.]crema.{level}.parquet``.
+        decoys : bool, optional
+            Save decoy confidence estimates as well?
+
+        Returns
+        -------
+        list of str
+            The paths to the saved files.
+        """
+        return _to_parquet(
+            self,
+            output_dir=output_dir,
+            file_root=file_root,
             decoys=decoys,
         )
 
