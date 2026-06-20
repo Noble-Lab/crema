@@ -130,7 +130,7 @@ def test_to_txt_psm_row_count(clean_psms, tmp_path):
     assert len(result) == len(conf.confidence_estimates["psms"])
 
 
-def test_to_txt_roundtrip_accept(clean_psms, tmp_path):
+def test_to_txt_roundtrip_scores(clean_psms, tmp_path):
     """Scores written to file and read back must match in-memory values."""
     conf = clean_psms.assign_confidence(
         score_column="score",
