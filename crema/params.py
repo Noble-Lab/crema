@@ -75,7 +75,7 @@ def _configure_parser():
         help=(
             "One or more collection of peptide-spectrum matches (PSMs) in the "
             "mzTab, Tide tab-delimited, MSGF+ tsv, MSAmanda csv, Morpheus txt, "
-            "generic delimited text, or Parquet format."
+            "or generic delimited text format."
         ),
     )
 
@@ -198,9 +198,8 @@ def _configure_parser():
         type=str,
         nargs="+",
         help=(
-            "One or more PSM files to convert. Supported input formats: "
-            "Tide tab-delimited, MSGF+ tsv, MSAmanda csv, Comet, MSFragger, "
-            "generic delimited text, mzTab, pepXML."
+            "One or more delimited text PSM files to convert to Parquet. "
+            "The file must contain columns matching the required arguments below."
         ),
     )
 

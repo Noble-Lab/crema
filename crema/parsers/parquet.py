@@ -89,7 +89,7 @@ def read_parquet(
         peptide_column=peptide_column,
         protein_column=protein_column,
         protein_delim=protein_delim,
-        copy_data=False,
+        copy_data=copy_data,
     )
 
     if pairing_file_name is not None:

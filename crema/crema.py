@@ -118,8 +118,13 @@ def _run_assign_confidence(args, start_time):
 
     psms = _auto_read(args.psm_files)
 
+    desc = {"True": True, "False": False, "None": None}[args.desc]
     conf = psms.assign_confidence(
         score_column=args.score,
+        threshold=args.threshold,
+        pep_fdr_type=args.pep_fdr_type,
+        prot_fdr_type=args.prot_fdr_type,
+        desc=desc,
         eval_fdr=args.eval_fdr,
         method=args.method,
     )
@@ -141,7 +146,6 @@ def _run_convert(args, start_time):
         level=logging.INFO,
         format="[%(levelname)s] %(message)s",
     )
-    logging.getLogger().addHandler(logging.StreamHandler())
 
     logging.info("crema convert")
     logging.info("Command issued:")
