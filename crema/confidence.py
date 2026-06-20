@@ -28,6 +28,7 @@ def assign_confidence(
     desc=None,
     eval_fdr=0.01,
     method="tdc",
+    backend="pandas",
 ):
     """Assign confidence estimates to a collection of peptide-spectrum matches.
 
@@ -61,6 +62,10 @@ def assign_confidence(
         Default is 0.01.
     method : {"tdc"}, optional
         The method for crema to use when calculating the confidence estimates.
+    backend : {"pandas", "duckdb"}, optional
+        The compute backend to use. ``"duckdb"`` requires the optional
+        ``duckdb`` package (``pip install crema[large]``) and only supports
+        ``method="tdc"``.
 
     Returns
     -------
@@ -86,6 +91,7 @@ def assign_confidence(
             desc=desc,
             eval_fdr=eval_fdr,
             method=method,
+            backend=backend,
         )
         confs.append(conf)
 
@@ -802,6 +808,67 @@ class MixmaxConfidence(Confidence):
                     targets_sorted[self._score_column] * -1.0
                 )
             self.confidence_estimates[level] = targets_sorted
+
+
+class DuckdbTdcConfidence(Confidence):
+    """TDC confidence estimation using DuckDB as the compute engine.
+
+    An out-of-core alternative to :class:`TdcConfidence` that delegates
+    competition, FDR calculation, and q-value estimation to DuckDB SQL
+    window functions. Suitable for datasets that do not fit in RAM.
+
+    Protein-group estimation is not supported. Use :class:`TdcConfidence`
+    if protein groups are required.
+
+    Parameters
+    ----------
+    psms : crema.dataset.PsmDataset
+    score_column : str, optional
+    desc : bool, optional
+    eval_fdr : float, optional
+    pep_fdr_type : {"psm-only", "peptide-only", "psm-peptide"}, optional
+    prot_fdr_type : {"best", "combine"}, optional
+    threshold : float or "q-value", optional
+    """
+
+    def __init__(
+        self,
+        psms,
+        score_column=None,
+        desc=None,
+        eval_fdr=0.01,
+        pep_fdr_type="psm-peptide",
+        prot_fdr_type="best",
+        threshold=0.01,
+    ):
+        """Initialize a DuckdbTdcConfidence object."""
+        LOGGER.info(
+            "Assigning confidence estimates using DuckDB TDC backend..."
+        )
+        super().__init__(
+            psms=psms,
+            score_column=score_column,
+            desc=desc,
+            eval_fdr=eval_fdr,
+            pep_fdr_type=pep_fdr_type,
+            prot_fdr_type=prot_fdr_type,
+            threshold=threshold,
+        )
+
+    def _assign_confidence(self):
+        """Delegate TDC pipeline to the DuckDB backend."""
+        from .backends import duckdb as _duckdb_backend
+
+        self.confidence_estimates, self.decoy_confidence_estimates = (
+            _duckdb_backend.run_tdc(
+                psms=self._dataset,
+                score_column=self._score_column,
+                desc=self._desc,
+                pep_fdr_type=self._pep_fdr_type,
+                prot_fdr_type=self._prot_fdr_type,
+                eval_fdr=self._eval_fdr,
+            )
+        )
 
 
 def _group_proteins(conf_pep_tar, conf_pep_dec, prot_delim, prot_col, pep_col):
