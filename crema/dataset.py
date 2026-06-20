@@ -3,6 +3,7 @@ peptide-spectrum matches.
 """
 
 import logging
+from typing import ClassVar
 
 from .confidence import TdcConfidence
 from .confidence import MixmaxConfidence
@@ -60,7 +61,10 @@ class PsmDataset:
     peptide_pairing : dict
     """
 
-    methods = {"tdc": TdcConfidence, "mixmax": MixmaxConfidence}
+    methods: ClassVar[dict] = {
+        "tdc": TdcConfidence,
+        "mixmax": MixmaxConfidence,
+    }
 
     def __init__(
         self,
@@ -83,16 +87,13 @@ class PsmDataset:
         self._protein_delim = protein_delim
         self._peptide_pairing = peptide_pairing
 
-        fields = sum(
-            [
-                self._spectrum_columns,
-                self.score_columns,
-                [self._target_column],
-                [self._peptide_column],
-                [self._protein_column],
-            ],
-            [],
-        )
+        fields = [
+            *self._spectrum_columns,
+            *self.score_columns,
+            self._target_column,
+            self._peptide_column,
+            self._protein_column,
+        ]
         self._data = psms.copy(deep=copy_data).loc[:, fields]
         self._data[target_column] = self._data[target_column].astype(bool)
         self._num_targets = self.targets.sum()
@@ -135,7 +136,7 @@ class PsmDataset:
     @property
     def protein_delim(self):
         """The delimiter to split protein IDs as a string."""
-        return self[self._protein_delim]
+        return self._protein_delim
 
     @property
     def scores(self):

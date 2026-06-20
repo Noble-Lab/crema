@@ -66,12 +66,17 @@ def main():
         read_mztab,
     ]
 
+    psms = None
     for read_fn in readers:
         try:
             psms = read_fn(args.psm_files)
             break
-        except:
-            raise ValueError("Unrecognized file type.")
+        except Exception as exc:
+            logging.debug("%s failed: %s", read_fn.__name__, exc)
+            continue
+
+    if psms is None:
+        raise ValueError("Unrecognized file type.")
 
     conf = psms.assign_confidence(
         score_column=args.score,

@@ -88,7 +88,7 @@ def read_mztab(mztab_files, pairing_file_name=None):
         copy_data=False,
     )
 
-    if pairing_file_name != None:
+    if pairing_file_name is not None:
         psms._peptide_pairing = utils.create_pairing_from_file(
             pairing_file_name
         )

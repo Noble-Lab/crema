@@ -1,6 +1,5 @@
 """A parser for the MSAmanda tab-delimited format"""
 
-import re
 import logging
 
 import pandas as pd
@@ -44,7 +43,6 @@ def read_msamanda(
     target = "target/decoy"
     peptide = "Sequence"
     spectrum = ["Filename", "Scan Number"]
-    pairing = ""
     protein = "Protein Accessions"
     protein_delim = ";"
 
@@ -85,7 +83,7 @@ def read_msamanda(
     scores = list(scores)
 
     # Read in the files:
-    fields = [*spectrum, peptide, target, *scores, pairing, protein]
+    fields = [*spectrum, peptide, target, *scores, protein]
     if isinstance(txt_files, pd.DataFrame):
         data = txt_files.copy(deep=copy_data).loc[:, fields]
     else:
