@@ -40,13 +40,12 @@ def to_parquet(conf, output_dir=None, file_root=None, decoys=False):
     import pandas as pd
     from ..writers.txt import _get_level_data
 
+    if isinstance(conf, str):
+        raise ValueError("'conf' should be a Confidence object, not a string.")
     try:
-        assert not isinstance(conf, str)
         iter(conf)
     except TypeError:
         conf = [conf]
-    except AssertionError:
-        raise ValueError("'conf' should be a Confidence object, not a string.")
 
     file_base = "crema"
     if file_root is not None:

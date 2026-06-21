@@ -134,6 +134,7 @@ def test_to_parquet_creates_psm_peptide_protein_files(parquet_psms, tmp_path):
     assert (tmp_path / "crema.psms.parquet").exists()
     assert (tmp_path / "crema.peptides.parquet").exists()
     assert (tmp_path / "crema.proteins.parquet").exists()
+    assert (tmp_path / "crema.protein_groups.parquet").exists()
 
 
 def test_to_parquet_file_root_prefix(parquet_psms, tmp_path):
@@ -148,6 +149,7 @@ def test_to_parquet_file_root_prefix(parquet_psms, tmp_path):
     assert (tmp_path / "myrun.crema.psms.parquet").exists()
     assert (tmp_path / "myrun.crema.peptides.parquet").exists()
     assert (tmp_path / "myrun.crema.proteins.parquet").exists()
+    assert (tmp_path / "myrun.crema.protein_groups.parquet").exists()
 
 
 def test_to_parquet_returns_file_paths(parquet_psms, tmp_path):
@@ -205,6 +207,8 @@ def test_to_parquet_decoys_flag(parquet_psms, tmp_path):
     )
     conf.to_parquet(output_dir=tmp_path, decoys=True)
     assert (tmp_path / "crema.decoy.psms.parquet").exists()
+    assert (tmp_path / "crema.decoy.peptides.parquet").exists()
+    assert (tmp_path / "crema.decoy.proteins.parquet").exists()
 
 
 def test_to_parquet_missing_pyarrow(parquet_psms, tmp_path, monkeypatch):
