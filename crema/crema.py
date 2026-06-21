@@ -119,9 +119,13 @@ def _run_assign_confidence(args, start_time):
 
     psms = _auto_read(args.psm_files)
 
+    # args.score is None or a list from nargs='+'; assign_confidence expects
+    # a single string or None (None triggers automatic best-score selection).
+    score = args.score[0] if args.score and len(args.score) == 1 else None
+
     desc = {"True": True, "False": False, "None": None}[args.desc]
     conf = psms.assign_confidence(
-        score_column=args.score,
+        score_column=score,
         threshold=args.threshold,
         pep_fdr_type=args.pep_fdr_type,
         prot_fdr_type=args.prot_fdr_type,
