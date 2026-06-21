@@ -37,7 +37,12 @@ class Params:
         # subcommand, default to 'assign-confidence' so legacy invocations
         # like ``crema file.txt ...`` continue to work.
         argv = sys.argv[1:]
-        if argv and argv[0] not in ("assign-confidence", "convert"):
+        _help_flags = {"-h", "--help", "--version"}
+        if (
+            argv
+            and argv[0] not in ("assign-confidence", "convert")
+            and argv[0] not in _help_flags
+        ):
             sys.argv.insert(1, "assign-confidence")
         self._namespace = vars(self.parser.parse_args())
 
