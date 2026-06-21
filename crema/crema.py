@@ -85,6 +85,7 @@ def _auto_read(psm_files):
         read_msfragger,
         read_pepxml,
         read_mztab,
+        read_txt,
     ]
 
     psms = None
