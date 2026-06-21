@@ -3,6 +3,7 @@ necessary for running crema from the command line.
 """
 
 import argparse
+import sys
 import textwrap
 
 try:
@@ -32,6 +33,12 @@ class Params:
         Initialize a Params object that holds an argparse parser.
         """
         self.parser = _configure_parser()
+        # Backward compatibility: if the first argument is not a known
+        # subcommand, default to 'assign-confidence' so legacy invocations
+        # like ``crema file.txt ...`` continue to work.
+        argv = sys.argv[1:]
+        if argv and argv[0] not in ("assign-confidence", "convert"):
+            sys.argv.insert(1, "assign-confidence")
         self._namespace = vars(self.parser.parse_args())
 
     def __getattr__(self, option):
