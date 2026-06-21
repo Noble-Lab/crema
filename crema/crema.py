@@ -74,7 +74,7 @@ def _auto_read(psm_files):
     if all(str(f).endswith(".parquet") for f in files):
         raise ValueError(
             "Parquet input requires explicit column arguments. "
-            "Use 'crema convert' output with 'crema assign-confidence'."
+            "Use crema.read_parquet() in Python to load Parquet files."
         )
 
     readers = [
@@ -119,10 +119,7 @@ def _run_assign_confidence(args, start_time):
 
     psms = _auto_read(args.psm_files)
 
-    # args.score is None or a list from nargs='+'; assign_confidence expects
-    # a single string or None (None triggers automatic best-score selection).
-    score = args.score[0] if args.score and len(args.score) == 1 else None
-
+    score = args.score
     desc = {"True": True, "False": False, "None": None}[args.desc]
     conf = psms.assign_confidence(
         score_column=score,
@@ -172,6 +169,14 @@ def _run_convert(args, start_time):
         out_path = args.output
     else:
         out_path = str(Path(args.psm_files[0]).with_suffix(".parquet"))
+
+    try:
+        import pyarrow  # noqa: F401
+    except ImportError as exc:
+        raise ImportError(
+            "The 'pyarrow' package is required to write Parquet files. "
+            "Install it with: pip install crema[fast]"
+        ) from exc
 
     logging.info("Writing Parquet to %s...", out_path)
     psms.data.to_parquet(out_path, index=False)

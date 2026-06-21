@@ -83,13 +83,10 @@ def _configure_parser():
         "-s",
         "--score",
         type=str,
-        nargs="+",
         default=None,
         help=(
-            "One or more columns that indicate possible scores by which to "
-            "rank the PSMs. If more than one is provided, the best will be "
-            "selected automatically. If none are provided, crema will try all "
-            "available scores."
+            "The column to use as the PSM score. If not provided, crema will "
+            "try all available scores and select the best one automatically."
         ),
     )
 
@@ -98,11 +95,7 @@ def _configure_parser():
         "--threshold",
         type=float,
         default=0.01,
-        help=(
-            "The FDR threshold for accepting discoveries. Default is 0.01. "
-            "If 'q-value' is chosen, then 'accept' column is replaced "
-            "with 'crema q-value'."
-        ),
+        help="The FDR threshold for accepting discoveries. Default is 0.01.",
     )
 
     ac.add_argument(
