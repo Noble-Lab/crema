@@ -3,8 +3,13 @@ necessary for running crema from the command line.
 """
 
 import argparse
+import sys
 import textwrap
-from . import __version__
+
+try:
+    from . import __version__
+except ImportError:
+    __version__ = "unknown"
 
 
 class CremaHelpFormatter(argparse.HelpFormatter):
@@ -28,6 +33,16 @@ class Params:
         Initialize a Params object that holds an argparse parser.
         """
         self.parser = _configure_parser()
+        # Backward compatibility: if the first argument is not a known
+        # subcommand, default to 'assign-confidence' so legacy invocations
+        # like ``crema file.txt ...`` continue to work.
+        argv = sys.argv[1:]
+        if (
+            argv
+            and not argv[0].startswith("-")
+            and argv[0] not in ("assign-confidence", "convert")
+        ):
+            sys.argv.insert(1, "assign-confidence")
         self._namespace = vars(self.parser.parse_args())
 
     def __getattr__(self, option):
@@ -50,71 +65,77 @@ def _configure_parser():
         description=desc, formatter_class=CremaHelpFormatter
     )
 
-    parser.add_argument(
+    subparsers = parser.add_subparsers(
+        dest="command",
+        metavar="COMMAND",
+    )
+
+    # ------------------------------------------------------------------
+    # assign-confidence subcommand (original behaviour)
+    # ------------------------------------------------------------------
+    ac = subparsers.add_parser(
+        "assign-confidence",
+        help="Assign FDR confidence estimates to PSMs.",
+        formatter_class=CremaHelpFormatter,
+    )
+
+    ac.add_argument(
         "psm_files",
         type=str,
         nargs="+",
         help=(
             "One or more collection of peptide-spectrum matches (PSMs) in the "
-            "mzTab, Tide tab-delimited formats, MSGF+ tsv file, MSAmanda csv "
-            "output, Morpheus txt output, or generic delimited text format."
+            "mzTab, Tide tab-delimited, MSGF+ tsv, MSAmanda csv, Morpheus txt, "
+            "or generic delimited text format."
         ),
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-s",
         "--score",
         type=str,
-        nargs="+",
         default=None,
         help=(
-            "One or more columns that indicate possible scores by which to "
-            "rank the PSMs. If more than one is provided, the best will be "
-            "selected automatically. If none are provided, crema will try all "
-            "available scores."
+            "The column to use as the PSM score. If not provided, crema will "
+            "try all available scores and select the best one automatically."
         ),
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-t",
         "--threshold",
         type=float,
         default=0.01,
-        help=(
-            "The FDR threshold for accepting discoveries. Default is 0.01. "
-            "If 'q-value' is chosen, then “ accept”  column is replaced "
-            "with 'crema q-value'."
-        ),
+        help="The FDR threshold for accepting discoveries. Default is 0.01.",
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-p",
         "--pep_fdr_type",
         type=str,
         default="psm-only",
         choices=["psm-only", "peptide-only", "psm-peptide"],
-        help="The peptide-level FDR estimation method to use."
-        "Default is 'psm-peptide'",
+        help="The peptide-level FDR estimation method to use. "
+        "Default is 'psm-only'",
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-r",
         "--prot_fdr_type",
         type=str,
         default="best",
         choices=["best", "combine"],
-        help="The protein-level FDR estimation method to use. "
-        "Default is 'best'",
+        help="The protein-level FDR estimation method to use. Default is 'best'",
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-f",
         "--file_root",
         type=str,
         help="This string will be added as a prefix to all output file names.",
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-o",
         "--output_dir",
         type=str,
@@ -124,7 +145,7 @@ def _configure_parser():
         ),
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-d",
         "--desc",
         type=str,
@@ -139,7 +160,7 @@ def _configure_parser():
         ),
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-e",
         "--eval_fdr",
         type=float,
@@ -151,7 +172,7 @@ def _configure_parser():
         ),
     )
 
-    parser.add_argument(
+    ac.add_argument(
         "-m",
         "--method",
         type=str,
@@ -159,6 +180,88 @@ def _configure_parser():
         choices=["tdc"],
         help="The confidence estimation method to use.",
     )
+
+    ac.add_argument(
+        "--parquet",
+        action="store_true",
+        default=False,
+        help="Write output as Parquet files instead of tab-delimited text.",
+    )
+
+    # ------------------------------------------------------------------
+    # convert subcommand
+    # ------------------------------------------------------------------
+    cv = subparsers.add_parser(
+        "convert",
+        help="Convert PSM files to Parquet format for faster repeat analyses.",
+        formatter_class=CremaHelpFormatter,
+    )
+
+    cv.add_argument(
+        "psm_files",
+        type=str,
+        nargs="+",
+        help=(
+            "One or more delimited text PSM files to convert to Parquet. "
+            "The file must contain columns matching the required arguments below."
+        ),
+    )
+
+    cv.add_argument(
+        "--target-column",
+        type=str,
+        required=True,
+        help="Column indicating whether a PSM is a target or decoy.",
+    )
+
+    cv.add_argument(
+        "--spectrum-columns",
+        type=str,
+        nargs="+",
+        required=True,
+        help="Column(s) that together uniquely identify a spectrum.",
+    )
+
+    cv.add_argument(
+        "--score-columns",
+        type=str,
+        nargs="+",
+        required=True,
+        help="Column(s) containing PSM scores.",
+    )
+
+    cv.add_argument(
+        "--peptide-column",
+        type=str,
+        required=True,
+        help="Column containing peptide sequences.",
+    )
+
+    cv.add_argument(
+        "--protein-column",
+        type=str,
+        required=True,
+        help="Column containing protein identifiers.",
+    )
+
+    cv.add_argument(
+        "--protein-delim",
+        type=str,
+        default=",",
+        help="Delimiter separating multiple protein IDs. Default is ','.",
+    )
+
+    cv.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        default=None,
+        help=(
+            "Output Parquet file path. Defaults to the first input file name "
+            "with its extension replaced by '.parquet'."
+        ),
+    )
+
     return parser
 
 
