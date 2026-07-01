@@ -7,6 +7,8 @@ import pandas as pd
 
 from crema import PsmDataset
 
+DATA_DIR = Path(__file__).parent.parent / "data"
+
 
 @pytest.fixture
 def basic_tide_df():
@@ -331,27 +333,27 @@ def basic_msgf_tsv(basic_msgf_df, tmp_path):
 @pytest.fixture
 def real_tide_txt():
     """Return real tide txt files"""
-    targets = Path("data/example_psms_target.txt")
-    decoys = Path("data/example_psms_decoy.txt")
+    targets = DATA_DIR / "example_psms_target.txt"
+    decoys = DATA_DIR / "example_psms_decoy.txt"
     return [targets, decoys]
 
 
 @pytest.fixture
 def real_mztab():
     """Return a real mzTab file"""
-    return Path("data/MSV000085729.mzTab")
+    return DATA_DIR / "MSV000085729.mzTab"
 
 
 @pytest.fixture
 def real_pepxml():
     """Return a real pepXML file"""
-    return Path("data/tide-search.pep.xml")
+    return DATA_DIR / "tide-search.pep.xml"
 
 
 @pytest.fixture
 def real_msfragger_pepxml():
     """Return a real MSFragger file"""
-    return Path("data/msfragger.pepxml")
+    return DATA_DIR / "msfragger.pepxml"
 
 
 @pytest.fixture

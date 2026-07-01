@@ -71,7 +71,6 @@ def test_competition_target_wins_spectrum():
     )
     conf = psms.assign_confidence(
         score_column="score",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
         threshold="q-value",
@@ -122,7 +121,6 @@ def test_competition_decoy_wins_spectrum():
     )
     conf = psms.assign_confidence(
         score_column="score",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
         threshold="q-value",
@@ -181,7 +179,6 @@ def test_competition_multiple_candidates_per_spectrum():
     )
     conf = psms.assign_confidence(
         score_column="score",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
         threshold="q-value",
@@ -241,7 +238,6 @@ def test_shared_peptide_excluded_from_proteins():
     )
     conf = psms.assign_confidence(
         score_column="score",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
         threshold="q-value",
@@ -261,7 +257,6 @@ def test_tdc_all_levels_present(clean_psms):
     """TdcConfidence must populate all four confidence levels."""
     conf = clean_psms.assign_confidence(
         score_column="score",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -368,7 +363,6 @@ def test_qvalues_monotone_at_all_levels(clean_psms):
     """Q-values must be non-decreasing as score decreases at every level."""
     conf = clean_psms.assign_confidence(
         score_column="score",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
         threshold="q-value",
