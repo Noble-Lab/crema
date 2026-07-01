@@ -126,7 +126,6 @@ def test_to_parquet_creates_psm_peptide_protein_files(parquet_psms, tmp_path):
     """to_parquet must create psms, peptides, and proteins output files."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -141,7 +140,6 @@ def test_to_parquet_file_root_prefix(parquet_psms, tmp_path):
     """A file_root prefix must appear in every output file name."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -156,7 +154,6 @@ def test_to_parquet_returns_file_paths(parquet_psms, tmp_path):
     """to_parquet must return a list of created file paths."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -173,7 +170,6 @@ def test_to_parquet_psm_row_count(parquet_psms, tmp_path):
     """PSM Parquet file must have the same row count as the in-memory result."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -186,7 +182,6 @@ def test_to_parquet_psm_has_score_and_accept(parquet_psms, tmp_path):
     """PSM Parquet output must contain score and accept columns."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
         threshold=0.5,
@@ -201,7 +196,6 @@ def test_to_parquet_decoys_flag(parquet_psms, tmp_path):
     """decoys=True must also write decoy Parquet files."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -225,7 +219,6 @@ def test_to_parquet_missing_pyarrow(parquet_psms, tmp_path, monkeypatch):
     monkeypatch.setattr(builtins, "__import__", mock_import)
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -242,7 +235,6 @@ def test_parquet_roundtrip_row_count(parquet_psms, tmp_path):
     """Confidence output written as Parquet must roundtrip with correct row count."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )
@@ -255,7 +247,6 @@ def test_parquet_roundtrip_scores_match_txt(parquet_psms, tmp_path):
     """Parquet and txt outputs must contain the same score values."""
     conf = parquet_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         desc=True,
         pep_fdr_type="psm-only",
     )

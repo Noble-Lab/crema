@@ -121,6 +121,10 @@ def parse_psms_txt(txt_file, cols, skip_line, chunk_size=None):
         read_kwargs["chunksize"] = chunk_size
         return pd.read_csv(txt_file, **read_kwargs)
 
+    # pyarrow engine does not support skiprows; fall back to C engine when
+    # the file has a header-comment row to skip.
+    if skip_line:
+        return pd.read_csv(txt_file, **read_kwargs)
     try:
         return pd.read_csv(txt_file, engine="pyarrow", **read_kwargs)
     except (ImportError, ValueError):
