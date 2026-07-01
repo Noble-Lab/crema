@@ -78,7 +78,6 @@ def test_tdc_diff_len():
         tdc(scores, targets)
 
 
-
 # TDC edge cases ------------------------------------------------------------------
 def test_tdc_target_wins_both():
     """Single spectrum: target beats decoy → q-value reflects (0+1)/1 = 1.0."""

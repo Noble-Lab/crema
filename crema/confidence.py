@@ -661,8 +661,6 @@ class TdcConfidence(Confidence):
             self.decoy_confidence_estimates[level] = df.loc[~targets, :]
 
 
-
-
 class DuckdbTdcConfidence(Confidence):
     """TDC confidence estimation using DuckDB as the compute engine.
 
