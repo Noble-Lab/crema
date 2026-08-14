@@ -474,11 +474,6 @@ class TdcConfidence(Confidence):
             raise ValueError(
                 "Must provide paired target decoy peptide infomation (see FAQ)."
             )
-        LOGGER.warning(
-            "PSM-level FDR estimates are not guaranteed to control "
-            "the FDR. We suggest avoiding PSM-level FDR and using "
-            "peptide-level FDR estimates (see FAQ)."
-        )
 
         for level, group_cols in zip(self.levels, self._level_columns):
             # NOTE line below can removed if psm-only and peptide-only methods are removed
