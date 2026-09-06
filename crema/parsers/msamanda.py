@@ -54,7 +54,7 @@ def read_msamanda(
     scores_all = scores
 
     # Keep only MSAmanda scores that exist in all of the files.
-    skip_first_row = False
+    skip_first_row = 0
     if isinstance(txt_files, pd.DataFrame):
         scores = scores.intersection(set(txt_files.columns))
     else:
@@ -65,12 +65,15 @@ def read_msamanda(
                 raise ValueError(f"{txt_file} must be in .csv format.")
 
             with open(txt_file) as txt_ref:
-                # First line of MSAmanda output consists only of version line
-                # If statement below in case first line is removed
+                # MSAmanda output may be preceded by one or more comment
+                # lines (e.g. a version line) starting with '#'. Skip all
+                # of them to find the header line.
+                n_comment_lines = 0
                 line = txt_ref.readline().rstrip()
-                if line.startswith("#version"):
+                while line.startswith("#"):
+                    n_comment_lines += 1
                     line = txt_ref.readline().rstrip()
-                    skip_first_row = True
+                skip_first_row = n_comment_lines
                 cols = line.split("\t")
                 scores = scores.intersection(set(cols))
 

@@ -74,8 +74,10 @@ def parse_psms_txt(txt_file, cols, skip_line, chunk_size=None):
         The tab-delimited file of PSMs to read.
     cols : list of str
         The columns to parse.
-    skip_line : bool
-        If true, skip reading the first line.
+    skip_line : bool or int
+        The number of leading, non-header lines to skip before the column
+        header (e.g. a search engine's version line, or a run of comment
+        lines). A boolean is treated as ``0`` or ``1`` lines.
     chunk_size : int or None, optional
         When set, return a :py:class:`pandas.io.parsers.TextFileReader`
         iterator that yields ``chunk_size``-row DataFrames instead of loading
@@ -90,7 +92,8 @@ def parse_psms_txt(txt_file, cols, skip_line, chunk_size=None):
     """
     LOGGER.info("Reading PSMs from %s...", txt_file)
 
-    # Because skip_line is a boolean:
+    n_skip = int(skip_line)
+
     # pyarrow engine doesn't support callable usecols, so pass an explicit list
     # built from the file header.  Open with UTF-8 (pandas' default encoding)
     # so column names are decoded the same way read_csv will decode them.
@@ -98,12 +101,12 @@ def parse_psms_txt(txt_file, cols, skip_line, chunk_size=None):
     # the C engine with a callable usecols filter.
     fallback_kwargs = dict(
         sep="\t",
-        skiprows=int(skip_line),
+        skiprows=n_skip,
         usecols=lambda c: c in cols,
     )
     try:
         with open(txt_file, encoding="utf-8") as fh:
-            if skip_line:
+            for _ in range(n_skip):
                 fh.readline()
             header = fh.readline().rstrip("\r\n").split("\t")
         explicit_cols = [c for c in header if c in cols]
@@ -114,7 +117,7 @@ def parse_psms_txt(txt_file, cols, skip_line, chunk_size=None):
 
     read_kwargs = dict(
         sep="\t",
-        skiprows=int(skip_line),
+        skiprows=n_skip,
         usecols=explicit_cols,
     )
     if chunk_size is not None:
@@ -122,8 +125,8 @@ def parse_psms_txt(txt_file, cols, skip_line, chunk_size=None):
         return pd.read_csv(txt_file, **read_kwargs)
 
     # pyarrow engine does not support skiprows; fall back to C engine when
-    # the file has a header-comment row to skip.
-    if skip_line:
+    # the file has header/comment rows to skip.
+    if n_skip:
         return pd.read_csv(txt_file, **read_kwargs)
     try:
         return pd.read_csv(txt_file, engine="pyarrow", **read_kwargs)

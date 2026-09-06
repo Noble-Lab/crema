@@ -323,6 +323,18 @@ def basic_msamanda_csv(basic_msamanda_df, tmp_path):
 
 
 @pytest.fixture
+def multi_comment_msamanda_csv(basic_msamanda_df, tmp_path):
+    """A MSAmanda-like txt file with multiple leading '#' comment lines"""
+    out_file = tmp_path / "msamanda_multi_comment.csv"
+    with open(out_file, "w") as tmp_file:
+        tmp_file.write("#version: 2.0.0.18350\n")
+        tmp_file.write("#settings: some settings here\n")
+        tmp_file.write("#another comment line\n")
+    basic_msamanda_df.to_csv(out_file, mode="a", sep="\t", index=False)
+    return out_file
+
+
+@pytest.fixture
 def basic_msgf_tsv(basic_msgf_df, tmp_path):
     "A simple MSGF+-liek tsv file" ""
     out_file = tmp_path / "msgf.tsv"
