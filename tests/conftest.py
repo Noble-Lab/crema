@@ -7,6 +7,8 @@ import pandas as pd
 
 from crema import PsmDataset
 
+DATA_DIR = Path(__file__).parent.parent / "data"
+
 
 @pytest.fixture
 def basic_tide_df():
@@ -321,6 +323,18 @@ def basic_msamanda_csv(basic_msamanda_df, tmp_path):
 
 
 @pytest.fixture
+def multi_comment_msamanda_csv(basic_msamanda_df, tmp_path):
+    """A MSAmanda-like txt file with multiple leading '#' comment lines"""
+    out_file = tmp_path / "msamanda_multi_comment.csv"
+    with open(out_file, "w") as tmp_file:
+        tmp_file.write("#version: 2.0.0.18350\n")
+        tmp_file.write("#settings: some settings here\n")
+        tmp_file.write("#another comment line\n")
+    basic_msamanda_df.to_csv(out_file, mode="a", sep="\t", index=False)
+    return out_file
+
+
+@pytest.fixture
 def basic_msgf_tsv(basic_msgf_df, tmp_path):
     "A simple MSGF+-liek tsv file" ""
     out_file = tmp_path / "msgf.tsv"
@@ -331,27 +345,27 @@ def basic_msgf_tsv(basic_msgf_df, tmp_path):
 @pytest.fixture
 def real_tide_txt():
     """Return real tide txt files"""
-    targets = Path("data/example_psms_target.txt")
-    decoys = Path("data/example_psms_decoy.txt")
+    targets = DATA_DIR / "example_psms_target.txt"
+    decoys = DATA_DIR / "example_psms_decoy.txt"
     return [targets, decoys]
 
 
 @pytest.fixture
 def real_mztab():
     """Return a real mzTab file"""
-    return Path("data/MSV000085729.mzTab")
+    return DATA_DIR / "MSV000085729.mzTab"
 
 
 @pytest.fixture
 def real_pepxml():
     """Return a real pepXML file"""
-    return Path("data/tide-search.pep.xml")
+    return DATA_DIR / "tide-search.pep.xml"
 
 
 @pytest.fixture
 def real_msfragger_pepxml():
     """Return a real MSFragger file"""
-    return Path("data/msfragger.pepxml")
+    return DATA_DIR / "msfragger.pepxml"
 
 
 @pytest.fixture

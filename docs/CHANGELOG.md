@@ -1,6 +1,9 @@
 # Changelog for crema  
 
 ## [Unreleased]
+### Removed
+- Removed mix-max dead code and the `--method` CLI flag
+
 ### Fixed
 
 ## [0.0.10] - 2024-02-21
