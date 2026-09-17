@@ -46,7 +46,6 @@ def test_duckdb_backend_returns_duckdb_confidence(simple_psms):
     """backend='duckdb' must return a DuckdbTdcConfidence instance."""
     conf = simple_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         pep_fdr_type="psm-only",
         desc=True,
         backend="duckdb",
@@ -54,15 +53,14 @@ def test_duckdb_backend_returns_duckdb_confidence(simple_psms):
     assert isinstance(conf, DuckdbTdcConfidence)
 
 
-def test_duckdb_backend_invalid_method_raises(simple_psms):
-    """backend='duckdb' with method='mixmax' must raise ValueError."""
-    with pytest.raises(ValueError, match="backend='duckdb'"):
+def test_duckdb_backend_invalid_backend_raises(simple_psms):
+    """An unknown backend name must raise ValueError."""
+    with pytest.raises(ValueError, match="Unknown backend"):
         simple_psms.assign_confidence(
             score_column="x",
-            method="mixmax",
             pep_fdr_type="psm-only",
             desc=True,
-            backend="duckdb",
+            backend="invalid",
         )
 
 
@@ -70,7 +68,6 @@ def test_duckdb_backend_default_is_pandas(simple_psms):
     """Omitting backend must still return the pandas TdcConfidence."""
     conf = simple_psms.assign_confidence(
         score_column="x",
-        method="tdc",
         pep_fdr_type="psm-only",
         desc=True,
     )

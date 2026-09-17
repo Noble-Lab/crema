@@ -120,6 +120,20 @@ def test_read_msamanda(basic_msamanda_csv):
     assert (~psms.targets).sum() == 6
 
 
+def test_read_msamanda_multiple_comment_lines(multi_comment_msamanda_csv):
+    """MSAmanda files may have multiple leading lines starting with '#'."""
+    psms = crema.read_msamanda(multi_comment_msamanda_csv)
+    assert psms.data.shape == (10, 7)
+    assert list(psms.spectra.columns) == ["Filename", "Scan Number"]
+
+    scores = {"Amanda Score", "Weighted Probability"}
+    assert set(psms.score_columns) == scores
+    assert psms.scores.shape == (10, len(scores))
+    assert psms.targets.shape == (10,)
+    assert psms.targets.sum() == 4
+    assert (~psms.targets).sum() == 6
+
+
 def test_read_msfragger_pepxml(real_msfragger_pepxml):
     psms = crema.read_msfragger(real_msfragger_pepxml)
     assert psms.data.shape == (99, 8)

@@ -128,7 +128,6 @@ def _run_assign_confidence(args, start_time):
         prot_fdr_type=args.prot_fdr_type,
         desc=desc,
         eval_fdr=args.eval_fdr,
-        method=args.method,
     )
 
     logging.info("Writing results...")

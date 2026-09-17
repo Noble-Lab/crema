@@ -3,10 +3,8 @@ peptide-spectrum matches.
 """
 
 import logging
-from typing import ClassVar
 
 from .confidence import TdcConfidence
-from .confidence import MixmaxConfidence
 from .confidence import DuckdbTdcConfidence
 from .qvalues import tdc
 from .utils import listify
@@ -59,14 +57,8 @@ class PsmDataset:
     peptide_column : str
     protein_column : str
     protein_delim : str
-    methods : dict
     peptide_pairing : dict
     """
-
-    methods: ClassVar[dict] = {
-        "tdc": TdcConfidence,
-        "mixmax": MixmaxConfidence,
-    }
 
     def __init__(
         self,
@@ -171,7 +163,6 @@ class PsmDataset:
         prot_fdr_type="best",
         desc=None,
         eval_fdr=0.01,
-        method="tdc",
         backend="pandas",
     ):
         """Assign confidence estimates to this collection of peptide-spectrum matches.
@@ -201,11 +192,9 @@ class PsmDataset:
         eval_fdr : float, optional
             The false discovery rate threshold used to evaluate the best
             `score_column` and `desc` to choose. This should range from 0 to 1.
-        method : {"tdc"}, optional
-            The method for crema to use when calculating the confidence estimates.
         backend : {"pandas", "duckdb"}, optional
             The compute backend. ``"duckdb"`` requires the optional ``duckdb``
-            package and only supports ``method="tdc"``.
+            package.
 
         Returns
         -------
@@ -216,10 +205,6 @@ class PsmDataset:
             score_column, _, desc = self.find_best_score(eval_fdr)
 
         if backend == "duckdb":
-            if method != "tdc":
-                raise ValueError(
-                    "backend='duckdb' only supports method='tdc'."
-                )
             conf = DuckdbTdcConfidence(
                 psms=self,
                 score_column=score_column,
@@ -230,7 +215,7 @@ class PsmDataset:
                 threshold=threshold,
             )
         elif backend == "pandas":
-            conf = self.methods[method](
+            conf = TdcConfidence(
                 psms=self,
                 score_column=score_column,
                 desc=desc,

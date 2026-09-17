@@ -173,15 +173,6 @@ def _configure_parser():
     )
 
     ac.add_argument(
-        "-m",
-        "--method",
-        type=str,
-        default="tdc",
-        choices=["tdc"],
-        help="The confidence estimation method to use.",
-    )
-
-    ac.add_argument(
         "--parquet",
         action="store_true",
         default=False,
