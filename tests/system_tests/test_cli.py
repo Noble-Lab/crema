@@ -27,7 +27,7 @@ def test_cli_custom_root(basic_tide_txt, tmp_path):
 
 def test_real(real_tide_txt, tmp_path):
     """Test that crema works on real Crux results"""
-    cmd = ["crema", "--output_dir", tmp_path] + list(real_tide_txt)
+    cmd = ["crema", "--output_dir", tmp_path, *real_tide_txt]
     subprocess.run(cmd, check=True)
     assert Path(tmp_path, "crema.psms.txt").exists()
     assert Path(tmp_path, "crema.peptides.txt").exists()

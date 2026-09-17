@@ -28,3 +28,18 @@ from .parsers.mztab import read_mztab
 from .parsers.pepxml import read_pepxml
 from .confidence import TdcConfidence, assign_confidence
 from .writers.txt import to_txt
+
+__all__ = [
+    "PsmDataset",
+    "TdcConfidence",
+    "assign_confidence",
+    "read_comet",
+    "read_msamanda",
+    "read_msfragger",
+    "read_msgf",
+    "read_mztab",
+    "read_pepxml",
+    "read_tide",
+    "read_txt",
+    "to_txt",
+]

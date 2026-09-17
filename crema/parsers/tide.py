@@ -1,6 +1,5 @@
 """A parser for the Tide tab-delimited format"""
 
-import re
 import logging
 
 import pandas as pd
@@ -109,7 +108,7 @@ def read_tide(
 
     # always pair target and decoys for Tide
     # explicit pairing done in read_txt
-    if pairing_file_name == None:  # implicit pairing
+    if pairing_file_name is None:  # implicit pairing
         psms._peptide_pairing = _create_pairing(data)
 
     # Remove the start position of peptide in protein if present

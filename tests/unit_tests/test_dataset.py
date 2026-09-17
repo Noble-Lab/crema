@@ -95,3 +95,95 @@ def test_find_best_score(simple_df):
     assert score == "x"
     assert npass == 4
     assert desc
+
+
+# Validation and error handling ---------------------------------------------------
+def test_no_decoys_raises(simple_df):
+    """PsmDataset with only target PSMs must raise ValueError."""
+    targets_only = simple_df[simple_df["target"]].copy()
+    with pytest.raises(ValueError, match=r"[Nn]o decoy"):
+        PsmDataset(
+            psms=targets_only,
+            target_column="target",
+            spectrum_columns=["file", "scan"],
+            score_columns=["combined p-value", "x"],
+            peptide_column="sequence",
+            protein_column="protein id",
+            protein_delim=",",
+        )
+
+
+def test_no_targets_raises(simple_df):
+    """PsmDataset with only decoy PSMs must raise ValueError."""
+    decoys_only = simple_df[~simple_df["target"]].copy()
+    with pytest.raises(ValueError, match=r"[Nn]o target"):
+        PsmDataset(
+            psms=decoys_only,
+            target_column="target",
+            spectrum_columns=["file", "scan"],
+            score_columns=["combined p-value", "x"],
+            peptide_column="sequence",
+            protein_column="protein id",
+            protein_delim=",",
+        )
+
+
+def test_target_decoy_counts(simple_df):
+    """_num_targets and _num_decoys must be set correctly."""
+    psms = PsmDataset(
+        psms=simple_df,
+        target_column="target",
+        spectrum_columns=["file", "scan"],
+        score_columns=["combined p-value", "x"],
+        peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=",",
+    )
+    assert psms._num_targets == simple_df["target"].sum()
+    assert psms._num_decoys == (~simple_df["target"]).sum()
+    assert psms._num_targets + psms._num_decoys == len(simple_df)
+
+
+def test_peptide_pairing_stored(simple_df):
+    """peptide_pairing dict passed at construction must be retrievable."""
+    pairing = {"APPLE": "ELPPA", "CHERRY": "YRREHC"}
+    psms = PsmDataset(
+        psms=simple_df,
+        target_column="target",
+        spectrum_columns=["file", "scan"],
+        score_columns=["combined p-value", "x"],
+        peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=",",
+        peptide_pairing=pairing,
+    )
+    assert psms.peptide_pairing == pairing
+
+
+def test_missing_score_column_raises(simple_df):
+    """Requesting a score column not in the DataFrame must raise."""
+    with pytest.raises((KeyError, ValueError)):
+        PsmDataset(
+            psms=simple_df,
+            target_column="target",
+            spectrum_columns=["file", "scan"],
+            score_columns=["nonexistent_score"],
+            peptide_column="sequence",
+            protein_column="protein id",
+            protein_delim=",",
+        )
+
+
+def test_find_best_score_no_passing_raises(simple_df):
+    """find_best_score must raise RuntimeError when eval_fdr is 0."""
+    psms = PsmDataset(
+        psms=simple_df,
+        target_column="target",
+        spectrum_columns=["file", "scan"],
+        score_columns=["combined p-value", "x"],
+        peptide_column="sequence",
+        protein_column="protein id",
+        protein_delim=",",
+    )
+    with pytest.raises(RuntimeError):
+        psms.find_best_score(eval_fdr=0.0)

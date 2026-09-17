@@ -168,14 +168,12 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
     # TODO try except and some error checking
 
     num_targets = target_scores.shape[0]
-    num_decoys = decoy_scores.shape[0]
 
     # calculate p-values from scores
     n_decoys = 1
     pos_same = 0
     neg_same = 0
     pval_list = []
-    cur_score = None
     for score, target in zip(combined_score, combined_score_target):
         if target:
             pos_same += 1
@@ -191,7 +189,6 @@ def mixmax(target_scores, decoy_scores, combined_score, combined_score_target):
         n_decoys += neg_same
         neg_same = 0
         pos_same = 0
-        cur_score = score
     pval_list = np.array(pval_list) / n_decoys
 
     # calculate pi0
@@ -324,7 +321,6 @@ def calculate_mixmax_qval(target_scores, decoy_scores, pi0):
     j = num_decoys - 1
     n_z_ge_w = 0
     n_w_ge_w = 0
-    prev_fdr = -1
 
     for i in range(num_targets - 1, -1, -1):
         while j >= 0 and decoy_scores[j] >= target_scores[i]:

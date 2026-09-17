@@ -132,7 +132,7 @@ def read_comet(
 
     # always pair target and decoys for Comet
     # explicit pairing done in read_txt
-    if pairing_file_name == None:
+    if pairing_file_name is None:
         # implicit pairing based off fact that Comet reverses peptides
         psms._peptide_pairing = _create_pairing(
             data, peptide, protein, decoy_prefix
